@@ -7,7 +7,7 @@ import vs from '../shaders/test.vert';
 import fs from '../shaders/test.frag';
 
 class ViewTest extends alfrid.View {
-	
+
 	constructor() {
 		super(vs, fs);
 		this.time = Math.random() * 0xFF;
@@ -58,7 +58,7 @@ class ViewTest extends alfrid.View {
 	update(points) {
 		const positions = [];
 		/*
-		for ... 
+		for ...
 
 
 

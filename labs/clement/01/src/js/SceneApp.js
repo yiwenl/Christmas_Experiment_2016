@@ -2,6 +2,7 @@
 
 import alfrid, { Scene, GL } from 'alfrid';
 import ViewTest from './ViewTest';
+import ViewLine from './ViewLine';
 import ViewNoise from './ViewNoise';
 import ViewTerrain from './ViewTerrain';
 
@@ -26,9 +27,9 @@ class SceneApp extends Scene {
 		this._bBall = new alfrid.BatchBall();
 
 
-		this._vTest = new ViewTest();
-		this._vNoise = new ViewNoise();
-		this._vTerrain = new ViewTerrain();
+		this._vLine = new ViewLine();
+		// this._vNoise = new ViewNoise();
+		// this._vTerrain = new ViewTerrain();
 
 		this._fbo = new alfrid.FrameBuffer(512, 512);
 	}
@@ -40,20 +41,20 @@ class SceneApp extends Scene {
 		// this._bAxis.draw();
 		// this._bDots.draw();
 
-		// this._vTest.render();
+		this._vLine.render();
 		// this._vNoise.render();
 
-		this._fbo.bind();
-		GL.clear(0, 0, 0, 0);
-		this._vNoise.render();
-		this._fbo.unbind();
+		// this._fbo.bind();
+		// GL.clear(0, 0, 0, 0);
+		// this._vNoise.render();
+		// this._fbo.unbind();
+		//
+		// this._vTerrain.render(this._fbo.getTexture());
 
-		this._vTerrain.render(this._fbo.getTexture());
 
-
-		const size = 300;
-		GL.viewport(0, 0, 300, 300);
-		this._bCopy.draw(this._fbo.getTexture());
+		// const size = 300;
+		// GL.viewport(0, 0, 300, 300);
+		// this._bCopy.draw(this._fbo.getTexture());
 	}
 
 

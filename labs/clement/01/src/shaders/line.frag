@@ -16,7 +16,7 @@ void main() {
   // float y = step(st.y, .5);
   // float colorS = y, .5);
   // vec3 color = vec3(y);
-  vec4 color = vec4(0.0, 1.0, 1.0, 1.0);
+  vec4 color = vec4(0.0, 1.0, 1.0, .2);
   // color *= texture2D( texture, vUV );
 
   gl_FragColor = color;

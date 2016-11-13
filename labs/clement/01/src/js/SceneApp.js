@@ -39,7 +39,7 @@ class SceneApp extends Scene {
 		// this.orbitalControl.ry.value += 0.01;
 		GL.clear(0, 0, 0, 0);
 		// this._bAxis.draw();
-		// this._bDots.draw();
+		this._bDots.draw();
 
 		this._vLine.render();
 		// this._vNoise.render();

@@ -76,23 +76,13 @@ class ViewLine extends alfrid.View {
 
     if(!this.isReady) return;
 
-    GL.gl.enable(GL.gl.DEPTH_TEST);
-    GL.gl.enable(GL.gl.BLEND);
-    GL.gl.blendFunc(GL.gl.SRC_ALPHA, GL.gl.ONE_MINUS_SRC_ALPHA);
-
 		this.time += 0.01;
-		// GL.disable(GL.CULL_FACE);
+
 		this.shader.bind();
     this.shader.uniform("texture", "uniform1i", 0);
-		// Gl.gl.texture.bind(0);
 
     this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
     this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
-
-		// this.shader.uniform("texture", "uniform1i", 0);
-		// texture.bind(0);
-
-		//	float , vec2 , vec3 , vec4
 		GL.draw(this.line);
 	}
 

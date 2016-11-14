@@ -3,6 +3,7 @@
 
 import alfrid, { GL } from 'alfrid';
 
+
 import Line from './geom/Line'
 import Spline from './libs/Spline';
 import vs from '../shaders/line.vert';
@@ -21,39 +22,76 @@ class ViewLine extends alfrid.View {
 
     this.points = []
     this.spline = new Spline([]);
-    for (var i = 0; i < 25; i++) {
-      this.points.push([Math.random()-.5 , Math.random()-.5,Math.random()-.5]);
-    }
+
+    var pts = [
+			[813, 68, Math.random() * 100 - 50],
+			[788, 157, Math.random() * 100 - 50],
+			[725, 167, Math.random() * 100 - 50],
+			[667, 149, Math.random() * 100 - 50],
+			[670, 106, Math.random() * 100 - 50],
+			[709, 66, Math.random() * 100 - 50],
+			[745, 77, Math.random() * 100 - 50],
+			[762, 126, Math.random() * 100 - 50],
+			[743, 214, Math.random() * 100 - 50],
+			[697, 245, Math.random() * 100 - 50],
+			[649, 242, Math.random() * 100 - 50],
+			[607, 197, Math.random() * 100 - 50],
+			[588, 109, Math.random() * 100 - 50],
+			[578, 39, Math.random() * 100 - 50],
+			[572, 39, Math.random() * 100 - 50],
+			[519, 200, Math.random() * 100 - 50],
+			[534, 251, Math.random() * 100 - 50],
+			[764, 386, Math.random() * 100 - 50],
+			[810, 364, Math.random() * 100 - 50],
+			[813, 297, Math.random() * 100 - 50],
+			[752, 292, Math.random() * 100 - 50],
+			[715, 330, Math.random() * 100 - 50],
+			[707, 414, Math.random() * 100 - 50],
+			[709, 595, Math.random() * 100 - 50],
+			[709, 595, Math.random() * 100 - 50],
+			[660, 504, Math.random() * 100 - 50],
+			[575, 453, Math.random() * 100 - 50],
+			[493, 448, Math.random() * 100 - 50],
+			[433, 471, Math.random() * 100 - 50],
+			[394, 561, Math.random() * 100 - 50],
+			[372, 604, Math.random() * 100 - 50],
+			[372, 604, Math.random() * 100 - 50],
+			[347, 438, Math.random() * 100 - 50],
+			[289, 367, Math.random() * 100 - 50],
+			[303, 287, Math.random() * 100 - 50],
+			[350, 249, Math.random() * 100 - 50],
+			[435, 246, Math.random() * 100 - 50],
+			[495, 361, Math.random() * 100 - 50],
+			[473, 481, Math.random() * 100 - 50],
+			[448, 531, Math.random() * 100 - 50],
+			[446, 580, Math.random() * 100 - 50],
+			[456, 607, Math.random() * 100 - 50]
+		];
+
+		for (var i = 0; i < pts.length; i++) {
+			pts[i][0] /= 300;
+			pts[i][1] /= 300;
+			pts[i][2] /= 200;
+			pts[i][0] -= 2;
+			pts[i][1] -= 2;
+		}
 
 
-    var image = new Image();
-    image.src = "./assets/img/stroke2.png";
-    image.onload = ()=> {
-      var texture = GL.gl.createTexture();
-      GL.gl.bindTexture(GL.gl.TEXTURE_2D, texture);
+    this.finalP = this.getPoints(pts);
+    this.line = new Line(this.finalP);
 
-      // Set the parameters so we can render any size image.
-      GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_S, GL.gl.CLAMP_TO_EDGE);
-      GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_T, GL.gl.CLAMP_TO_EDGE);
-      GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MIN_FILTER, GL.gl.NEAREST);
-      GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MAG_FILTER, GL.gl.NEAREST);
 
-      // Upload the image into the texture.
-      GL.gl.texImage2D(GL.gl.TEXTURE_2D, 0, GL.gl.RGBA, GL.gl.RGBA, GL.gl.UNSIGNED_BYTE, image);
 
-      this.finalP = this.getPoints(this.points);
-      this.line = new Line(this.finalP);
-
-      this.isReady = true;
-    }
 
 
 	}
 
+
+
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;
-    let index, n_sub = 10;
+    let index, n_sub = 6;
 
     var array = []
     for (let i = 0; i < pts.length * n_sub; i ++ ) {
@@ -66,6 +104,7 @@ class ViewLine extends alfrid.View {
 
 
 	update(points) {
+    // this.controller.update();
 		// const positions = [];
 
 		// this.line.bufferVertex(positions);
@@ -73,8 +112,7 @@ class ViewLine extends alfrid.View {
 
 
 	render() {
-
-    if(!this.isReady) return;
+    // this.update();
 
 		this.time += 0.01;
 

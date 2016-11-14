@@ -1,16 +1,17 @@
 // SceneApp.js
 
 import alfrid, { Scene, GL } from 'alfrid';
-import ViewTest from './ViewTest';
 import ViewLine from './ViewLine';
-import ViewNoise from './ViewNoise';
-import ViewTerrain from './ViewTerrain';
+import PointsManager from './PointsManager';
+import Controller from './controller'
+
 
 class SceneApp extends Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
 		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+		this.orbitalControl.radius.value = 10;
 	}
 
 	_initTextures() {
@@ -28,33 +29,30 @@ class SceneApp extends Scene {
 
 
 		this._vLine = new ViewLine();
-		// this._vNoise = new ViewNoise();
-		// this._vTerrain = new ViewTerrain();
+		// this._pointsManager = new PointsManager(this);
 
-		this._fbo = new alfrid.FrameBuffer(512, 512);
+
+		this.controller = new Controller(this);
+
 	}
 
+	onClick(pt){
+    console.log(pt);
+		// this._pointsManager.addPoint(pt)
+  }
 
 	render() {
-		// this.orbitalControl.ry.value += 0.01;
+		this.controller.update();
+
 		GL.clear(0, 0, 0, 0);
 		// this._bAxis.draw();
 		this._bDots.draw();
 
 		this._vLine.render();
+		// this._pointsManager.update();
 		// this._vNoise.render();
 
-		// this._fbo.bind();
-		// GL.clear(0, 0, 0, 0);
-		// this._vNoise.render();
-		// this._fbo.unbind();
-		//
-		// this._vTerrain.render(this._fbo.getTexture());
 
-
-		// const size = 300;
-		// GL.viewport(0, 0, 300, 300);
-		// this._bCopy.draw(this._fbo.getTexture());
 	}
 
 

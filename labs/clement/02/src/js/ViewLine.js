@@ -138,7 +138,6 @@ class ViewLine extends alfrid.View {
 		this.indexMotion++;
 		this.indexMotion %= this.motions.length;
 
-		console.log(this.indexMotion);
 	}
 	update() {
 

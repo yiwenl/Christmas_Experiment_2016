@@ -21,6 +21,7 @@ class SceneApp extends Scene {
 
 	_initViews() {
 		console.log('init views');
+		this.controller = new Controller(this);
 
 		this._bCopy = new alfrid.BatchCopy();
 		this._bAxis = new alfrid.BatchAxis();
@@ -28,11 +29,10 @@ class SceneApp extends Scene {
 		this._bBall = new alfrid.BatchBall();
 
 
-		this._vLine = new ViewLine();
+		this._vLine = new ViewLine(this);
 		// this._pointsManager = new PointsManager(this);
 
 
-		this.controller = new Controller(this);
 
 	}
 

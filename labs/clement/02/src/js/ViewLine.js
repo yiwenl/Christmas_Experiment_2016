@@ -14,8 +14,10 @@ import fs from '../shaders/line.frag';
 let tempArray = [];
 class ViewLine extends alfrid.View {
 
-	constructor() {
+	constructor(app) {
 		super(vs, fs);
+
+		this.app = app;
 		this.time = Math.random() * 0xFF;
 
 		this.perlin = new Perlin.Noise(Math.random());
@@ -47,6 +49,8 @@ class ViewLine extends alfrid.View {
 
 		// GUI.add(this.radius, 0, 10)
 		gui.add(this, 'radius', -10, 10);
+		this.indexMotion = 0;
+		this.motions = [this.circle.bind(this), this.snake.bind(this)];
 		// console.log(gui);
 
 	}
@@ -68,8 +72,8 @@ class ViewLine extends alfrid.View {
 			let dir = [];
 			// glmatrix.vec3.normalize(dir, glmatrix.vec3.sub(dir, line.points[i], line.points[i-1]));
 
-			let r = Math.min(this.radius/8, 1);
-			// let r = Math.min(this.radius/4, 1);
+			// let r = Math.min(this.radius/8, 1);
+			let r = Math.min(this.radius/4, 1);
 
 
 			line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4;
@@ -126,10 +130,33 @@ class ViewLine extends alfrid.View {
 		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20))) * 1;
 	}
 
+	changeMotion() {
+		this.targetPoint[0] = 0;
+		this.targetPoint[1] = 0;
+		this.targetPoint[2] = 0;
+
+		this.indexMotion++;
+		this.indexMotion %= this.motions.length;
+
+		console.log(this.indexMotion);
+	}
 	update() {
+
+		if(this.app.controller.spacePressed && !this.spacePressed){
+			this.spacePressed = true;
+			this.changeMotion();
+		}
+		else if(!this.app.controller.spacePressed){
+			this.spacePressed = false;
+		}
+
 		this.time += 1;
 
-		this.snake();
+		// if(this.motions[this.indexMotion]){
+		// this.snake()
+			this.motions[this.indexMotion]();
+		// }
+		// this.snake();
 
 		if(this.targetPoint[1] > 0) this.targetPoint[1] = 0;
 

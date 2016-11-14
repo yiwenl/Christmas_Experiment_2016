@@ -118,7 +118,7 @@ class ViewLine extends alfrid.View {
 
 	snake(){
 		this.targetPoint[0] = Math.cos(this.time/40) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/50) * this.radius * 2 ;
+		this.targetPoint[2] = Math.sin(this.time/50) * this.radius * 1.2 ;
 
 
 		// var p = this.perlin.perlin2(this.xoff, this.yoff)
@@ -126,7 +126,7 @@ class ViewLine extends alfrid.View {
 		// this.targetPoint[1] += Math.cos(this.time/10) * 1;
 		// this.targetPoint[1] += Math.cos(Math.sin(this.time/100) * Math.tan(3.14 * this.time/200) * Math.PI/8) * 1;
 		this.targetPoint[1] = - Math.abs(Math.sin(this.time / 100) * 4) - 2;
-		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40))) * 1;
+		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40))) * .5;
 		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20))) * 1;
 	}
 

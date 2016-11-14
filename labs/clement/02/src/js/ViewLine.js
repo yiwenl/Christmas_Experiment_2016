@@ -51,9 +51,7 @@ class ViewLine extends alfrid.View {
 
 	}
 
-
-
-  newPoints(line){
+	newPoints(line){
 		var pt0 = line.points[0];
 
     pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.3;
@@ -68,12 +66,19 @@ class ViewLine extends alfrid.View {
       // var dir = Matrices.normalize(Matrices.subtractVectors(line.points[i], line.points[i-1]));
 
 			let dir = [];
-			glmatrix.vec3.normalize(dir, glmatrix.vec3.sub(dir, line.points[i], line.points[i-1]));
+			// glmatrix.vec3.normalize(dir, glmatrix.vec3.sub(dir, line.points[i], line.points[i-1]));
 
-			let r = Math.min(this.radius/4, 1);
-      line.points[i][0] = line.points[i-1][0] + dir[0] * r;
-      line.points[i][1] = line.points[i-1][1] + dir[1] * r;
-      line.points[i][2] = line.points[i-1][2] + dir[2] * r;
+			let r = Math.min(this.radius/8, 1);
+			// let r = Math.min(this.radius/4, 1);
+
+
+			line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4;
+      line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .4;
+      line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .4;
+
+      // line.points[i][0] = line.points[i-1][0] + dir[0] * r;
+      // line.points[i][1] = line.points[i-1][1] + dir[1] * r;
+      // line.points[i][2] = line.points[i-1][2] + dir[2] * r;
     }
 
     return this.getPoints(line.points)
@@ -94,10 +99,7 @@ class ViewLine extends alfrid.View {
     return array;
   }
 
-
-	update() {
-		this.time += 1;
-
+	circle(){
 		this.targetPoint[0] = Math.cos(this.time/20) * this.radius;
 		this.targetPoint[2] = Math.sin(this.time/20) * this.radius;
 
@@ -108,7 +110,29 @@ class ViewLine extends alfrid.View {
 		this.targetPoint[1] += p/20;
 		this.targetPoint[1] += Math.sin(Math.tan(Math.cos(this.time/80) * 1.2)) * .01;
 
+	}
+
+	snake(){
+		this.targetPoint[0] = Math.cos(this.time/40) * this.radius;
+		this.targetPoint[2] = Math.sin(this.time/50) * this.radius * 2 ;
+
+
+		// var p = this.perlin.perlin2(this.xoff, this.yoff)
+		// this.targetPoint[1] += p/20;
+		// this.targetPoint[1] += Math.cos(this.time/10) * 1;
+		// this.targetPoint[1] += Math.cos(Math.sin(this.time/100) * Math.tan(3.14 * this.time/200) * Math.PI/8) * 1;
+		this.targetPoint[1] = - Math.abs(Math.sin(this.time / 100) * 4) - 2;
+		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40))) * 1;
+		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20))) * 1;
+	}
+
+	update() {
+		this.time += 1;
+
+		this.snake();
+
 		if(this.targetPoint[1] > 0) this.targetPoint[1] = 0;
+
 	}
 
 

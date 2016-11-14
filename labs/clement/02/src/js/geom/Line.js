@@ -160,7 +160,6 @@ class Line extends alfrid.Mesh {
       }
     }
     // console.log(pos);
-    this.bufferData(directions, 'direction', 1, false);
 
     // this.bufferVertex(offsets, false, "a_offsets");
 
@@ -189,11 +188,12 @@ class Line extends alfrid.Mesh {
     // console.log(nextPos.length);
     // console.log(prevPos.length);
 
-    this.bufferVertex(pos, true);
-    this.bufferData(nextPos, 'aNext', 3, true);
-    this.bufferData(prevPos, 'aPrevious', 3, true);
 
     if(!avoidUpdate){
+      this.bufferData(directions, 'direction', 1, false);
+      this.bufferData(nextPos, 'aNext', 3, true);
+      this.bufferData(prevPos, 'aPrevious', 3, true);
+      this.bufferVertex(pos, true);
       this.bufferIndex(indices, false);
       this.bufferTexCoord(this.uvs);
       this.bufferData(this.counters, 'aCounters', 1, true);

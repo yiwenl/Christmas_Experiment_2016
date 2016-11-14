@@ -30,7 +30,8 @@ class ViewLine extends alfrid.View {
 		this.spline = new Spline([]);
 
     this.points = []
-		for (var i = 0; i < 10; i++) {
+		const max = Math.floor(Math.random() * 10) + 10;
+		for (var i = 0; i < max; i++) {
 			this.points.push([0,0,0])
 		}
 
@@ -38,10 +39,12 @@ class ViewLine extends alfrid.View {
 		this.line.points = this.points;
 
 
-		this.tick = 0;
+		this.tick = Math.random() * Math.PI*2 * 100;
+
+		this.startAngle = Math.random() * Math.PI*2;
 
 
-		this.radius = 5;
+		this.radius = Math.floor(Math.random() * 3) + 2;
 		this.targetPoint = [0,0,0];
 
 		this.xoff = Math.random() * 100;
@@ -49,8 +52,10 @@ class ViewLine extends alfrid.View {
 
 		// GUI.add(this.radius, 0, 10)
 		gui.add(this, 'radius', -10, 10);
-		this.indexMotion = 0;
 		this.motions = [this.circle.bind(this), this.snake.bind(this)];
+		this.indexMotion = Math.floor(Math.random() * this.motions.length);
+
+		this.speed = .5 + Math.random();
 		// console.log(gui);
 
 	}
@@ -104,21 +109,21 @@ class ViewLine extends alfrid.View {
   }
 
 	circle(){
-		this.targetPoint[0] = Math.cos(this.time/20) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/20) * this.radius;
+		this.targetPoint[0] = Math.cos(this.time/20 + this.startAngle) * this.radius;
+		this.targetPoint[2] = Math.sin(this.time/20 + this.startAngle) * this.radius;
 
 		this.xoff += .01;
 		this.yoff += .01;
 
 		var p = this.perlin.perlin2(this.xoff, this.yoff)
 		this.targetPoint[1] += p/20;
-		this.targetPoint[1] += Math.sin(Math.tan(Math.cos(this.time/80) * 1.2)) * .01;
+		this.targetPoint[1] += Math.sin(Math.tan(Math.cos(this.time/80 +this.startAngle) * 1.2)) * .01;
 
 	}
 
 	snake(){
-		this.targetPoint[0] = Math.cos(this.time/40) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/50) * this.radius * 1.2 ;
+		this.targetPoint[0] = Math.cos(this.time/40 + this.startAngle) * this.radius;
+		this.targetPoint[2] = Math.sin(this.time/50 + this.startAngle) * this.radius * 1.2 ;
 
 
 		// var p = this.perlin.perlin2(this.xoff, this.yoff)
@@ -126,8 +131,8 @@ class ViewLine extends alfrid.View {
 		// this.targetPoint[1] += Math.cos(this.time/10) * 1;
 		// this.targetPoint[1] += Math.cos(Math.sin(this.time/100) * Math.tan(3.14 * this.time/200) * Math.PI/8) * 1;
 		this.targetPoint[1] = - Math.abs(Math.sin(this.time / 100) * 4) - 2;
-		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40))) * .5;
-		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20))) * 1;
+		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40 + this.startAngle))) * .5;
+		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20 + this.startAngle))) * 1;
 	}
 
 	changeMotion() {
@@ -149,7 +154,7 @@ class ViewLine extends alfrid.View {
 			this.spacePressed = false;
 		}
 
-		this.time += 1;
+		this.time += 1 * this.speed;
 
 		// if(this.motions[this.indexMotion]){
 		// this.snake()

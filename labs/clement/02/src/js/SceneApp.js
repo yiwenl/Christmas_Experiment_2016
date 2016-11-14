@@ -28,8 +28,13 @@ class SceneApp extends Scene {
 		this._bDots = new alfrid.BatchDotsPlane();
 		this._bBall = new alfrid.BatchBall();
 
+		this.lines = [];
 
-		this._vLine = new ViewLine(this);
+		for (var i = 0; i < 8; i++) {
+			var l = new ViewLine(this);
+			this.lines.push(l);
+		}
+		// this._vLine = new ViewLine(this);
 		// this._pointsManager = new PointsManager(this);
 
 
@@ -37,7 +42,7 @@ class SceneApp extends Scene {
 	}
 
 	onClick(pt){
-    console.log(pt);
+    // console.log(pt);
 		// this._pointsManager.addPoint(pt)
   }
 
@@ -48,7 +53,10 @@ class SceneApp extends Scene {
 		// this._bAxis.draw();
 		this._bDots.draw();
 
-		this._vLine.render();
+		for (var i = 0; i < this.lines.length; i++) {
+			this.lines[i].render();
+		}
+		// this._vLine.render();
 		// this._pointsManager.update();
 		// this._vNoise.render();
 

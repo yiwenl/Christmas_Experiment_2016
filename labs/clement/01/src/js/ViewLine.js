@@ -20,12 +20,12 @@ class ViewLine extends alfrid.View {
 
 
 	_init() {
+		this.dear = new Dear();
 
     this.points = []
     this.spline = new Spline([]);
 
 
-		this.dear = new Dear();
 
 		this.tick = 0;
 

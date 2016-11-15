@@ -59,33 +59,6 @@ class Spline {
 			  v1 = ( p3 - p1 ) * 0.5;
 
 		return ( 2 * ( p1 - p2 ) + v0 + v1 ) * t3 + ( - 3 * ( p1 - p2 ) - 2 * v0 - v1 ) * t2 + v0 * t + p1;
-
-
-    // var v0 = Matrices.multiplyVectorsScalar(0.5, Matrices.subtractVectors( p2, p0 )),
-		// 	  v1 = Matrices.multiplyVectorsScalar(0.5, Matrices.subtractVectors( p3, p1 ));
-    //
-    //
-    // let p1minusp2 = Matrices.subtractVectors( p1, p2 ); //( p1 - p2 )
-    //
-    // // ( 2 * ( p1 - p2 ) + v0 + v1 ) * t3
-    // let aExpr = Matrices.multiplyVectorsScalar(2, p1minusp2);
-    // let bExpr = Matrices.addVectors(aExpr, Matrices.addVectors(v0, v1));
-    // let firstExpr = Matrices.multiplyVectorsScalar(t3, bExpr);
-    //
-    // console.log("here");
-    // // ( - 3 * ( p1 - p2 ) - 2 * v0 - v1 ) * t2
-    // let cExpr = Matrices.multiplyVectorsScalar(-3, p1minusp2);
-    // let dExpr = Matrices.multiplyVectorsScalar(-2, v0);
-    // let eExpr = Matrices.addVectors(cExpr, dExpr);
-    // let fExpr = Matrices.subtractVectors(eExpr, v1);
-    // let secondExpr = Matrices.multiplyVectorsScalar(t2, fExpr);
-    //
-    // // v0 * t + p1
-    // let thirdExpr = Matrices.addVectors(Matrices.multiplyVectorsScalar(t, v0), p1);
-    //
-    // let finalPoint = Matrices.addVectors(Matrices.addVectors(firstExpr, secondExpr), thirdExpr);
-    //
-    // return finalPoint;
   }
 }
 

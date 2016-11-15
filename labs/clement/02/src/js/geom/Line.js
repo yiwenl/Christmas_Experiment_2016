@@ -34,7 +34,7 @@ class Line extends alfrid.Mesh {
     var index = 0;
 
     var offset = 0;
-    let v = this.vert.slice();
+    let v = this.vert;
     this.positions = [];
 
     for (var i = 0; i < v.length; i++) {

@@ -30,7 +30,7 @@ class ViewLine extends alfrid.View {
 		this.spline = new Spline([]);
 
     this.points = []
-		const max = Math.floor(Math.random() * 10) + 10;
+		const max = Math.floor(Math.random() * 5) + 10;
 		for (var i = 0; i < max; i++) {
 			this.points.push([0,0,0])
 		}
@@ -51,11 +51,15 @@ class ViewLine extends alfrid.View {
 		this.yoff = Math.random() * 100;
 
 		// GUI.add(this.radius, 0, 10)
-		gui.add(this, 'radius', -10, 10);
+		// gui.add(this, 'radius', -10, 10);
 		this.motions = [this.circle.bind(this), this.snake.bind(this)];
 		this.indexMotion = Math.floor(Math.random() * this.motions.length);
 
 		this.speed = .5 + Math.random();
+
+		if(Math.random() > .5){
+			this.speed *= -1;
+		}
 		// console.log(gui);
 
 	}
@@ -63,12 +67,12 @@ class ViewLine extends alfrid.View {
 	newPoints(line){
 		var pt0 = line.points[0];
 
-    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.3;
-    pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.3;
+    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4;
+    pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4;
 
 		// pt0[0] = this.targetPoint[0]
     // pt0[2] = this.targetPoint[2]
-    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.1;
+    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2;
 
 
     for (var i = 1; i < line.points.length; i++) {
@@ -97,7 +101,7 @@ class ViewLine extends alfrid.View {
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;
-    let index, n_sub = 3;
+    let index, n_sub = 1.2;
 
     var array = []
     for (let i = 0; i < pts.length * n_sub; i ++ ) {

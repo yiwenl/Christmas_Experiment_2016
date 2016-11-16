@@ -22,6 +22,26 @@ class ViewLine extends alfrid.View {
 
 		this.perlin = new Perlin.Noise(Math.random());
 
+		this.ready = false;
+
+		var image = new Image();
+	  image.src = "./assets/img/stroke3.png";
+	  image.onload = function() {
+			this.ready = true;
+
+			var texture = GL.gl.createTexture();
+			GL.gl.bindTexture(GL.gl.TEXTURE_2D, texture);
+
+			// Set the parameters so we can render any size image.
+			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_S, GL.gl.CLAMP_TO_EDGE);
+			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_T, GL.gl.CLAMP_TO_EDGE);
+			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MIN_FILTER, GL.gl.NEAREST);
+			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MAG_FILTER, GL.gl.NEAREST);
+
+			// Upload the image into the texture.
+			GL.gl.texImage2D(GL.gl.TEXTURE_2D, 0, GL.gl.RGBA, GL.gl.RGBA, GL.gl.UNSIGNED_BYTE, image);
+	  }.bind(this)
+
 	}
 
 
@@ -172,7 +192,9 @@ class ViewLine extends alfrid.View {
 
 
 	render() {
-    this.update();
+
+		if(!this.ready) return;
+
 
 
 		this.shader.bind();
@@ -180,10 +202,14 @@ class ViewLine extends alfrid.View {
 
     this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
     this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
+		// if(!this.neverWent){
+			this.neverWent = true;
+			this.update();
+			var pts = this.newPoints(this.line);
+			this.line.render(pts);
+		// }
 
-		var pts = this.newPoints(this.line);
 
-		this.line.render(pts);
 		GL.draw(this.line);
 	}
 

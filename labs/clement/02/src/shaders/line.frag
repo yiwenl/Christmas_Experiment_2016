@@ -15,7 +15,7 @@ void main() {
   // vec2 st = gl_FragCoord.xy/resolutions;
   // float y = step(st.y, .5);
 
-  vec4 color = vec4(.2);
+  vec4 color = vec4(.4);
   // vec4 color = vec4(1.0);
   color *= texture2D( texture, vUV );
 

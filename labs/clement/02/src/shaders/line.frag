@@ -14,10 +14,10 @@ void main() {
 
   // vec2 st = gl_FragCoord.xy/resolutions;
   // float y = step(st.y, .5);
-  // float colorS = y, .5);
-  // vec3 color = vec3(y);
-  vec4 color = vec4(1.0);
-  // color *= texture2D( texture, vUV );
+
+  vec4 color = vec4(.2);
+  // vec4 color = vec4(1.0);
+  color *= texture2D( texture, vUV );
 
   gl_FragColor = color;
   gl_FragColor.a *= step(vCounters, 1.0);

@@ -179,7 +179,7 @@ class Line extends alfrid.Mesh {
 
   }
 
-  render(points){
+  render(points, needsUpdate){
     // this.vert[0] += 1;
     // console.log(points);
     // this.vert = points;
@@ -194,7 +194,7 @@ class Line extends alfrid.Mesh {
 
     this.vert = points;
     // GL._bindBuffers(this);
-    this.line(true);
+    this.line(!needsUpdate);
     // console.log("here");
   }
 }

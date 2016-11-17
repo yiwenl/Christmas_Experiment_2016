@@ -96,23 +96,23 @@ class ViewLine extends alfrid.View {
 
 
 
+		// if(this.state === STATES.muting){
+		// 	if(!this.beenInside){
+		//
+		// 		this.beenInside = true;
+		// 		for (var i = 0; i < line.points.length; i++) {
+		// 			var dearIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1)// 4 is hardcoded but correspond to the sub points of the dear spline
+		// 			line.points[i][0] = this.target.finalP[dearIndex][0];
+		// 			line.points[i][1] = this.target.finalP[dearIndex][1];
+		// 			line.points[i][2] = this.target.finalP[dearIndex][2];
+		// 		}
+		//
+		// 		var pts = this.getPoints(line.points);
+		// 		return pts
+		// 	}
+		// }
+		// else
 		if(this.state === STATES.muting){
-			if(!this.beenInside){
-
-				this.beenInside = true;
-				for (var i = 0; i < line.points.length; i++) {
-					var dearIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1)// 4 is hardcoded but correspond to the sub points of the dear spline
-					line.points[i][0] = this.target.finalP[i][0];
-					line.points[i][1] = this.target.finalP[i][1];
-					line.points[i][2] = this.target.finalP[i][2];
-					console.log(i, this.target.finalP[i]);
-				}
-
-				var pts = this.getPoints(line.points);
-				return pts
-			}
-		}
-		else if(this.state === 10000){
 
 			// console.log(line.points.length);
 			var pt0 = line.points[this.currentPointToFollowIndex];
@@ -314,23 +314,26 @@ class ViewLine extends alfrid.View {
 				var addPt = [];
 				var mult = [];
 
-				console.log(dir, dist, diff);
 				var direction = [
-					Math.random() * 2 -2,
-					Math.random() * 2 -2,
-					Math.random() * 2 -2,
-					// dir[1] * dist/diff * i,
-					// dir[2] * dist/diff * i,
+					dir[0] * dist/diff * i,
+					dir[1] * dist/diff * i,
+					dir[2] * dist/diff * i,
 				]
 				glmatrix.vec3.add(addPt, lastP1, direction);
 
 				// console.log(addPt);
 				// console.log(addPt);
 				this.line.points.push(addPt);
+
+				this.needsUpdate = true;
 			}
 		}
 		else if(this.line.points.length > nbPointsTarget) {
 			this.line.points.slice(0, nbPointsTarget-1);
+			this.needsUpdate = true;
+		}
+		else {
+			this.needsUpdate = false;
 		}
 
 		// console.log(this.line.points.length, nbPointsTarget);
@@ -355,12 +358,16 @@ class ViewLine extends alfrid.View {
 		var pts = this.newPoints(this.line);
 
 		if(pts){
-			this.line.render(pts);
+			this.line.render(pts, this.needsUpdate);
 		}
 
 
 
 		GL.draw(this.line);
+
+		if(this.needsUpdate){
+			this.needsUpdate = false;
+		}
 	}
 
 

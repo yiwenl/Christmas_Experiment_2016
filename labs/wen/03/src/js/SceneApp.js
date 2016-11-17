@@ -19,7 +19,7 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.radius.value = 7;
 		this.orbitalControl.rx.value = 0.3;
 		this.orbitalControl.center[1] = 2;
-		this.orbitalControl.rx.limit(0, Math.PI/2 - 0.1);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.1);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
 		this.cameraReflection.setPerspective(FOV, GL.aspectRatio, .1, 100);

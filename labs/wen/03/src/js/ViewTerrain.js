@@ -7,7 +7,7 @@ import Params from './Params';
 import vs from '../shaders/terrain.vert';
 import fs from '../shaders/terrain.frag';
 
-const grey = 0.1;
+const grey = 0.25;
 const oUniforms = {
 	maxHeight:3,
 	roughness:1,

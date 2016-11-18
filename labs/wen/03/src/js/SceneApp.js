@@ -7,6 +7,7 @@ import ViewWater from './ViewWater';
 import ViewRender from './ViewRender';
 import ViewSim from './ViewSim';
 import ViewSave from './ViewSave';
+import ViewFilmGrain from './ViewFilmGrain';
 import Params from './Params';
 
 const RAD = Math.PI / 180;
@@ -49,7 +50,8 @@ class SceneApp extends alfrid.Scene {
 		const numParticles = Params.numParticles;
 		const o = {
 			minFilter:GL.NEAREST,
-			magFilter:GL.NEAREST
+			magFilter:GL.NEAREST,
+			type:GL.HALF_FLOAT
 		};
 
 		this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
@@ -65,6 +67,7 @@ class SceneApp extends alfrid.Scene {
 		this._vSim 	  = new ViewSim();
 		this._vTerrain = new ViewTerrain();
 		this._vWater = new ViewWater();
+		this._vFilmGrain = new ViewFilmGrain();
 
 
 		this._vSave = new ViewSave();
@@ -99,6 +102,7 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		this.orbitalControl.ry.value += 0.01;
 		const { eye, center } = this.camera;
 		let distToWater       = eye[1] - Params.seaLevel;
 		const eyeRef          = [eye[0], eye[1] - distToWater * 2.0, eye[2]];
@@ -128,6 +132,10 @@ class SceneApp extends alfrid.Scene {
 		Params.clipDir = 1;
 		GL.setMatrices(this.camera);
 		this._renderScene(true);
+
+		GL.enableAdditiveBlending();
+		this._vFilmGrain.render();
+		GL.enableAlphaBlending();
 
 		const size = 256;
 		GL.viewport(0, 0, size, size/GL.aspectRatio);

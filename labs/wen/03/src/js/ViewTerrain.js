@@ -11,7 +11,7 @@ const grey = 0.25;
 const oUniforms = {
 	maxHeight:3,
 	roughness:1,
-	specular:.5,
+	specular:.25,
 	metallic:0,
 	baseColor:[grey, grey, grey]
 }
@@ -62,8 +62,10 @@ class ViewTerrain extends alfrid.View {
 
 		ShaderUtils.bindUniforms(this.shader, oUniforms);
 
-		this.shader.uniform('uExposure', 'uniform1f', Params.exposure);
-		this.shader.uniform('uGamma', 'uniform1f', Params.gamma);
+		this.shader.uniform('uExposure', 'float', Params.exposure);
+		this.shader.uniform('uGamma', 'float', Params.gamma);
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 
 		this.shader.uniform("uClipY", "float", Params.clipY);
 		this.shader.uniform("uDir", "float", Params.clipDir);

@@ -14,6 +14,8 @@ uniform float		uExposure;
 uniform float		uGamma;
 uniform float 		uClipY;
 uniform float 		uDir;
+uniform float 		uFogDensity;
+uniform vec3 		uFogColor;
 
 {{UNIFORMS}}
 
@@ -98,6 +100,12 @@ vec3 getPbr(vec3 N, vec3 V, vec3 baseColor, float roughness, float metallic, flo
 	return color;
 }
 
+float fogFactorExp2(const float dist, const float density) {
+	const float LOG2 = -1.442695;
+	float d = density * dist;
+	return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);
+}
+
 
 void main(void) {
 	if(vWsPosition.y * uDir > uClipY * uDir) {
@@ -118,6 +126,10 @@ void main(void) {
 	
 	// gamma correction
 	color				= pow( color, vec3( 1.0 / uGamma ) );
+
+	float fogDistance 	= length(vPosition);
+	float fogAmount 	= fogFactorExp2(fogDistance, uFogDensity);
+	color 				= mix(color, uFogColor, fogAmount);
 
     gl_FragColor 		= vec4(color, 1.0);
 }

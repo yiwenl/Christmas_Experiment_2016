@@ -56,6 +56,9 @@ class ViewRender extends alfrid.View {
 		this.shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 		this.shader.uniform('percent', 'float', p);
 		this.shader.uniform('time', 'float', this.time);
+
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 		GL.draw(this.mesh);
 	}
 

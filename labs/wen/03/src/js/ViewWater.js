@@ -24,6 +24,9 @@ class ViewWater extends alfrid.View {
 		this.shader.uniform("textureReflection", "uniform1i", 0);
 		textureReflection.bind(0);
 
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
+
 		this.shader.uniform("uSeaLevel", "float", Params.seaLevel);
 		GL.draw(this.mesh);
 	}

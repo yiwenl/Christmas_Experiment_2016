@@ -4,7 +4,7 @@ import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
-import Parmas from './Params';
+import Params from './Params';
 
 const GL = alfrid.GL;
 
@@ -88,12 +88,16 @@ function _init3D() {
 
 	//	STATS
 	const stats = new Stats();
-	document.body.appendChild(stats.domElement);
+	// document.body.appendChild(stats.domElement);
 	alfrid.Scheduler.addEF(()=>stats.update());
 	
-	gui.add(Parmas, 'gamma', 1, 5);
-	gui.add(Parmas, 'exposure', 1, 25);
-	gui.add(Parmas, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
-		console.log(Parmas);
+	gui.add(Params, 'gamma', 1, 5);
+	gui.add(Params, 'exposure', 1, 25);
+	gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
+		console.log(Params);
 	});
+
+	const fFog = gui.addFolder('Fog');
+	fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
+	fFog.open();
 }

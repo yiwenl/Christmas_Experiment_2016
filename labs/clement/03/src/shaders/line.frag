@@ -19,7 +19,7 @@ void main() {
   // vec4 color = vec4(1.0);
   vec4 transparency = texture2D( texture, vUV );
 
-  if(transparency.a < .1){
+  if(transparency.a < .05){
     discard;
   }
 

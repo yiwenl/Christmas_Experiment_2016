@@ -102,24 +102,27 @@ class ViewLine extends alfrid.View {
 
 			// console.log(this.currentPointToFollowIndex, dearIndex);
 
-			console.log(line.points);
+			// console.log(line.vert.length);
 			if(!this.beenInside){
 				this.objectsToTween = [];
 				this.beenInside = true;
-				for (var i = 0; i < line.points.length; i++) {
 
-					var startIndex = ( (line.points.length -1 ) * 4  - i * 4)   // 4 is hardcoded but correspond to the sub points of the dear spline
+				console.log("this.path.length", this.path.length);
+				for (var i = 0; i < line.vert.length; i++) {
+				// for (var i = line.vert.length; i >= 0; i--) {
 
-					console.log("heeeeerererere", startIndex);
-					var endIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1) + this.nbToAdd // 4 is hardcoded but correspond to the sub points of the dear spline
+					var startIndex = ( (line.vert.length -1 ) - i)   // 4 is hardcoded but correspond to the sub points of the dear spline
 
-					// console.log(startIndex, endIndex);
+					// console.log("heeeeerererere", startIndex);
+					// var endIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1) + this.nbToAdd // 4 is hardcoded but correspond to the sub points of the dear spline
+					var endIndex =  (this.path.length - 1) - i - 8  // 4 is hardcoded but correspond to the sub points of the dear spline
+
+
+					if(i === 0) console.log(startIndex, endIndex);
 
 
 
 					var obj = {
-						objTo:line,
-						point: line.points[i],
 						startIndex: startIndex,
 						endIndex: endIndex,
 						currentIndex: startIndex
@@ -129,8 +132,9 @@ class ViewLine extends alfrid.View {
 						currentIndex: endIndex
 					});
 
-					o.point = i;
+					o.point = line.vert.length - 1 - i;
 
+					// if(i == line.vert.length - 1)
 					this.objectsToTween.push(o);
 
 					// Easings.instance.to(obj, 2, {
@@ -385,7 +389,9 @@ class ViewLine extends alfrid.View {
 
 		this.path = [];
 
-		let pathLine = this.line.vert;
+		this.line.vert = this.getPoints(this.line.points)
+		let pathLine = this.line.vert.slice();
+		pathLine.reverse();
 
 		// path intermediaire
 		let firstPointLine = this.line.points[0];
@@ -402,6 +408,7 @@ class ViewLine extends alfrid.View {
 
 		// console.log("-----------------");
 		// console.log(this.line.points.length);
+
 		this.newPoints(this.line)
 	}
 
@@ -440,54 +447,62 @@ class ViewLine extends alfrid.View {
 		else {
 
 			for (var i = 0; i < this.objectsToTween.length; i++) {
+
 				let o = this.objectsToTween[i]
 
-				for (var k = 0; k < o.props.length; k++) {
-					var e = o.props[k];
 
-					o.obj[e.var] = this.easeLinear(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+				if(!o.delete){
+
+					for (var k = 0; k < o.props.length; k++) {
+						var e = o.props[k];
+
+						o.obj[e.var] = this.easeOutCubic(o.currentIteration, e.value, e.toValue - e.value, o.duration);
 
 
-					let indexFloor = Math.floor(o.obj[e.var]);
-					this.line.points[o.point] = this.path[indexFloor];
+						let indexFloor = Math.floor(o.obj[e.var]);
+						this.line.vert[o.point] = this.path[indexFloor];
 
-					if(i === 0){
-						// console.log(e.var, o.obj[e.var]);
+						if(i === 0){
+							// console.log(o.obj[e.var]);
+						}
+
+						// console.log(o.point);
+						// console.log(this.path);
 					}
 
-					// console.log(o.point);
-					// console.log(this.path);
-				}
-
-				// update
-				// if(o.vars.onUpdate){
-				// 	o.vars.onUpdate.apply(this, o.vars.onUpdateParams);
-				// }
-
-				o.currentIteration += 1;// do something here
-				if(o.currentIteration > o.duration){
-					// if(o.vars.onComplete){
-					// 	o.vars.onComplete.apply(this, o.vars.onCompleteParams);
+					// update
+					// if(o.vars.onUpdate){
+					// 	o.vars.onUpdate.apply(this, o.vars.onUpdateParams);
 					// }
-					o.delete = true;
+
+					o.currentIteration += 1;// do something here
+					if(o.currentIteration > o.duration){
+						// if(o.vars.onComplete){
+						// 	o.vars.onComplete.apply(this, o.vars.onCompleteParams);
+						// }
+
+						// console.log("here");
+						o.delete = true;
+					}
 				}
+
 			}
 
-			for (var i = 0; i < this.objectsToTween.length; i++) {
-        var o = this.objectsToTween[i];
-        if(o.delete){
-          o = null;
-          this.objectsToTween.splice(i, 1);
-          i--;
-        }
-      }
+			// for (var i = 0; i < this.objectsToTween.length; i++) {
+      //   var o = this.objectsToTween[i];
+      //   if(o.delete){
+      //     o = null;
+      //     this.objectsToTween.splice(i, 1);
+      //     i--;
+      //   }
+      // }
 
 
-			var pts = this.getPoints(this.line.points);
+			// var pts = this.getPoints(this.line.points);
 
 			// if(pts){
 				// console.log(pts);
-				this.line.render(pts, this.needsUpdate);
+				this.line.render(this.line.vert, this.needsUpdate);
 			// }
 		}
 

@@ -173,7 +173,7 @@ class Line extends alfrid.Mesh {
     if(!avoidUpdate){
       this.bufferIndex(indices, false);
       this.bufferData(directions, 'direction', 1, false);
-      this.bufferTexCoord(this.uvs);
+      this.bufferTexCoord(this.uvs, true);
       this.bufferData(this.counters, 'aCounters', 1, true);
     }
 

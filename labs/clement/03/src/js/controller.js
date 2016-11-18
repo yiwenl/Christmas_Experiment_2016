@@ -7,12 +7,18 @@ class Controller {
     this.keyboard = new Keyboard();
 
     this.keyboard.onKeyPress('1', this.transformPress.bind(this));
+    this.keyboard.onKeyPress('a', this.pause.bind(this));
 
     this.aPressed = false;
     this.dPressed = false;
     this.spacePressed = false;
 
     window.addEventListener("click", this.onClick.bind(this), false);
+  }
+
+  pause(e){
+      this.owner.pause();
+      console.log("pause");
   }
 
   transformPress(e){

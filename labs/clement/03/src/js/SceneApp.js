@@ -46,6 +46,10 @@ class SceneApp extends Scene {
 
 	}
 
+	pause(){
+		this._vLine.pause();
+		
+	}
 	transform(){
 		console.log("TRASNFROM");
 		this._vLine.transformTo(this._viewDear);

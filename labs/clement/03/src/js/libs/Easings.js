@@ -24,6 +24,90 @@ define(function (require, exports, module)
       }
     };
 
+    Easings.prototype.returnVariable = function(obj, duration, vars, test){
+      var tween = {
+        delete: false,
+        currentIteration: 0,
+        isArray: false,
+        obj: obj,
+        vars: vars,
+        delay: vars.delay * 60 || 0,
+        isDelayed: (vars.delay && vars.delay > 0) ?  true: false,
+        duration: duration * 60,
+        ease: vars.ease || this.easeLinear
+      }
+
+      if(obj instanceof Array){
+
+        tween.isArray = true;
+
+        var varToTween = [];
+        for (var v in vars) {
+          if(v !== "delay" && v !== "duration" && !this.isFunction(vars[v])){
+
+            var object = {
+              var: v,
+              toValue: vars[v]
+            }
+
+            var values = [];
+            for (var i = 0; i < obj.length; i++) {
+              values.push(obj[i]);
+            }
+            object.value = values;
+
+            varToTween.push(object);
+          }
+        }
+      }
+      else {
+        var varToTween = [];
+
+        for (var v in vars) {
+          if(v !== "delay" && v !== "duration" && !this.isFunction(vars[v]) && v !== "forceTween"){
+
+            for (var i = 0; i < this.tweens.length; i++) {
+              var t = this.tweens[i];
+
+              // same object ?
+              if(t.obj === obj){
+                for (var k = 0; k < t.props.length; k++) {
+                  var variableToTween = t.props[k];
+                  if(variableToTween.var === v && (tween.delay === 0 || tween.vars.forceTween)){ // tween the same variable ?
+                    t.delete = true;
+                    this.tweens.splice(i, 1);
+
+                    i--;
+                    // t.props.splice(k, 1);
+                    // k--;
+                  }
+                }
+              }
+            }
+
+            varToTween.push({
+              var: v,
+              value: obj[v],
+              toValue: vars[v]
+            });
+          }
+        }
+      }
+
+      tween.props = varToTween;
+
+      // if(!obj.tweens){
+      //   obj.tweens = [
+      //     tween
+      //   ]
+      // }
+      // else {
+      //   obj.tweens.push(tween);
+      // }
+
+      return tween;
+    }
+
     Easings.prototype.to = function(obj, duration, vars, test){
       var tween = {
         delete: false,

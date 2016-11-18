@@ -115,7 +115,7 @@ class ViewLine extends alfrid.View {
 
 					// console.log("heeeeerererere", startIndex);
 					// var endIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1) + this.nbToAdd // 4 is hardcoded but correspond to the sub points of the dear spline
-					var endIndex =  (this.path.length - 1) - i - 8  // 4 is hardcoded but correspond to the sub points of the dear spline
+					var endIndex =  (this.path.length - 1) - i   // 4 is hardcoded but correspond to the sub points of the dear spline
 
 
 					if(i === 0) console.log(startIndex, endIndex);
@@ -391,7 +391,7 @@ class ViewLine extends alfrid.View {
 
 		this.line.vert = this.getPoints(this.line.points)
 		let pathLine = this.line.vert.slice();
-		pathLine.reverse();
+		// pathLine.reverse();
 
 		// path intermediaire
 		let firstPointLine = this.line.points[0];
@@ -400,8 +400,19 @@ class ViewLine extends alfrid.View {
 
 		let pathTarget = this.target.finalP;
 
+		for (var i = pathLine.length-1; i > -1; i--) {
+			// for (var i = 0; i < pathToTarget.length; i++) {
+			this.path.push(pathLine[i])
+		}
 
-		this.path = pathLine.concat(pathTarget, pathToTarget);
+		for (var i = 0; i < pathToTarget.length; i++) {
+			this.path.push(pathToTarget[i]);
+		}
+
+		for (var i = 0; i < pathTarget.length; i++) {
+			this.path.push(pathTarget[i]);
+		}
+		// this.path = pathLine.concat(pathTarget, pathToTarget);
 
 		// console.log(this.path.length, pathLine.length, pathToTarget.length, pathTarget.length);
 		this.nbToAdd = this.path.length - pathToTarget.length - pathTarget.length;
@@ -460,7 +471,9 @@ class ViewLine extends alfrid.View {
 
 
 						let indexFloor = Math.floor(o.obj[e.var]);
-						this.line.vert[o.point] = this.path[indexFloor];
+						this.line.vert[o.point][0] = this.path[indexFloor][0];
+						this.line.vert[o.point][1] = this.path[indexFloor][1];
+						this.line.vert[o.point][2] = this.path[indexFloor][2];
 
 						if(i === 0){
 							// console.log(o.obj[e.var]);

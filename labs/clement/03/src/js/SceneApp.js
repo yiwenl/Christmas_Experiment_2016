@@ -30,13 +30,15 @@ class SceneApp extends Scene {
 		this._bBall = new alfrid.BatchBall();
 
 		this._viewDear = new ViewDear();
-		// this.lines = [];
+		this.lines = [];
 
-		// for (var i = 0; i < 4; i++) {
-			// var l = new ViewLine(this);
-			// this.lines.push(l);
-		// }
+		for (var i = 0; i < 4; i++) {
+			var l = new ViewLine(this);
+			l.alpha = .3 + Math.random() * .5
+			this.lines.push(l);
+		}
 		this._vLine = new ViewLine(this);
+		this._vLine.alpha = .3 + Math.random() * .5
 		// this._pointsManager = new PointsManager(this);
 
 
@@ -48,7 +50,7 @@ class SceneApp extends Scene {
 
 	pause(){
 		this._vLine.pause();
-		
+
 	}
 	transform(){
 		console.log("TRASNFROM");
@@ -67,9 +69,9 @@ class SceneApp extends Scene {
 		// this._bAxis.draw();
 		this._bDots.draw();
 
-		// for (var i = 0; i < this.lines.length; i++) {
-		// 	this.lines[i].render();
-		// }
+		for (var i = 0; i < this.lines.length; i++) {
+			this.lines[i].render();
+		}
 		this._vLine.render();
 		this._viewDear.render();
 		// this._pointsManager.update();

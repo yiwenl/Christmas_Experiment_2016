@@ -22,6 +22,8 @@ class ViewLine extends alfrid.View {
 	constructor(app) {
 		super(vs, fs);
 
+		this.alpha = 1;
+
 		this.isPaused = false;
 		this.app = app;
 		this.time = Math.random() * 0xFF;
@@ -115,7 +117,7 @@ class ViewLine extends alfrid.View {
 
 					// console.log("heeeeerererere", startIndex);
 					// var endIndex = this.target.finalP.length / (this.target.dear.vertices.length) *  (this.target.dear.vertices.length - i - 1) + this.nbToAdd // 4 is hardcoded but correspond to the sub points of the dear spline
-					var endIndex =  (this.path.length - 1) - i   // 4 is hardcoded but correspond to the sub points of the dear spline
+					var endIndex =  (this.path.length - 1) - i  // 4 is hardcoded but correspond to the sub points of the dear spline
 
 
 					if(i === 0) console.log(startIndex, endIndex);
@@ -128,11 +130,11 @@ class ViewLine extends alfrid.View {
 						currentIndex: startIndex
 					}
 
-					var o = Easings.instance.returnVariable(obj, 2, {
+					var o = Easings.instance.returnVariable(obj, 1 + .1, {
 						currentIndex: endIndex
 					});
 
-					o.point = line.vert.length - 1 - i;
+					o.point = startIndex;
 
 					// if(i == line.vert.length - 1)
 					this.objectsToTween.push(o);
@@ -260,7 +262,7 @@ class ViewLine extends alfrid.View {
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;
-    let index, n_sub = 4;
+    let index, n_sub = 6;
 
     var array = []
     for (let i = 0; i < pts.length * n_sub; i ++ ) {
@@ -335,6 +337,12 @@ class ViewLine extends alfrid.View {
 	}
 
 	transformTo(target){
+
+		Easings.instance.to(this, 1, {
+			alpha: 1,
+			ease: Easings.instance.easeOutCubic
+		});
+		
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
 		this.mainSpeed = .4;
@@ -343,7 +351,7 @@ class ViewLine extends alfrid.View {
 
 		this.target = target;
 
-		let nbPointsTarget = this.target.finalP.length/4; // harcoded for now, 4 the nuber of points between each vertices
+		let nbPointsTarget = this.target.finalP.length/ 6 ; // harcoded for now, 4 the nuber of points between each vertices
 
 		if(this.line.points.length < nbPointsTarget){
 			var diff = nbPointsTarget - this.line.points.length;
@@ -430,14 +438,14 @@ class ViewLine extends alfrid.View {
 
 		if(!this.ready) return;
 
-		// Easings.instance.update();
+		Easings.instance.update();
 
 
 
 		this.shader.bind();
     this.shader.uniform("texture", "uniform1i", 0);
 
-		this.shader.uniform("alpha", "float", .8);
+		this.shader.uniform("alpha", "float", this.alpha);
     this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
     this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
 
@@ -527,6 +535,10 @@ class ViewLine extends alfrid.View {
 			this.needsUpdate = false;
 		}
 	}
+
+	easeOutSine(t, b, c, d) {
+		return c * Math.sin(t/d * (Math.PI/2)) + b;
+	};
 
 	easeLinear(t, b, c, d) {
 		t /= d;

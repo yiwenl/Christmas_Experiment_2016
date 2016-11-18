@@ -5,6 +5,7 @@ import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
 import Params from './Params';
+import SoundCloudBadge from './SoundCloudBadge';
 
 const GL = alfrid.GL;
 
@@ -63,6 +64,7 @@ function _onImageLoaded(o) {
 	loader.style.width = '100%';
 
 	_init3D();
+	_initSound();
 
 	setTimeout(()=> {
 		document.body.classList.remove('isLoading');
@@ -100,4 +102,20 @@ function _init3D() {
 	const fFog = gui.addFolder('Fog');
 	fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
 	fFog.open();
+}
+
+function _initSound() {
+	SoundCloudBadge({
+		client_id: 'e8b7a335a5321247b38da4ccc07b07a2',
+		song: 'https://soundcloud.com/awintory/abzu-balaenoptera-musculus'
+	}, _onSound);
+}
+
+function _onSound(err, src, json) {
+	console.log('on Sound : ', src, json);
+	const audio = new Audio();
+	audio.src = src;
+	audio.play();
+	audio.loop = true;
+	audio.volume = 0.5;
 }

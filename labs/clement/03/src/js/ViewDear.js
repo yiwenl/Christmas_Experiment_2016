@@ -96,7 +96,7 @@ class ViewDear extends alfrid.View {
     // this.texture.bind();
     this.shader.uniform("texture", "uniform1i", 0);
 
-    this.shader.uniform("alpha", "float", .4);
+    this.shader.uniform("alpha", "float", .1);
     this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
     this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
 		GL.draw(this.line);

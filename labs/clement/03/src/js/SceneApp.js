@@ -11,7 +11,7 @@ class SceneApp extends Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
-		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.7;
 		this.orbitalControl.radius.value = 10;
 	}
 
@@ -54,6 +54,8 @@ class SceneApp extends Scene {
 	}
 	transform(){
 		console.log("TRASNFROM");
+		this.orbitalControl.rx.value = 0;
+		this.orbitalControl.ry.value = 0;
 		this._vLine.transformTo(this._viewDear);
 	}
 

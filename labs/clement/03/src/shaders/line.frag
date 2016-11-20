@@ -19,7 +19,7 @@ void main() {
   // vec4 color = vec4(1.0);
   vec4 transparency = texture2D( texture, vUV );
 
-  if(transparency.a < .05){
+  if(transparency.a < .01){
     discard;
   }
 
@@ -27,4 +27,5 @@ void main() {
 
   gl_FragColor = color;
   gl_FragColor.a *= step(vCounters, 1.0);
+
 }

@@ -338,11 +338,11 @@ class ViewLine extends alfrid.View {
 
 	transformTo(target){
 
-		Easings.instance.to(this, 1, {
-			alpha: 1,
+		Easings.instance.to(this, 4, {
+			alpha: .9,
 			ease: Easings.instance.easeOutCubic
 		});
-		
+
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
 		this.mainSpeed = .4;

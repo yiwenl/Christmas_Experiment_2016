@@ -8,6 +8,8 @@ import Params from './Params';
 import vs from '../shaders/trees.vert';
 import fs from '../shaders/trees.frag';
 
+const random = function(min, max) { return min + Math.random() * (max - min);	}
+
 const grey = 0.25;
 const oUniforms = {
 	roughness:1,
@@ -29,12 +31,11 @@ class ViewTrees extends alfrid.View {
 		const perlin = new Noise(Math.random() * 0xFFFF);
 
 		const positions = [];
-		const positionOffsets = [];
 		const uvs = [];
 		const indices = [];
 		let index = 0;
 
-		const height = 5;
+		const height = 100;
 		const radius = .2;
 		const num = 24 * 3;
 		const noiseScale = 0.5;
@@ -77,10 +78,29 @@ class ViewTrees extends alfrid.View {
 		}
 
 
+
+		const NUM_TREES = 100;
+		const positionOffsets = [];
+		const rotations = [];
+		const { terrainSize } = Params;
+		const rz = .1;
+
+		const getTreePosition = () => {
+			return [random(-terrainSize, terrainSize), 0, random(-terrainSize, terrainSize)]
+		}
+
+		for(let i=0; i<NUM_TREES; i++) {
+			positionOffsets.push(getTreePosition());
+			rotations.push([random(-rz, rz), random(-1, 1), random(1, 2)]);
+		}
+
+
 		this.mesh = new alfrid.Mesh();
 		this.mesh.bufferVertex(positions);
 		this.mesh.bufferTexCoord(uvs);
 		this.mesh.bufferIndex(indices);
+		this.mesh.bufferInstance(positionOffsets, 'aPosOffset');
+		this.mesh.bufferInstance(rotations, 'aExtra');
 
 
 		this._textureTree = new alfrid.GLTexture(getAsset('tree'));

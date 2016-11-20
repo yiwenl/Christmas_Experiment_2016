@@ -117,7 +117,7 @@ function _init3D() {
 
 	//	STATS
 	const stats = new Stats();
-	// document.body.appendChild(stats.domElement);
+	document.body.appendChild(stats.domElement);
 	alfrid.Scheduler.addEF(()=>stats.update());
 	
 	gui.add(Params, 'gamma', 1, 5);

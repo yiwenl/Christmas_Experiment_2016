@@ -96,7 +96,7 @@ class SceneApp extends alfrid.Scene {
 
 	_initViews() {
 		this._bCopy = new alfrid.BatchCopy();
-		this._bSky = new alfrid.BatchSky();
+		this._bSky = new alfrid.BatchSky(80);
 
 		this._vRender = new ViewRender();
 		this._vSim 	  = new ViewSim();

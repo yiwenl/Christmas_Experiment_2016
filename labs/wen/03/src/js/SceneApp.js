@@ -10,34 +10,16 @@ import ViewSave from './ViewSave';
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
+import EffectComposer from './effectComposer/EffectComposer';
+import Pass from './effectComposer/Pass';
+import PassFXAA from './effectComposer/passes/PassFXAA';
 import Params from './Params';
 import VIVEUtils from './VIVEUtils';
 import CameraVive from './CameraVive';
 
+import fsSoftLight from '../shaders/softlight.frag';
+
 const RAD = Math.PI / 180;
-
-
-quat.toEulerAngles = function(q) {
-	let ysqr = q[1] * q[1];
-	let t0 = -2.0 * (ysqr + q[2] * q[2]) + 1.0;
-	let t1 = +2.0 * (q[0] * q[1] - q[3] * q[2]);
-	let t2 = -2.0 * (q[0] * q[2] + q[3] * q[1]);
-	let t3 = +2.0 * (q[1] * q[2] - q[3] * q[0]);
-	let t4 = -2.0 * (q[0] * q[0] + ysqr) + 1.0;
-
-	t2 = t2 > 1.0 ? 1.0 : t2;
-	t2 = t2 < -1.0 ? -1.0 : t2;
-
-	const pitch = Math.asin(t2);
-	const roll = Math.atan2(t3, t4);
-	const yaw = Math.atan2(t1, t0);
-
-	return {
-		pitch,
-		roll,
-		yaw
-	}
-}
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -79,7 +61,9 @@ class SceneApp extends alfrid.Scene {
 		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
 		this._textureStar = new GLTexture(getAsset('starsmap'));
 		this._textureNoise = new GLTexture(getAsset('noise'));
+		this._textureGradient = new GLTexture(getAsset('gradient'));
 
+		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 
 
@@ -129,6 +113,13 @@ class SceneApp extends alfrid.Scene {
 
 			GL.setMatrices(this.camera);
 		}
+
+		this._composer = new EffectComposer(GL.width, GL.height);
+		this._passSoftLight = new Pass(fsSoftLight)
+		this._passSoftLight.bindTexture('textureGradient', this._textureGradient);
+		this._passFxaa = new PassFXAA();
+		this._composer.addPass(this._passSoftLight);
+		this._composer.addPass(this._passFxaa);
 	}
 
 	updateFbo() {
@@ -161,10 +152,6 @@ class SceneApp extends alfrid.Scene {
 
 		const D = camY - Params.seaLevel;
 
-		const rotationCam = quat.create();
-		mat4.getRotation(rotationCam, this.camera.viewMatrix);
-		let o = quat.toEulerAngles(rotationCam);
-
 
 		const mReflection = mat4.fromValues(
 			1 - 2 * Nx * Nx, -2 * Nx * Ny, -2 * Nx * Nz, -2 * Nx * D,
@@ -172,13 +159,6 @@ class SceneApp extends alfrid.Scene {
 			-2 * Nx * Nz, -2 * Ny * Nz, 1 - 2 * Nz * Nz, -2 * Nz * D,
 			0, 0, 0, 1
 			);
-
-		if(Math.random() > .99) {
-			// console.log('Dist to water :', D);
-			// console.log(mat4.str(mReflection));
-			// console.log(-camX, -camY, -camZ, translation);
-			console.log(o);
-		}
 
 		// mat4.scale(this.cameraReflection.viewMatrix, this.camera.viewMatrix, vec3.fromValues(1, -1, 1));
 		// mat4.translate(this.cameraReflection.viewMatrix, this.cameraReflection.viewMatrix, vec3.fromValues(0, -D * 2, 0));
@@ -222,8 +202,20 @@ class SceneApp extends alfrid.Scene {
 		if(!window.hasVR) {
 			GL.setMatrices(this.cameraReflection);
 			this._renderReflection();
+
+			if(Params.postEffect) {
+				this._fboRender.bind();
+				GL.clear(0, 0, 0, 0);	
+			}
+			
 			GL.setMatrices(this.camera);
 			this._renderScene(true);
+
+			if(Params.postEffect) {
+				this._fboRender.unbind();
+				this._composer.render(this._fboRender.getTexture());
+				this._bCopy.draw(this._composer.getTexture());
+			}
 		} else {
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
@@ -301,7 +293,11 @@ class SceneApp extends alfrid.Scene {
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
 		this.camera.setAspectRatio(GL.aspectRatio);
 		this.cameraReflection.setAspectRatio(GL.aspectRatio);
+		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		this._composer = new EffectComposer(GL.width, GL.height);
+		this._composer.addPass(this._passSoftLight);
+		this._composer.addPass(this._passFxaa);
 	}
 }
 

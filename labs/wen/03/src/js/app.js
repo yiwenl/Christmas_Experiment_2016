@@ -15,6 +15,7 @@ const assets = [
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
 	{ id:'fg', url:'assets/img/fg.png' },
+	{ id:'gradient', url:'assets/img/gradient.jpg' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
@@ -119,7 +120,7 @@ function _init3D() {
 	//	STATS
 	if(!GL.isMobile) {
 		const stats = new Stats();
-		// document.body.appendChild(stats.domElement);
+		document.body.appendChild(stats.domElement);
 		alfrid.Scheduler.addEF(()=>stats.update());	
 	}
 	
@@ -129,6 +130,7 @@ function _init3D() {
 	gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
 		console.log(Params);
 	});
+	gui.add(Params, 'postEffect');
 
 	const fFog = gui.addFolder('Fog');
 	fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);

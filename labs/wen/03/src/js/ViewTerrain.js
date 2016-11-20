@@ -32,8 +32,6 @@ class ViewTerrain extends alfrid.View {
 
 		this._textureHeight = new GLTexture(getAsset('height'));
 		this._textureNormal = new GLTexture(getAsset('normal'));
-		this._textureNoise = new GLTexture(getAsset('noise'));
-
 
 		gui.add(oUniforms, 'roughness', 0, 1);
 		gui.add(oUniforms, 'specular', 0, 1);
@@ -42,7 +40,7 @@ class ViewTerrain extends alfrid.View {
 	}
 
 
-	render(textureRad, textureIrr) {
+	render(textureRad, textureIrr, textureNoise) {
 		this.shader.bind();
 
 		this.shader.uniform("textureHeight", "uniform1i", 0);
@@ -52,7 +50,7 @@ class ViewTerrain extends alfrid.View {
 		this._textureNormal.bind(1);
 
 		this.shader.uniform("textureNoise", "uniform1i", 2);
-		this._textureNoise.bind(2);
+		textureNoise.bind(2);
 
 		this.shader.uniform('uRadianceMap', 'uniform1i', 3);
 		textureRad.bind(3);

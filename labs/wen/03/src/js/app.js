@@ -6,6 +6,7 @@ import dat from 'dat-gui';
 import Stats from 'stats.js';
 import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
+import VIVEUtils from './VIVEUtils';
 
 const GL = alfrid.GL;
 
@@ -13,6 +14,7 @@ const assets = [
 	{ id:'height', url:'assets/img/height.jpg' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
+	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
@@ -63,8 +65,7 @@ function _onImageLoaded(o) {
 	const loader = document.body.querySelector('.Loading-Bar');
 	loader.style.width = '100%';
 
-	_init3D();
-	_initSound();
+	_initVR();
 
 	setTimeout(()=> {
 		document.body.classList.remove('isLoading');
@@ -72,6 +73,32 @@ function _onImageLoaded(o) {
 }
 
 
+window.hasVR = false;
+
+function _initVR() {
+	VIVEUtils.init( (vrDisplay) => _onVR(vrDisplay));
+}
+
+function _onVR(vrDisplay) {
+	console.debug('on VR :', vrDisplay);
+
+	if(vrDisplay != null) {
+		hasVR = true;
+		document.body.classList.add('hasVR');
+		let btnVR = document.body.querySelector('#enterVr');
+		btnVR.addEventListener('click', ()=> {
+			VIVEUtils.present(GL.canvas);
+		});
+	} else {
+
+	}
+
+	// hasVR = true;
+
+	_init3D();
+	_initSound();
+
+}
 
 function _init3D() {
 	//	CREATE CANVAS
@@ -105,9 +132,16 @@ function _init3D() {
 }
 
 function _initSound() {
+	const songs = [
+		'https://soundcloud.com/lukeabbottmusic/modern-driveway-jon-hopkins'
+	]
+
+	let song = songs[Math.floor(Math.random() * songs.length)];
+	console.log('Song :', song); 
+
 	SoundCloudBadge({
 		client_id: 'e8b7a335a5321247b38da4ccc07b07a2',
-		song: 'https://soundcloud.com/awintory/abzu-balaenoptera-musculus'
+		song: song
 	}, _onSound);
 }
 
@@ -117,5 +151,5 @@ function _onSound(err, src, json) {
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.5;
+	audio.volume = 0.0;
 }

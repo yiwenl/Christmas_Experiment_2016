@@ -1,7 +1,7 @@
 // Params.js
 
 const Params = {
-	numParticles:128 * 2,
+	numParticles:128,
 	skipCount:10,
 	maxRadius: 20,
 	terrainSize:50,

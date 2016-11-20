@@ -166,20 +166,20 @@ class Line extends alfrid.Mesh {
       prevPos.push([p[i], p[i+1], p[i+2]]);
     }
 
-    this.bufferVertex(pos, true);
-    this.bufferData(nextPos, 'aNext', 3, true);
-    this.bufferData(prevPos, 'aPrevious', 3, true);
+    this.bufferVertex(pos, false);
+    this.bufferData(nextPos, 'aNext', 3, false);
+    this.bufferData(prevPos, 'aPrevious', 3, false);
 
     if(!avoidUpdate){
       this.bufferIndex(indices, false);
       this.bufferData(directions, 'direction', 1, false);
-      this.bufferTexCoord(this.uvs);
-      this.bufferData(this.counters, 'aCounters', 1, true);
+      this.bufferTexCoord(this.uvs, false);
+      this.bufferData(this.counters, 'aCounters', 1, false);
     }
 
   }
 
-  render(points){
+  render(points, needsUpdate){
     // this.vert[0] += 1;
     // console.log(points);
     // this.vert = points;
@@ -194,7 +194,7 @@ class Line extends alfrid.Mesh {
 
     this.vert = points;
     // GL._bindBuffers(this);
-    this.line(true);
+    this.line(!needsUpdate);
     // console.log("here");
   }
 }

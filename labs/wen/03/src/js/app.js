@@ -14,6 +14,7 @@ const assets = [
 	{ id:'height', url:'assets/img/height.jpg' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
+	{ id:'fg', url:'assets/img/fg.png' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
@@ -118,7 +119,7 @@ function _init3D() {
 	//	STATS
 	if(!GL.isMobile) {
 		const stats = new Stats();
-		document.body.appendChild(stats.domElement);
+		// document.body.appendChild(stats.domElement);
 		alfrid.Scheduler.addEF(()=>stats.update());	
 	}
 	

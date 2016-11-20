@@ -10,7 +10,8 @@ const Params = {
 	exposure:5,
 	clipY:0.71,
 	clipDir:-1,
-	fogColor:[59/255, 163/255, 130/255],
+	fogColor:[12/255, 24/255, 29/255],
+	// fogColor:[30/255, 56/255, 69/255],
 	fogDensity:0.05
 }
 

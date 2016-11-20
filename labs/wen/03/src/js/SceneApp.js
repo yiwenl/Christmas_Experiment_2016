@@ -9,6 +9,7 @@ import ViewSim from './ViewSim';
 import ViewSave from './ViewSave';
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
+import ViewFarground from './ViewFarground';
 import Params from './Params';
 import VIVEUtils from './VIVEUtils';
 import CameraVive from './CameraVive';
@@ -49,8 +50,8 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.radius.value = 7;
 		this.orbitalControl.rx.value = 0.3;
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.1);
-		// this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
 
 		this._modelMatrix = mat4.create();
 		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -5, 0));
@@ -106,6 +107,7 @@ class SceneApp extends alfrid.Scene {
 		this._vWater = new ViewWater();
 		this._vFilmGrain = new ViewFilmGrain();
 		this._vTrees = new ViewTrees();
+		this._vFg = new ViewFarground();
 
 		if(!GL.isMobile) {
 			this._vRender = new ViewRender();
@@ -269,6 +271,7 @@ class SceneApp extends alfrid.Scene {
 
 
 		this._bSky.draw(this._textureStar);
+		this._vFg.render();
 		if(withWater) {
 			this._vWater.render(this._fboReflection.getTexture());	
 		}

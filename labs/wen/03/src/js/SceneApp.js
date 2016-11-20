@@ -83,45 +83,50 @@ class SceneApp extends alfrid.Scene {
 
 
 		//	PARTICLES
-		const numParticles = Params.numParticles;
-		const o = {
-			minFilter:GL.NEAREST,
-			magFilter:GL.NEAREST,
-			type:GL.HALF_FLOAT
-		};
 
-		this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
-		this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
+		if(!GL.isMobile) {
+			const numParticles = Params.numParticles;
+			const o = {
+				minFilter:GL.NEAREST,
+				magFilter:GL.NEAREST,
+				type:GL.HALF_FLOAT
+			};
+
+			this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
+			this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
+		}
 	}
 
 	_initViews() {
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
 
-		this._vRender = new ViewRender();
-		this._vSim 	  = new ViewSim();
+		
 		this._vTerrain = new ViewTerrain();
 		this._vWater = new ViewWater();
 		this._vFilmGrain = new ViewFilmGrain();
 		this._vTrees = new ViewTrees();
 
+		if(!GL.isMobile) {
+			this._vRender = new ViewRender();
+			this._vSim 	  = new ViewSim();
 
-		this._vSave = new ViewSave();
-		GL.setMatrices(this.cameraOrtho);
+			this._vSave = new ViewSave();
+			GL.setMatrices(this.cameraOrtho);
 
 
-		this._fboCurrent.bind();
-		GL.clear(0, 0, 0, 0);
-		this._vSave.render();
-		this._fboCurrent.unbind();
+			this._fboCurrent.bind();
+			GL.clear(0, 0, 0, 0);
+			this._vSave.render();
+			this._fboCurrent.unbind();
 
-		this._fboTarget.bind();
-		GL.clear(0, 0, 0, 0);
-		this._vSave.render();
-		this._fboTarget.unbind();
+			this._fboTarget.bind();
+			GL.clear(0, 0, 0, 0);
+			this._vSave.render();
+			this._fboTarget.unbind();
 
-		GL.setMatrices(this.camera);
-
+			GL.setMatrices(this.camera);
+		}
 	}
 
 	updateFbo() {
@@ -202,7 +207,9 @@ class SceneApp extends alfrid.Scene {
 		this._count ++;
 		if(this._count % Params.skipCount == 0) {
 			this._count = 0;
-			this.updateFbo();
+			if(!GL.isMobile) {
+				this.updateFbo();	
+			}
 		}
 
 		Params.clipY = Params.seaLevel;
@@ -268,10 +275,12 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
 		
-		let p = this._count / Params.skipCount;
-		GL.enableAdditiveBlending();
-		this._vRender.render(this._fboTarget.getTexture(0), this._fboCurrent.getTexture(0), p, this._fboCurrent.getTexture(2));
-		GL.enableAlphaBlending();
+		if(!GL.isMobile) {
+			let p = this._count / Params.skipCount;
+			GL.enableAdditiveBlending();
+			this._vRender.render(this._fboTarget.getTexture(0), this._fboCurrent.getTexture(0), p, this._fboCurrent.getTexture(2));
+			GL.enableAlphaBlending();
+		}
 	}
 
 

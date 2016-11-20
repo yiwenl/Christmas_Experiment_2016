@@ -116,9 +116,12 @@ function _init3D() {
 	let scene = new SceneApp();
 
 	//	STATS
-	const stats = new Stats();
-	document.body.appendChild(stats.domElement);
-	alfrid.Scheduler.addEF(()=>stats.update());
+	if(!GL.isMobile) {
+		const stats = new Stats();
+		document.body.appendChild(stats.domElement);
+		alfrid.Scheduler.addEF(()=>stats.update());	
+	}
+	
 	
 	gui.add(Params, 'gamma', 1, 5);
 	gui.add(Params, 'exposure', 1, 25);

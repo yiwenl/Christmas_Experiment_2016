@@ -120,7 +120,7 @@ function _init3D() {
 	//	STATS
 	if(!GL.isMobile) {
 		const stats = new Stats();
-		document.body.appendChild(stats.domElement);
+		// document.body.appendChild(stats.domElement);
 		alfrid.Scheduler.addEF(()=>stats.update());	
 	}
 	

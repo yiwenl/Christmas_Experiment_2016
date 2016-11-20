@@ -13,7 +13,7 @@ const Params = {
 	fogColor:[12/255, 24/255, 29/255],
 	// fogColor:[30/255, 56/255, 69/255],
 	fogDensity:0.05,
-	postEffect:true
+	postEffect:false
 }
 
 

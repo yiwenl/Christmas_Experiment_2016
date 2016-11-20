@@ -10,7 +10,7 @@ import fs from '../shaders/trees.frag';
 
 const random = function(min, max) { return min + Math.random() * (max - min);	}
 
-const grey = 0.25;
+const grey = 0.1;
 const oUniforms = {
 	roughness:1,
 	specular:.25,

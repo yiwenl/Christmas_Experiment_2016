@@ -50,7 +50,7 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.value = 0.3;
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.1);
-		this.orbitalControl.radius.limit(3, 30);
+		// this.orbitalControl.radius.limit(3, 30);
 
 		this._modelMatrix = mat4.create();
 		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -5, 0));

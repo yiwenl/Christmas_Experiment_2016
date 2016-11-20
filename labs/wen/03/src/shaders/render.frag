@@ -19,8 +19,7 @@ void main(void) {
 
 	if(dist > .5) discard;
 
-	float a = pow(1.0 - dist/.5, 2.0 * ( 1.0 + vExtra.r) + sin(time * 0.2 * vExtra.g) * 0.5);
-	// a = 1.0;
+	float a = pow(1.0 - dist/.5, 1.5 * ( 1.0 + vExtra.r) + sin(time * 0.2 * vExtra.g) * 0.5);
 
     gl_FragColor = vColor;
     gl_FragColor *= a;

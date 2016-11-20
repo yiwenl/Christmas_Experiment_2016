@@ -37,15 +37,18 @@ class ViewTrees extends alfrid.View {
 
 		const height = 100;
 		const radius = .2;
-		const num = 24 * 3;
+		const num = 24;
 		const noiseScale = 0.5;
 		const noiseSize = 0.5;
 
 		const getPosition = (i, j) => {
 			const angle = i / num * Math.PI * 2.0;
-			let x = Math.cos(-angle) * radius;
-			let z = Math.sin(-angle) * radius;
 			const y = j/num * height;
+			const r = radius - j/num * .01;
+
+			let x = Math.cos(-angle) * r;
+			let z = Math.sin(-angle) * r;
+			
 			const noise = perlin.simplex3(x*noiseScale, y*noiseScale, z*noiseScale) * noiseSize;
 			x *= 1.0 + noise;
 			z *= 1.0 + noise;
@@ -79,7 +82,7 @@ class ViewTrees extends alfrid.View {
 
 
 
-		const NUM_TREES = 100;
+		const NUM_TREES = 60;
 		const positionOffsets = [];
 		const rotations = [];
 		const { terrainSize } = Params;
@@ -91,7 +94,7 @@ class ViewTrees extends alfrid.View {
 
 		for(let i=0; i<NUM_TREES; i++) {
 			positionOffsets.push(getTreePosition());
-			rotations.push([random(-rz, rz), random(-1, 1), random(1, 2)]);
+			rotations.push([random(-rz, rz), random(-1, 1), random(1.5, 3)]);
 		}
 
 

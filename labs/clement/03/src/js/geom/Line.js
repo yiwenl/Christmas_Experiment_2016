@@ -47,6 +47,30 @@ class Line extends alfrid.Mesh {
 
     var index = 0;
     var indexC = 0;
+    var indexP = 0;
+    var indexN = 0;
+
+
+
+    this.previous.length = this.positions.length;
+    this.next.length = this.positions.length;
+
+
+    if( this.compareV3( 0, v.length - 1 ) ){
+      this.copyV3( v.length - 2 );
+    } else {
+      this.copyV3( 0 );
+    }
+
+    this.previous[indexP++] = tempArray1[0];
+    this.previous[indexP++] = tempArray1[1];
+    this.previous[indexP++] = tempArray1[2];
+
+    this.previous[indexP++] = tempArray1[0];
+    this.previous[indexP++] = tempArray1[1];
+    this.previous[indexP++] = tempArray1[2];
+
+
     for (var i = 0; i < v.length; i++) {
 
 
@@ -66,7 +90,47 @@ class Line extends alfrid.Mesh {
       this.positions[index++] = v[i][2];
 
 
+      // caluclate pos and next
+      this.copyV3( i, tempArray1 );
+
+      if(i > 0) {
+        // we can fill the nexts
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.previous[indexP++] = tempArray2[0];
+        this.previous[indexP++] = tempArray2[1];
+        this.previous[indexP++] = tempArray2[2];
+
+        this.previous[indexP++] = tempArray2[0];
+        this.previous[indexP++] = tempArray2[1];
+        this.previous[indexP++] = tempArray2[2];
+      }
+
+      tempArray2[0] = tempArray1[0];
+      tempArray2[1] = tempArray1[1];
+      tempArray2[2] = tempArray1[2];
     }
+
+    if( this.compareV3( v.length - 1, 0 ) ){
+      this.copyV3( 1 );
+    } else {
+      this.copyV3( v.length - 1 );
+    }
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
+
 
     this.process(needsUpdate);
   }
@@ -84,7 +148,6 @@ class Line extends alfrid.Mesh {
 
 	  var aa = a * 6;
     // console.log(this.positions[ aa ], this.positions[ aa + 1 ], this.positions[ aa + 2 ]);
-
     out[0] = this.positions[ aa ];
     out[1] = this.positions[ aa + 1 ];
     out[2] = this.positions[ aa + 2 ];
@@ -99,53 +162,10 @@ class Line extends alfrid.Mesh {
 
     // this.next = [];
 
-    this.previous.length = this.positions.length;
-    this.next.length = this.positions.length;
 
 
-    if( this.compareV3( 0, l - 1 ) ){
-      this.copyV3( l - 2 );
-    } else {
-      this.copyV3( 0 );
-    }
-
-    this.previous[index++] = tempArray1[0];
-    this.previous[index++] = tempArray1[1];
-    this.previous[index++] = tempArray1[2];
-
-    this.previous[index++] = tempArray1[0];
-    this.previous[index++] = tempArray1[1];
-    this.previous[index++] = tempArray1[2];
 
 
-    for( var j = 0; j < l; j++ ) {
-
-      this.copyV3( j, tempArray1 );
-
-      if(j > 0) {
-        // we can fill the nexts
-        this.next[indexN++] = tempArray1[0];
-        this.next[indexN++] = tempArray1[1];
-        this.next[indexN++] = tempArray1[2];
-
-        this.next[indexN++] = tempArray1[0];
-        this.next[indexN++] = tempArray1[1];
-        this.next[indexN++] = tempArray1[2];
-
-        this.previous[index++] = tempArray2[0];
-        this.previous[index++] = tempArray2[1];
-        this.previous[index++] = tempArray2[2];
-
-        this.previous[index++] = tempArray2[0];
-        this.previous[index++] = tempArray2[1];
-        this.previous[index++] = tempArray2[2];
-      }
-
-      tempArray2[0] = tempArray1[0];
-      tempArray2[1] = tempArray1[1];
-      tempArray2[2] = tempArray1[2];
-
-    }
 
     index = 0;
 
@@ -161,19 +181,7 @@ class Line extends alfrid.Mesh {
     //   this.next[index++] = tempArray1[2];
     // }
 
-    if( this.compareV3( l - 1, 0 ) ){
-      this.copyV3( 1 );
-    } else {
-      this.copyV3( l - 1 );
-    }
 
-    this.next[indexN++] = tempArray1[0];
-    this.next[indexN++] = tempArray1[1];
-    this.next[indexN++] = tempArray1[2];
-
-    this.next[indexN++] = tempArray1[0];
-    this.next[indexN++] = tempArray1[1];
-    this.next[indexN++] = tempArray1[2];
 
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
@@ -208,7 +216,7 @@ class Line extends alfrid.Mesh {
 
       index = 0;
       this.directions = [];
-      for (var i = 0; i < this.positions.length; i+=3) {
+      for (var i = 0; i < this.positions.length; i++) {
         if(i % 2 === 0){
           this.directions[index++] = 1;
         }

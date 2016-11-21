@@ -10,6 +10,7 @@ import ViewSave from './ViewSave';
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
+import ViewTest from './ViewTest';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -36,7 +37,7 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.radius.limit(3, 30);
 
 		this._modelMatrix = mat4.create();
-		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -5, 0));
+		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -2, 0));
 		// let scale = 2.5;
 		// mat4.scale(this._modelMatrix, this._modelMatrix, vec3.fromValues(scale, scale, scale));
 
@@ -96,6 +97,7 @@ class SceneApp extends alfrid.Scene {
 		this._vFilmGrain = new ViewFilmGrain();
 		this._vTrees = new ViewTrees();
 		this._vFg = new ViewFarground();
+		this._vTest = new ViewTest();
 
 		if(!GL.isMobile) {
 			this._vRender = new ViewRender();
@@ -245,7 +247,7 @@ class SceneApp extends alfrid.Scene {
 			this.cameraVive.setEye('left');
 			GL.setMatrices(this.cameraVive);
 			GL.rotate(this._modelMatrix);
-			this._renderScene(false);
+			this._renderScene(true);
 
 			//	right
 			GL.viewport(w2, 0, w2, GL.height);
@@ -253,17 +255,12 @@ class SceneApp extends alfrid.Scene {
 			this.cameraVive.setEye('right');
 			GL.setMatrices(this.cameraVive);
 			GL.rotate(this._modelMatrix);
-			this._renderScene(false);
+			this._renderScene(true);
 
 			GL.disable(GL.SCISSOR_TEST);
 
 			VIVEUtils.submitFrame();
 		}
-		
-		
-
-		
-
 		// this._bCopy.draw(this._fboReflection.getTexture());
 	}
 
@@ -283,6 +280,7 @@ class SceneApp extends alfrid.Scene {
 			this._vWater.render(this._fboReflection.getTexture());	
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
+		// this._vTest.render();
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
 		
 		if(!GL.isMobile) {
@@ -303,9 +301,23 @@ class SceneApp extends alfrid.Scene {
 
 
 	resize() {
-		const scale = hasVR ? 2 : 1;
+		const scale = hasVR ? 3 : 1;
 		console.debug('Scale : ', scale);
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
+		this.camera.setAspectRatio(GL.aspectRatio);
+		this.cameraReflection.setAspectRatio(GL.aspectRatio);
+		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		this._composer = new EffectComposer(GL.width, GL.height);
+		this._composer.addPass(this._passSoftLight);
+		this._composer.addPass(this._passFxaa);
+	}
+
+
+	resizeVR() {
+		const scale = hasVR ? 3 : 1;
+		GL.setSize(1920*scale, 1080*scale);
+		console.log('Resize for VR :', GL.width, GL.height);
 		this.camera.setAspectRatio(GL.aspectRatio);
 		this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);

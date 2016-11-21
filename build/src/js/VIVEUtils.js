@@ -44,7 +44,7 @@ class VIVEUtils {
 	}
 
 
-	present(mCanvas) {
+	present(mCanvas, callback) {
 		if(!this._vrDisplay) {
 			console.log('No VR Headset detected');
 			return;
@@ -56,7 +56,11 @@ class VIVEUtils {
 		}
 
 		this._vrDisplay.requestPresent([{ source: mCanvas }]).then( () => {
-			console.log(' on request VR ');
+			console.log(' on request VR ', window.innerWidth, window.innerHeight);
+
+			if(callback) {
+				callback();
+			}
 		}, () => {
 			console.debug("requestPresent failed.");
 		});

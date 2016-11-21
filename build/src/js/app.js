@@ -1,5 +1,5 @@
 import '../scss/global.scss';
-import alfrid, { Camera } from 'alfrid';
+import alfrid, { Camera, GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
@@ -8,8 +8,7 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-const GL = alfrid.GL;
-
+let scene;
 const assets = [
 	{ id:'height', url:'assets/img/height.jpg' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
@@ -89,14 +88,19 @@ function _onVR(vrDisplay) {
 		document.body.classList.add('hasVR');
 		let btnVR = document.body.querySelector('#enterVr');
 		btnVR.addEventListener('click', ()=> {
-			VIVEUtils.present(GL.canvas);
+			VIVEUtils.present(GL.canvas, ()=> {
+				console.log('Scene :', scene);
+				scene.resize();
+			});
 		});
 	} else {
 
 	}
 
+	Params.numParticles = hasVR ? 256 : 128;
+
 	// hasVR = true;
-	console.debug('Has VR ? ', hasVR);
+	console.debug('Has VR ? ', hasVR, Params);
 	_init3D();
 	_initSound();
 
@@ -115,7 +119,7 @@ function _init3D() {
 	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
-	let scene = new SceneApp();
+	scene = new SceneApp();
 
 	//	STATS
 	if(!GL.isMobile) {
@@ -157,5 +161,5 @@ function _onSound(err, src, json) {
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.0;
+	audio.volume = 1.0;
 }

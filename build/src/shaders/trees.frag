@@ -113,7 +113,7 @@ void main(void) {
 
 	vec2 uv  			= vTextureCoord * vec2(1.0, 20.0);
 
-    vec3 N 				= vWsNormal;
+    vec3 N 				= vNormal;
 	vec3 noise 			= texture2D( textureNoise, uv * 30.0).rgb * 2.0 - 1.0;
 	vec3 colorTree 	    = texture2D( textureTree, uv).rgb;
 	N 					= normalize( N + noise * 0.2);

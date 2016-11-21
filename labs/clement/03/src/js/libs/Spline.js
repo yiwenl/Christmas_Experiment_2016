@@ -8,7 +8,7 @@ class Spline {
 
     this.point = 0;
     this.intPoint = 0;
-    this.wieght = 0;
+    this.weight = 0;
     this.pa = 0;
     this.pb = 0;
     this.pc = 0;
@@ -22,8 +22,8 @@ class Spline {
 
   }
 
-  getPoint(k) {
-
+  getPoint(k, out) {
+    // console.log(out);
 		this.point = ( this.points.length - 1 ) * k;
 		this.intPoint = Math.floor( this.point );
 		this.weight = this.point - this.intPoint;
@@ -50,7 +50,14 @@ class Spline {
 		this.v3[2] = this.interpolate( this.pa[2], this.pb[2], this.pc[2], this.pd[2], this.weight, this.w2, this.w3 );
 
     // console.log(this.v3);
-		return [this.v3[0], this.v3[1], this.v3[2]];
+    if(out){
+
+      let length = out.length;
+      out[out.length] = [this.v3[0], this.v3[1], this.v3[2]];
+    }
+    else {
+      return [this.v3[0], this.v3[1], this.v3[2]]
+    }
 
 	};
 

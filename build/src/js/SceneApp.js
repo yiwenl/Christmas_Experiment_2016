@@ -47,6 +47,10 @@ class SceneApp extends alfrid.Scene {
 		this.cameraVive = new CameraVive();
 
 		this.resize();
+
+		if(hasVR) {
+			this.toRender();
+		}
 	}
 
 	_initTextures() {
@@ -175,6 +179,13 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		if(!window.hasVR) {
+			this.toRender();
+		}
+	}
+
+
+	toRender() {
 		if(!hasVR) {
 			const { eye, center } = this.camera;
 			let distToWater       = eye[1] - Params.seaLevel;
@@ -221,6 +232,8 @@ class SceneApp extends alfrid.Scene {
 			this._vFilmGrain.render();
 			// GL.enableAlphaBlending();
 		} else {
+			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
+
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
 			GL.enable(GL.SCISSOR_TEST);

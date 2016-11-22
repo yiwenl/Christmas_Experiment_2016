@@ -32,26 +32,6 @@ class ViewLine extends alfrid.View {
 
 		this.perlin = new Perlin.Noise(Math.random());
 
-		this.ready = false;
-
-		var image = new Image();
-	  image.src = "./assets/img/stroke3.png";
-	  image.onload = function() {
-			this.ready = true;
-
-			var texture = GL.gl.createTexture();
-			GL.gl.bindTexture(GL.gl.TEXTURE_2D, texture);
-
-			// Set the parameters so we can render any size image.
-			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_S, GL.gl.CLAMP_TO_EDGE);
-			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_WRAP_T, GL.gl.CLAMP_TO_EDGE);
-			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MIN_FILTER, GL.gl.NEAREST);
-			GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MAG_FILTER, GL.gl.NEAREST);
-
-			// Upload the image into the texture.
-			GL.gl.texImage2D(GL.gl.TEXTURE_2D, 0, GL.gl.RGBA, GL.gl.RGBA, GL.gl.UNSIGNED_BYTE, image);
-	  }.bind(this)
-
 	}
 
 
@@ -60,7 +40,7 @@ class ViewLine extends alfrid.View {
 		this.spline = new Spline([]);
 
 		this.state = STATES.wandering;
-    this.points = []
+		this.points = []
 		const max = 30//Math.floor(Math.random() * 5) + 10;
 
 		let index = 0;
@@ -95,6 +75,7 @@ class ViewLine extends alfrid.View {
 		}
 		// console.log(gui);
 
+		this.texture = new alfrid.GLTexture(getAsset('stroke'));
 	}
 
 	newPoints(line){
@@ -152,21 +133,21 @@ class ViewLine extends alfrid.View {
 	}
 
 
-  getPoints(pts){
-    this.spline.points = pts;
-    let indexArray, n_sub = 6;
+  	getPoints(pts){
+		this.spline.points = pts;
+		let indexArray, n_sub = 6;
 
 		tempArray = [];
 		let index = 0;
-    for (let i = 0; i < pts.length * n_sub; i ++ ) {
-			indexArray = i / ( pts.length * n_sub );
-			this.spline.getPoint( indexArray,  tempArray);
-		}
+		for (let i = 0; i < pts.length * n_sub; i ++ ) {
+				indexArray = i / ( pts.length * n_sub );
+				this.spline.getPoint( indexArray,  tempArray);
+			}
 
-		// console.log(array);
+			// console.log(array);
 
-    return tempArray;
-  }
+		return tempArray;
+	}
 
 	basic(){
 		this.targetPoint[0] = Math.cos(this.time/20 + this.startAngle) * this.radius;
@@ -322,19 +303,17 @@ class ViewLine extends alfrid.View {
 		this.isPaused = !this.isPaused;
 	}
 	render() {
-
-		if(!this.ready) return;
-
 		if(Easings.instance.tweens.length){
 			Easings.instance.update();
 		}
 
 		this.shader.bind();
-    this.shader.uniform("texture", "uniform1i", 0);
+		this.shader.uniform("texture", "uniform1i", 0);
+		this.texture.bind(0);
 
 		this.shader.uniform("alpha", "float", this.alpha);
-    this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
-    this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
+		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
+		this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
 
 		this.update();
 

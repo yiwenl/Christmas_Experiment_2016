@@ -17,6 +17,7 @@ const assets = [
 	{ id:'gradient', url:'assets/img/gradient.jpg' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
+	{ id:'stroke', url:'assets/img/stroke3.png' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },

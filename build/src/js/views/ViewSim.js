@@ -1,8 +1,8 @@
 // ViewSim.js
 
 import alfrid, { GL } from 'alfrid';
-import Params from './Params';
-const fsSim = require('../shaders/sim.frag');
+import Params from '../Params';
+const fsSim = require('../../shaders/sim.frag');
 
 
 class ViewSim extends alfrid.View {
@@ -20,7 +20,6 @@ class ViewSim extends alfrid.View {
 		this.shader.uniform('textureVel', 'uniform1i', 0);
 		this.shader.uniform('texturePos', 'uniform1i', 1);
 		this.shader.uniform('textureExtra', 'uniform1i', 2);
-
 	}
 
 

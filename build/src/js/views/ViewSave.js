@@ -1,10 +1,10 @@
 // ViewSave.js
 
 import alfrid from 'alfrid';
-import Params from './Params';
+import Params from '../Params';
 
-const vsSave = require('../shaders/save.vert');
-const fsSave = require('../shaders/save.frag');
+const vsSave = require('../../shaders/save.vert');
+const fsSave = require('../../shaders/save.frag');
 const GL = alfrid.GL;
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 

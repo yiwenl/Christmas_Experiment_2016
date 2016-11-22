@@ -185,6 +185,8 @@ class Line extends alfrid.Mesh {
 
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
+
+    console.log('Previous', this.previous);
     this.bufferVertex(this.positions, false);
     this.bufferData(this.next, 'aNext', 3, false);
     this.bufferData(this.previous, 'aPrevious', 3, false);

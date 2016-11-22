@@ -1,10 +1,10 @@
 // ViewRender.js
 
 import alfrid from 'alfrid';
-import Params from './Params';
+import Params from '../Params';
 
-const vsRender = require('../shaders/render.vert');
-const fsRender = require('../shaders/render.frag');
+const vsRender = require('../../shaders/render.vert');
+const fsRender = require('../../shaders/render.frag');
 let GL = alfrid.GL;
 
 class ViewRender extends alfrid.View {

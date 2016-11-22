@@ -2,21 +2,19 @@
 
 import alfrid, { Scene, GL, GLTexture } from 'alfrid';
 import ViewTerrain from './ViewTerrain';
-import ViewLine from './ViewLine';
 import ViewWater from './ViewWater';
-import ViewRender from './ViewRender';
-import ViewSim from './ViewSim';
-import ViewSave from './ViewSave';
+
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
-import ViewTest from './ViewTest';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
 import Params from './Params';
 import VIVEUtils from './VIVEUtils';
 import CameraVive from './CameraVive';
+
+import SubsceneParticles from './SubsceneParticles';
 
 import fsSoftLight from '../shaders/softlight.frag';
 
@@ -26,7 +24,6 @@ class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
-		this._count = 0;
 		const FOV = 45 * RAD;
 
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
@@ -40,7 +37,6 @@ class SceneApp extends alfrid.Scene {
 		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -2, 0));
 		// let scale = 2.5;
 		// mat4.scale(this._modelMatrix, this._modelMatrix, vec3.fromValues(scale, scale, scale));
-
 
 		this.cameraReflection = new alfrid.CameraPerspective();
 		this.cameraReflection.setPerspective(FOV, GL.aspectRatio, .1, 100);
@@ -70,21 +66,6 @@ class SceneApp extends alfrid.Scene {
 
 		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
-
-
-		//	PARTICLES
-
-		if(!GL.isMobile) {
-			const numParticles = Params.numParticles;
-			const o = {
-				minFilter:GL.NEAREST,
-				magFilter:GL.NEAREST,
-				type:GL.HALF_FLOAT
-			};
-
-			this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
-			this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
-		}
 	}
 
 	_initViews() {
@@ -97,28 +78,8 @@ class SceneApp extends alfrid.Scene {
 		this._vFilmGrain = new ViewFilmGrain();
 		this._vTrees = new ViewTrees();
 		this._vFg = new ViewFarground();
-		this._vTest = new ViewTest();
 
-		if(!GL.isMobile) {
-			this._vRender = new ViewRender();
-			this._vSim 	  = new ViewSim();
-
-			this._vSave = new ViewSave();
-			GL.setMatrices(this.cameraOrtho);
-
-
-			this._fboCurrent.bind();
-			GL.clear(0, 0, 0, 0);
-			this._vSave.render();
-			this._fboCurrent.unbind();
-
-			this._fboTarget.bind();
-			GL.clear(0, 0, 0, 0);
-			this._vSave.render();
-			this._fboTarget.unbind();
-
-			GL.setMatrices(this.camera);
-		}
+		this._subParticles = new SubsceneParticles(this);
 
 		this._composer = new EffectComposer(GL.width, GL.height);
 		this._passSoftLight = new Pass(fsSoftLight)
@@ -128,19 +89,7 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passFxaa);
 	}
 
-	updateFbo() {
-		this._fboTarget.bind();
-		GL.clear(0, 0, 0, 1);
-		this._vSim.render(this._fboCurrent.getTexture(1), this._fboCurrent.getTexture(0), this._fboCurrent.getTexture(2));
-		this._fboTarget.unbind();
-
-
-		let tmp          = this._fboCurrent;
-		this._fboCurrent = this._fboTarget;
-		this._fboTarget  = tmp;
-	}
-
-
+	
 	_getReflectionMatrix() {
 
 		const mInvertView = mat4.create();
@@ -171,12 +120,6 @@ class SceneApp extends alfrid.Scene {
 
 		mat4.translate(this.cameraReflection.viewMatrix, this.camera.viewMatrix, vec3.fromValues(0, D * 2, 0));
 		mat4.scale(this.cameraReflection.viewMatrix, this.cameraReflection.viewMatrix, vec3.fromValues(1, -1, 1));
-		
-
-		// mat4.multiply(this.cameraReflection.viewMatrix, mInvertView, mReflection);
-		// mat4.multiply(this.cameraReflection.viewMatrix, mReflection, mInvertView);
-		// mat4.multiply(this.cameraReflection.viewMatrix, this.camera.viewMatrix, mReflection);
-		// mat4.multiply(this.cameraReflection.viewMatrix, mReflection, this.camera.viewMatrix);
 	}
 
 
@@ -199,13 +142,7 @@ class SceneApp extends alfrid.Scene {
 			// this._getReflectionMatrix();
 		}
 		
-		this._count ++;
-		if(this._count % Params.skipCount == 0) {
-			this._count = 0;
-			if(!GL.isMobile) {
-				this.updateFbo();	
-			}
-		}
+		this._subParticles.update();		
 
 		Params.clipY = Params.seaLevel;
 
@@ -280,15 +217,10 @@ class SceneApp extends alfrid.Scene {
 			this._vWater.render(this._fboReflection.getTexture());	
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
-		// this._vTest.render();
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
+
 		
-		if(!GL.isMobile) {
-			let p = this._count / Params.skipCount;
-			GL.enableAdditiveBlending();
-			this._vRender.render(this._fboTarget.getTexture(0), this._fboCurrent.getTexture(0), p, this._fboCurrent.getTexture(2));
-			GL.enableAlphaBlending();
-		}
+		this._subParticles.render();
 	}
 
 
@@ -304,20 +236,6 @@ class SceneApp extends alfrid.Scene {
 		const scale = hasVR ? 3 : 1;
 		console.debug('Scale : ', scale);
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
-		this.camera.setAspectRatio(GL.aspectRatio);
-		this.cameraReflection.setAspectRatio(GL.aspectRatio);
-		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
-		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
-		this._composer = new EffectComposer(GL.width, GL.height);
-		this._composer.addPass(this._passSoftLight);
-		this._composer.addPass(this._passFxaa);
-	}
-
-
-	resizeVR() {
-		const scale = hasVR ? 3 : 1;
-		GL.setSize(1920*scale, 1080*scale);
-		console.log('Resize for VR :', GL.width, GL.height);
 		this.camera.setAspectRatio(GL.aspectRatio);
 		this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);

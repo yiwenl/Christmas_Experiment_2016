@@ -154,7 +154,7 @@ class ViewLine extends alfrid.View {
 
   getPoints(pts){
     this.spline.points = pts;
-    let indexArray, n_sub = 3;
+    let indexArray, n_sub = 6;
 
 		tempArray = [];
 		let index = 0;
@@ -217,8 +217,8 @@ class ViewLine extends alfrid.View {
 			}
 
 			this.time += 1 * this.speed * this.mainSpeed;
-			// this.motions[this.indexMotion]();
-			this.basic();
+			this.motions[this.indexMotion]();
+			// this.basic();
 
 			if(this.targetPoint[1] > 0) this.targetPoint[1] = 0;
 		}

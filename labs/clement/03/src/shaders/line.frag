@@ -12,19 +12,17 @@ varying vec2 vUV;
 
 void main() {
 
-  // vec2 st = gl_FragCoord.xy/resolutions;
-  // float y = step(st.y, .5);
-
   vec4 color = vec4(alpha);
   // vec4 color = vec4(1.0);
-  vec4 transparency = texture2D( texture, vUV );
+  vec4 colorEnd = color * texture2D( texture, vUV );
 
-  if(transparency.a < .05){
+  if(colorEnd.a < .01){
     discard;
   }
 
-  color *= texture2D( texture, vUV );
+  // color *= texture2D( texture, vUV );
 
-  gl_FragColor = color;
-  gl_FragColor.a *= step(vCounters, 1.0);
+  gl_FragColor = colorEnd;
+  // gl_FragColor.a *= step(vCounters, 1.0);
+
 }

@@ -11,7 +11,7 @@ class SceneApp extends Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
-		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.7;
 		this.orbitalControl.radius.value = 10;
 	}
 
@@ -32,7 +32,7 @@ class SceneApp extends Scene {
 		this._viewDear = new ViewDear();
 		this.lines = [];
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 10; i++) {
 			var l = new ViewLine(this);
 			l.alpha = .3 + Math.random() * .5
 			this.lines.push(l);
@@ -54,6 +54,8 @@ class SceneApp extends Scene {
 	}
 	transform(){
 		console.log("TRASNFROM");
+		this.orbitalControl.rx.value = 0;
+		this.orbitalControl.ry.value = 0;
 		this._vLine.transformTo(this._viewDear);
 	}
 

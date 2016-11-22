@@ -41,6 +41,11 @@ class SubsceneLines {
 
 	}
 
+	onClick(pt){
+    // console.log(pt);
+		// this._pointsManager.addPoint(pt)
+  }
+
 	transform(){
 		this._scene.orbitalControl.rx.value = 0;
 		this._scene.orbitalControl.ry.value = 0;

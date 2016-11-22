@@ -98,6 +98,7 @@ function _onVR(vrDisplay) {
 	}
 
 	Params.numParticles = hasVR ? 256 : 128;
+	Params.postEffect = hasVR;
 
 	// hasVR = true;
 	console.debug('Has VR ? ', hasVR, Params);

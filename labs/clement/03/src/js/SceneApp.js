@@ -75,7 +75,7 @@ class SceneApp extends Scene {
 			this.lines[i].render();
 		}
 		this._vLine.render();
-		this._viewDear.render();
+		// this._viewDear.render();
 		// this._pointsManager.update();
 		// this._vNoise.render();
 

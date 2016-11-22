@@ -345,6 +345,8 @@ class ViewLine extends alfrid.View {
 		}
 
 		if(this.state === STATES.wandering){
+
+
 			var pts = this.newPoints(this.line);
 			if(pts){
 				this.line.render(pts, this.needsUpdate);

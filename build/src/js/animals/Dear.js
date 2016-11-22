@@ -62,10 +62,10 @@ class Dear {
 			this.vertices[i][1] -= 2;
 		}
 
-    console.log(this.vertices);
 
 
-    this.position = [0,0, 2];
+
+    this.position = [0,-1, 2];
     this.m = glmatrix.mat4.create();
 
 

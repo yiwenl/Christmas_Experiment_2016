@@ -54,6 +54,7 @@ class ViewDear extends alfrid.View {
 
 
     this.finalP = this.getPoints(this.dear.getPoints());
+
     this.line = new Line(this.finalP);
 
 

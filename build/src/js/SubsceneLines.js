@@ -26,9 +26,9 @@ class SubsceneLines {
 		this.lines = [];
 
 		for (var i = 0; i < 10; i++) {
-			var l = new ViewLine(this);
-			l.alpha = .3 + Math.random() * .5
-			this.lines.push(l);
+			// var l = new ViewLine(this);
+			// l.alpha = .3 + Math.random() * .5
+			// this.lines.push(l);
 		}
 
 		this._vLine = new ViewLine(this);
@@ -46,9 +46,14 @@ class SubsceneLines {
 		// this._pointsManager.addPoint(pt)
   }
 
+	undraw(){
+		this._vLine.undraw();
+	}
+
 	transform(){
-		this._scene.orbitalControl.rx.value = 0;
-		this._scene.orbitalControl.ry.value = 0;
+		// console.log(this._scene);
+		// this._scene.orbitalControl.rx.value = 0;
+		// this._scene.orbitalControl.ry.value = 0;
 
 		this._vLine.transformTo(this._viewDear);
 	}

@@ -7,6 +7,7 @@ class Controller {
     this.keyboard = new Keyboard();
 
     this.keyboard.onKeyPress('1', this.transformPress.bind(this));
+    this.keyboard.onKeyPress('2', this.undrawPress.bind(this));
     this.keyboard.onKeyPress('a', this.pause.bind(this));
 
     this.aPressed = false;
@@ -21,6 +22,10 @@ class Controller {
       console.log("pause");
   }
 
+  undrawPress(e){
+    this.owner.undraw();
+  }
+  
   transformPress(e){
     this.owner.transform();
   }

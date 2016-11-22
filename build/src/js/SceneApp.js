@@ -73,7 +73,7 @@ class SceneApp extends alfrid.Scene {
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
 
-		
+
 		this._vTerrain = new ViewTerrain();
 		this._vWater = new ViewWater();
 		this._vFilmGrain = new ViewFilmGrain();
@@ -83,7 +83,7 @@ class SceneApp extends alfrid.Scene {
 
 		//	Sub scenes
 		this._subParticles = new SubsceneParticles(this);
-		this._subLines = new SubsceneLines();
+		this._subLines = new SubsceneLines(this);
 
 		this._composer = new EffectComposer(GL.width, GL.height);
 		this._passSoftLight = new Pass(fsSoftLight)
@@ -93,7 +93,7 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passFxaa);
 	}
 
-	
+
 	_getReflectionMatrix() {
 
 		const mInvertView = mat4.create();
@@ -149,7 +149,7 @@ class SceneApp extends alfrid.Scene {
 
 			// this._getReflectionMatrix();
 		}
-		
+
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
@@ -161,9 +161,9 @@ class SceneApp extends alfrid.Scene {
 
 			if(Params.postEffect) {
 				this._fboRender.bind();
-				GL.clear(0, 0, 0, 0);	
+				GL.clear(0, 0, 0, 0);
 			}
-			
+
 			GL.setMatrices(this.camera);
 			this._renderScene(true);
 
@@ -220,12 +220,12 @@ class SceneApp extends alfrid.Scene {
 		this._bSky.draw(this._textureStar);
 		this._vFg.render();
 		if(withWater) {
-			this._vWater.render(this._fboReflection.getTexture());	
+			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
 
-		
+
 		this._subParticles.render();
 		this._subLines.render();
 	}

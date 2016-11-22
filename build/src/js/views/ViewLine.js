@@ -15,6 +15,7 @@ import Easings from '../libs/Easings';
 const STATES = {
 	wandering: 0,
 	muting: 1,
+	leaving: 2,
 }
 let tempArray = [];
 class ViewLine extends alfrid.View {
@@ -80,8 +81,6 @@ class ViewLine extends alfrid.View {
 
 	newPoints(line){
 
-
-
 		if(this.state === STATES.muting){
 			if(!this.beenInside){
 				this.objectsToTween = [];
@@ -110,7 +109,7 @@ class ViewLine extends alfrid.View {
 			}
 		}
 
-		else {
+		else if (this.state === STATES.wandering) {
 			var pt0 = line.points[0];
 
 	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed;
@@ -128,23 +127,45 @@ class ViewLine extends alfrid.View {
 			return pts
 		}
 
+		else if (this.state === STATES.leaving) {
+			var pt0 = line.points[0];
+
+	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed;
+	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed;
+			pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4 * this.mainSpeed;
+
+			// pt0[0] = this.targetPoint[0];
+	    // pt0[1] = this.targetPoint[1];
+			// pt0[2] = this.targetPoint[2];
+
+			// for (var i = 1; i < line.points.length; i++) {
+			// 	line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4 * this.mainSpeed;
+			// 	line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .4 * this.mainSpeed;
+			// 	line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .4 * this.mainSpeed;
+			// }
+
+			var pts = this.getPoints(line.points);
+
+			return pts
+
+		}
+
+
 		return false
 		// console.log(pts);
 	}
 
 
-  	getPoints(pts){
+  getPoints(pts){
 		this.spline.points = pts;
 		let indexArray, n_sub = 6;
 
 		tempArray = [];
 		let index = 0;
 		for (let i = 0; i < pts.length * n_sub; i ++ ) {
-				indexArray = i / ( pts.length * n_sub );
-				this.spline.getPoint( indexArray,  tempArray);
-			}
-
-			// console.log(array);
+			indexArray = i / ( pts.length * n_sub );
+			this.spline.getPoint( indexArray,  tempArray);
+		}
 
 		return tempArray;
 	}
@@ -185,30 +206,71 @@ class ViewLine extends alfrid.View {
 		this.indexMotion %= this.motions.length;
 
 	}
+
 	update() {
 
 		if(this.state === STATES.wandering){
-
-			if(this.app.controller.spacePressed && !this.spacePressed){
-				this.spacePressed = true;
-
-			}
-			else if(!this.app.controller.spacePressed){
-				this.spacePressed = false;
-			}
-
 			this.time += 1 * this.speed * this.mainSpeed;
 			this.motions[this.indexMotion]();
 			// this.basic();
 
 			if(this.targetPoint[1] > 0) this.targetPoint[1] = 0;
 		}
-		else {
+		else if(this.state === STATES.muting){
 			this.targetPoint[0] = this.target.dear.vertices[0][0];
 			this.targetPoint[1] = this.target.dear.vertices[0][1];
 			this.targetPoint[2] = this.target.dear.vertices[0][2];
 		}
+		else if (this.state === STATES.leaving) {
+			// this.line.points * 6
+		}
 
+	}
+
+	undraw(){
+		this.state = STATES.leaving;
+
+		// console.log(this.line.points.length);
+		// this.line.points = this.target.dear.vertices.reverse();
+
+		var pt = 0;
+		for (var i = 0; i < this.target.dear.vertices.length; i++) {
+			this.line.points[this.line.points.length - 1 - i] = this.target.dear.vertices[i]
+			// pt++;
+		}
+
+		// for (var i = 0; i < this.line.vert.length; i+=6) {
+		// 	this.line.points[pt] = this.line.vert[i]
+		// 	pt++;
+		// }
+
+		this.nbPointsBeforeWandering = this.line.points * 6;
+
+		this.mainSpeed = .01
+		// get the main direction to place the target on x
+		let p1 = this.line.points[0];
+		let p2 = this.line.points[1];
+
+		let sub = [];
+		glmatrix.vec3.subtract(sub, p1, p2)
+		let dir = [];
+		glmatrix.vec3.normalize(dir, sub);
+
+		this.targetPoint.dir = dir;
+
+		// this.targetPoint[0] = p1[0] + Math.random();
+		// this.targetPoint[1] = p1[1] + Math.random();
+		// this.targetPoint[2] = p1[2] - Math.random();
+		// this.line.points[this.line.points.length-1][0] = p1[0] + dir[0] * .1;
+		// this.line.points[this.line.points.length-1][1] = p1[1] - 1;
+		// this.line.points[this.line.points.length-1][2] = p1[2] + dir[1] * .1;
+		this.targetPoint[0] = p1[0] + dir[0] * .5;
+		this.targetPoint[1] = p1[1] - 1 - Math.random() * 1;
+		this.targetPoint[2] = p1[2] + dir[1] * .5;
+
+		// this.line.render(this.getPoints(this.line.points));
+
+		// console.log(this.targetPoint);
 	}
 
 	transformTo(target){
@@ -228,6 +290,7 @@ class ViewLine extends alfrid.View {
 		this.target = target;
 
 		let nbPointsTarget = this.target.finalP.length/ 6 ; // harcoded for now, 4 the nuber of points between each vertices
+		// console.log(nbPointsTarget, this.line.points.length);
 
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
@@ -243,6 +306,7 @@ class ViewLine extends alfrid.View {
 			glmatrix.vec3.normalize(dir, sub);
 			let dist = glmatrix.vec3.distance(lastP1, lastP2)
 
+			// console.log("diff", diff);
 			for (var i = 0; i < diff; i++) {
 				var addPt = [];
 				var mult = [];
@@ -253,7 +317,9 @@ class ViewLine extends alfrid.View {
 					dir[2] * dist/diff * i,
 				]
 
-				glmatrix.vec3.add(this.line.points[index++], lastP1, direction);
+				glmatrix.vec3.add(addPt, lastP1, direction);
+
+				this.line.points.push(addPt);
 				this.needsUpdate = true;
 			}
 		}
@@ -323,7 +389,7 @@ class ViewLine extends alfrid.View {
 			return;
 		}
 
-		if(this.state === STATES.wandering){
+		if(this.state === STATES.wandering || this.state === STATES.leaving){
 
 
 			var pts = this.newPoints(this.line);
@@ -331,7 +397,7 @@ class ViewLine extends alfrid.View {
 				this.line.render(pts, this.needsUpdate);
 			}
 		}
-		else {
+		else if(this.state === STATES.muting) {
 			for (var i = 0; i < this.objectsToTween.length; i++) {
 				let o = this.objectsToTween[i]
 				if(!o.delete){

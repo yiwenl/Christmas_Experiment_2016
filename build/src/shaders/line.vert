@@ -29,9 +29,9 @@ void main() {
   vec2 aspectVec = vec2(aspect, 1.0);
   mat4 projViewModel = uProjectionMatrix * uViewMatrix * uModelMatrix;//projection * view * model;
 
-  vec4 previousProjected = projViewModel * vec4(aPrevious.x, -aPrevious.y, aPrevious.z, 1.0);
-  vec4 currentProjected = projViewModel * vec4(aVertexPosition.x, -aVertexPosition.y, aVertexPosition.z, 1.0);
-  vec4 nextProjected = projViewModel * vec4(aNext.x, -aNext.y, aNext.z, 1.0);
+  vec4 previousProjected = projViewModel * vec4(aPrevious.x, -aPrevious.y, -aPrevious.z, 1.0);
+  vec4 currentProjected = projViewModel * vec4(aVertexPosition.x, -aVertexPosition.y, -aVertexPosition.z, 1.0);
+  vec4 nextProjected = projViewModel * vec4(aNext.x, -aNext.y, -aNext.z, 1.0);
 
   // vec4 previousProjected = projViewModel * vec4(aPrevious, 1.0);
   // vec4 currentProjected = projViewModel * vec4(aVertexPosition, 1.0);
@@ -84,13 +84,15 @@ void main() {
   normal *= len/2.0;
   normal.x /= aspect;
 
-  vec4 offset =  vec4(normal * orientation, 0.0, 1.0);
+  vec4 offset =  vec4(normal * orientation, 0.0, 0.0);
   // vColor = vec3(orientation);
 
 
 
 
 
+
+
   gl_Position = currentProjected + offset;
-  gl_PointSize = 2.0;
+  gl_PointSize = 1.0;
 }

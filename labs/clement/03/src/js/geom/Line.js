@@ -56,19 +56,7 @@ class Line extends alfrid.Mesh {
     this.next.length = this.positions.length;
 
 
-    if( this.compareV3( 0, v.length - 1 ) ){
-      this.copyV3( v.length - 2 );
-    } else {
-      this.copyV3( 0 );
-    }
 
-    this.previous[indexP++] = tempArray1[0];
-    this.previous[indexP++] = tempArray1[1];
-    this.previous[indexP++] = tempArray1[2];
-
-    this.previous[indexP++] = tempArray1[0];
-    this.previous[indexP++] = tempArray1[1];
-    this.previous[indexP++] = tempArray1[2];
 
 
     for (var i = 0; i < v.length; i++) {
@@ -76,8 +64,8 @@ class Line extends alfrid.Mesh {
 
       if(needsUpdate){
         var c = i/v.length;
-        this.counters[indexC++] = c;
-        this.counters[indexC++] = c;
+        this.counters[indexC++] = [c];
+        this.counters[indexC++] = [c];
       }
 
       // console.log(this.positions.length);
@@ -90,46 +78,10 @@ class Line extends alfrid.Mesh {
       this.positions[index++] = v[i][2];
 
 
-      // caluclate pos and next
-      this.copyV3( i, tempArray1 );
 
-      if(i > 0) {
-        // we can fill the nexts
-        this.next[indexN++] = tempArray1[0];
-        this.next[indexN++] = tempArray1[1];
-        this.next[indexN++] = tempArray1[2];
-
-        this.next[indexN++] = tempArray1[0];
-        this.next[indexN++] = tempArray1[1];
-        this.next[indexN++] = tempArray1[2];
-
-        this.previous[indexP++] = tempArray2[0];
-        this.previous[indexP++] = tempArray2[1];
-        this.previous[indexP++] = tempArray2[2];
-
-        this.previous[indexP++] = tempArray2[0];
-        this.previous[indexP++] = tempArray2[1];
-        this.previous[indexP++] = tempArray2[2];
-      }
-
-      tempArray2[0] = tempArray1[0];
-      tempArray2[1] = tempArray1[1];
-      tempArray2[2] = tempArray1[2];
     }
 
-    if( this.compareV3( v.length - 1, 0 ) ){
-      this.copyV3( 1 );
-    } else {
-      this.copyV3( v.length - 1 );
-    }
 
-    this.next[indexN++] = tempArray1[0];
-    this.next[indexN++] = tempArray1[1];
-    this.next[indexN++] = tempArray1[2];
-
-    this.next[indexN++] = tempArray1[0];
-    this.next[indexN++] = tempArray1[1];
-    this.next[indexN++] = tempArray1[2];
 
 
     this.process(needsUpdate);
@@ -158,12 +110,65 @@ class Line extends alfrid.Mesh {
 
     var l = this.positions.length / 6;
 
-    var v, index = 0, indexN = 0;;
+    var v, index = 0, indexN = 0;
 
     // this.next = [];
 
+    if( this.compareV3( 0, l - 1 ) ){
+      this.copyV3( l - 2 );
+    } else {
+      this.copyV3( 0 );
+    }
 
+    this.previous[index++] = tempArray1[0];
+    this.previous[index++] = tempArray1[1];
+    this.previous[index++] = tempArray1[2];
 
+    this.previous[index++] = tempArray1[0];
+    this.previous[index++] = tempArray1[1];
+    this.previous[index++] = tempArray1[2];
+
+    for (var i = 0; i < l; i++) {
+      // caluclate pos and next
+      this.copyV3( i, tempArray1 );
+
+      if(i > 0) {
+        // we can fill the nexts
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.previous[index++] = tempArray2[0];
+        this.previous[index++] = tempArray2[1];
+        this.previous[index++] = tempArray2[2];
+
+        this.previous[index++] = tempArray2[0];
+        this.previous[index++] = tempArray2[1];
+        this.previous[index++] = tempArray2[2];
+      }
+
+      tempArray2[0] = tempArray1[0];
+      tempArray2[1] = tempArray1[1];
+      tempArray2[2] = tempArray1[2];
+    }
+
+    if( this.compareV3( l - 1, 0 ) ){
+      this.copyV3( 1, tempArray1 );
+    } else {
+      this.copyV3( l - 1, tempArray1 );
+    }
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
 
 
 
@@ -182,24 +187,37 @@ class Line extends alfrid.Mesh {
     // }
 
 
-
+    var pos = []
+    var next = []
+    var prev = []
+    for (var i = 0; i < this.positions.length; i+=3) {
+      pos.push([this.positions[i], this.positions[i+1], this.positions[i+2]]);
+      next.push([this.next[i], this.next[i+1], this.next[i+2]]);
+      prev.push([this.previous[i], this.previous[i+1], this.previous[i+2]]);
+    }
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
 
-    console.log('Previous', this.previous);
-    this.bufferVertex(this.positions, false);
-    this.bufferData(this.next, 'aNext', 3, false);
-    this.bufferData(this.previous, 'aPrevious', 3, false);
+    // console.log("position", this.positions.length);
+    // console.log("next", this.next.length);
+    // console.log("previous", this.previous.length);
+
+    this.bufferVertex(pos, false);
+    this.bufferData(next, 'aNext', 3, false);
+    this.bufferData(prev, 'aPrevious', 3, false);
 
     if(needsUpdate){
       index = 0;
       this.uvs = [];
       for( var j = 0; j < l; j++ ) {
-        this.uvs[index++] = j / ( l - 1 );
-        this.uvs[index++] = 0;
+        // this.uvs[index++] = j / ( l - 1 );
+        // this.uvs[index++] = 0;
+        //
+        // this.uvs[index++] = j / ( l - 1 );
+        // this.uvs[index++] = 1;
 
-        this.uvs[index++] = j / ( l - 1 );
-        this.uvs[index++] = 1;
+        this.uvs.push([j/(l-1), 0]);
+        this.uvs.push([j/(l-1), 1]);
       }
 
       index = 0;
@@ -220,12 +238,16 @@ class Line extends alfrid.Mesh {
       this.directions = [];
       for (var i = 0; i < this.positions.length; i++) {
         if(i % 2 === 0){
-          this.directions[index++] = 1;
+          this.directions[index++] = [1];
         }
         else {
-          this.directions[index++] = -1;
+          this.directions[index++] = [-1];
         }
       }
+      // console.log("indicesArray", this.indicesArray.length);
+      // console.log("directions", this.directions.length);
+      // console.log("uvs", this.uvs.length);
+      // console.log("counters", this.counters.length);
 
       this.bufferIndex(this.indicesArray, false);
       this.bufferData(this.directions, 'direction', 1, false);

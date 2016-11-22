@@ -32,7 +32,7 @@ class SceneApp extends Scene {
 		this._viewDear = new ViewDear();
 		this.lines = [];
 
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 20; i++) {
 			var l = new ViewLine(this);
 			l.alpha = .3 + Math.random() * .5
 			this.lines.push(l);
@@ -75,7 +75,7 @@ class SceneApp extends Scene {
 			this.lines[i].render();
 		}
 		this._vLine.render();
-		this._viewDear.render();
+		// this._viewDear.render();
 		// this._pointsManager.update();
 		// this._vNoise.render();
 

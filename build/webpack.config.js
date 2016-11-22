@@ -67,6 +67,13 @@ module.exports = {
       { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
     ]
   },
+  resolve: {
+    root:__dirname + "/js",
+    fallback: path.join(__dirname, "node_modules"),
+    alias: {
+      'alfrid'    : __dirname + "/src/js/libs/alfrid.js"
+    }
+  },
   plugins: prod ? [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),

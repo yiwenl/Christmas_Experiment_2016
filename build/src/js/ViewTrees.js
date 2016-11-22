@@ -82,7 +82,7 @@ class ViewTrees extends alfrid.View {
 
 
 
-		const NUM_TREES = 60;
+		const NUM_TREES = 50;
 		const positionOffsets = [];
 		const rotations = [];
 		const { terrainSize } = Params;

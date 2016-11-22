@@ -20,6 +20,7 @@ void main() {
     discard;
   }
 
+  colorEnd.a = 1.0;
   // color *= texture2D( texture, vUV );
 
   gl_FragColor = colorEnd;

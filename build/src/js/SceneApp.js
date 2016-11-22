@@ -15,6 +15,7 @@ import VIVEUtils from './VIVEUtils';
 import CameraVive from './CameraVive';
 
 import SubsceneParticles from './SubsceneParticles';
+import SubsceneLines from './SubsceneLines';
 
 import fsSoftLight from '../shaders/softlight.frag';
 
@@ -79,7 +80,10 @@ class SceneApp extends alfrid.Scene {
 		this._vTrees = new ViewTrees();
 		this._vFg = new ViewFarground();
 
+
+		//	Sub scenes
 		this._subParticles = new SubsceneParticles(this);
+		this._subLines = new SubsceneLines();
 
 		this._composer = new EffectComposer(GL.width, GL.height);
 		this._passSoftLight = new Pass(fsSoftLight)
@@ -131,6 +135,10 @@ class SceneApp extends alfrid.Scene {
 
 
 	toRender() {
+		//	update subscenes
+		this._subParticles.update();
+		this._subLines.update();
+
 		if(!hasVR) {
 			const { eye, center } = this.camera;
 			let distToWater       = eye[1] - Params.seaLevel;
@@ -142,8 +150,6 @@ class SceneApp extends alfrid.Scene {
 			// this._getReflectionMatrix();
 		}
 		
-		this._subParticles.update();		
-
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
@@ -221,6 +227,7 @@ class SceneApp extends alfrid.Scene {
 
 		
 		this._subParticles.render();
+		this._subLines.render();
 	}
 
 

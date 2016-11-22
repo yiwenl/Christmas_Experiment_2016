@@ -22,7 +22,7 @@ varying float vCounters;
 
 void main() {
 
-  float thickness = .1;
+  float thickness = .2;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);
@@ -86,5 +86,5 @@ void main() {
 
 
   gl_Position = currentProjected + offset;
-  // gl_PointSize = 2.0;
+  gl_PointSize = 2.0;
 }

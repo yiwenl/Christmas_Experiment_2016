@@ -43,5 +43,11 @@
     "style-loader": "^0.13.0",
     "webpack": "1.12.14",
     "webpack-dev-server": "1.14.1"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.18.0",
+    "gl-matrix": "2.3.2",
+    "scheduling": "1.0.3",
+    "parse-dds": "^1.2.1"
   }
 }

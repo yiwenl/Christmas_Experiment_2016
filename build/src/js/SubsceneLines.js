@@ -25,7 +25,7 @@ class SubsceneLines {
 
 		this.lines = [];
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 10; i++) {
 			var l = new ViewLine(this);
 			l.alpha = .3 + Math.random() * .5
 			this.lines.push(l);

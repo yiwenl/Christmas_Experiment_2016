@@ -307,6 +307,9 @@ class ViewLine extends alfrid.View {
 			Easings.instance.update();
 		}
 
+		GL.gl.enable(GL.gl.DEPTH_TEST)
+  	GL.gl.disable(GL.gl.CULL_FACE)
+
 		this.shader.bind();
 		this.shader.uniform("texture", "uniform1i", 0);
 		this.texture.bind(0);

@@ -27,6 +27,8 @@ if(document.body) {
 
 let img;
 
+let points = [];
+
 function _init() {
 
 	img = new Image();
@@ -44,6 +46,7 @@ function _init() {
 
 let canvas, ctx, size;
 let point = {x:0.5, y:0.5}
+let divContainer, divTemplate;
 function _onImageLoaded() {
 	canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -54,6 +57,44 @@ function _onImageLoaded() {
 	canvas.addEventListener('mousedown', _onPoint);
 
 	alfrid.Scheduler.addEF(render);
+
+
+	const btnAdd = document.body.querySelector('.button-add');
+	btnAdd.addEventListener('click', _addPoint);
+
+	const btnSave = document.body.querySelector('.button-save');
+	btnSave.addEventListener('click', _saveJson);
+
+	divContainer = document.body.querySelector('.points-container');
+	divTemplate = document.body.querySelector('.template-point');
+}
+
+
+function getNumber(value, prec = 100) {
+	return Math.floor(value * prec) / prec;
+}
+
+function _saveJson() {
+	saveJson(points);
+}
+
+function _addPoint() {
+	const p = {
+		x:point.x, 
+		y:point.y,
+		rx:params.rx,
+		ry:params.ry
+	}
+
+	points.push(p);
+
+
+	const div = divTemplate.cloneNode(true);
+	const pTag = div.querySelector('p');
+	pTag.innerHTML = `x:${getNumber(p.x)}, y:${getNumber(p.y)}, rx:${getNumber(p.rx)}, ry:${getNumber(p.ry)}`;
+	divContainer.appendChild(div);
+	div.classList.remove('template');
+
 }
 
 function circle(x, y, radius=2, color='#f00') {
@@ -79,8 +120,29 @@ function render() {
 	ctx.fillStyle = '#0f6';
 	ctx.fillRect(0, -s, 50, s*2);
 	ctx.restore();
+
+	renderPoints();
 }
 
+
+function renderPoints() {
+	for(let i=0; i<points.length; i++) {
+		_renderPoints(points[i]);
+	}
+}
+
+function _renderPoints(p) {
+	circle(p.x * size, p.y * size, 8, '#f70');
+
+	ctx.save();
+	ctx.translate(p.x * size, p.y * size);
+	ctx.rotate(p.ry - Math.PI/2);
+
+	const s = 3;
+	ctx.fillStyle = '#7fA';
+	ctx.fillRect(0, -s, 50, s*2);
+	ctx.restore();
+}
 
 function _onPoint(e) {
 	// console.log(e.clientX, e.clientY);
@@ -104,4 +166,31 @@ function _onKey(e) {
 function onChange() {
 	console.log('on Change :', params);
 	socket.emit('cameraAngle', params);
+}
+
+
+var saveJson = function(obj, name='points') {
+	var str = JSON.stringify(obj);
+	var data = encode( str );
+
+	var blob = new Blob( [ data ], {
+		type: 'application/octet-stream'
+	});
+	
+	var url = URL.createObjectURL( blob );
+	var link = document.createElement( 'a' );
+	link.setAttribute( 'href', url );
+	link.setAttribute( 'download', `${name}.json` );
+	var event = document.createEvent( 'MouseEvents' );
+	event.initMouseEvent( 'click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+	link.dispatchEvent( event );
+}
+
+
+var encode = function( s ) {
+	var out = [];
+	for ( var i = 0; i < s.length; i++ ) {
+		out[i] = s.charCodeAt(i);
+	}
+	return new Uint8Array( out );
 }

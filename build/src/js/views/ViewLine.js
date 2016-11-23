@@ -197,7 +197,7 @@ class ViewLine extends alfrid.View {
 				this.spacePressed = false;
 			}
 
-			this.time += 1 * this.speed * this.mainSpeed;
+			this.time += 1 * this.speed * this.mainSpeed * 0.5;
 			this.motions[this.indexMotion]();
 			// this.basic();
 

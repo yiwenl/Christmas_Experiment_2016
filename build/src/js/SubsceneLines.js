@@ -1,7 +1,7 @@
 // SubsceneLines.js
 import Controller from './controller/controller'
 import ViewDear from './views/viewsAnimals/ViewDear'
-import ViewLine from './views/ViewLine'
+import LinesManager from './managers/LinesManager'
 
 
 class SubsceneLines {
@@ -23,12 +23,10 @@ class SubsceneLines {
 		this._viewDear = new ViewDear();
 
 
-		this.lines = [];
+		this.linesManager = new LinesManager();
 
 		for (var i = 0; i < 4; i++) {
-			var l = new ViewLine(this);
-			l.alpha = .3 + Math.random() * .5
-			this.lines.push(l);
+			this.linesManager.addLine();
 		}
 
 		// this._vLine = new ViewLine(this);
@@ -37,7 +35,7 @@ class SubsceneLines {
 	}
 
 	pause(){
-		this._vLine.pause();
+		// this._vLine.pause();
 
 	}
 
@@ -47,16 +45,18 @@ class SubsceneLines {
   }
 
 	undraw(){
-		this.l.undraw();
+		// this.l.undraw();
+		this.linesManager.undraw();
 	}
 
 	transform(){
 		// console.log(this._scene);
 		// this._scene.orbitalControl.rx.value = 0;
 		// this._scene.orbitalControl.ry.value = 0;
-		this.l = this.lines[Math.floor(Math.random() * this.lines.length)]
+		this.linesManager.draw(this._viewDear);
+		// this.l = this.lines[Math.floor(Math.random() * this.lines.length)]
 		// this._vLine.transformTo(this._viewDear);
-		this.l.transformTo(this._viewDear);
+		// this.l.transformTo(this._viewDear);
 	}
 
 	update() {
@@ -66,9 +66,7 @@ class SubsceneLines {
 	render() {
 		this.controller.update();
 
-		for (var i = 0; i < this.lines.length; i++) {
-			this.lines[i].render();
-		}
+		this.linesManager.update();
 		// this._vLine.render();
 		// this._viewDear.render();
 	}

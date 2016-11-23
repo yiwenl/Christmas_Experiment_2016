@@ -50,13 +50,14 @@ class ViewLine extends alfrid.View {
 		this.line.points = this.points;
 
 		// properties for wandering animation
-		this.tick = 0;
-		this.startAngle = 0;
-		this.radius = 10;
+		this.mainSpeed = .6;
+		this.tick = Math.random() * Math.PI*2 * 100;
+		this.startAngle = Math.random() * Math.PI*2;
+		this.radius = Math.floor(Math.random() * 3) + 2;
 		this.targetPoint = [0,0,0];
-		this.xoff = 0;
-		this.yoff = 0;
-		this.speed = 1;
+		this.xoff = Math.random() * 100;
+		this.yoff = Math.random() * 100;
+		this.speed = .5 + Math.random();
 
 		this.motion = null;
 
@@ -82,6 +83,7 @@ class ViewLine extends alfrid.View {
 		this.xoff = Math.random() * 100;
 		this.yoff = Math.random() * 100;
 		this.speed = .5 + Math.random();
+
 		if(Math.random() > .5){
 			this.speed *= -1;
 		}
@@ -190,12 +192,13 @@ class ViewLine extends alfrid.View {
 		if(this.state === STATES.wandering){
 			this.time += 1 * this.speed * this.mainSpeed;
 			this.motion();
-			if(this.targetPoint[1] > 0) this.targetPoint[1] = 0;
+
+			if(this.targetPoint[1] >-1) this.targetPoint[1] = -1;
 		}
 		else if(this.state === STATES.muting){
-			this.targetPoint[0] = this.target.dear.vertices[0][0];
-			this.targetPoint[1] = this.target.dear.vertices[0][1];
-			this.targetPoint[2] = this.target.dear.vertices[0][2];
+			this.targetPoint[0] = this.animal.shape.vertices[0][0];
+			this.targetPoint[1] = this.animal.shape.vertices[0][1];
+			this.targetPoint[2] = this.animal.shape.vertices[0][2];
 		}
 	}
 
@@ -207,6 +210,10 @@ class ViewLine extends alfrid.View {
 		});
 
 		if(Math.random() > .5){
+			for (var i = 0; i < this.line.points.length; i++) {
+				this.line.points[this.line.points.length - 1- i] = this.line.vert[i*6];
+			}
+
 			this.wander();
 
 			return;
@@ -218,7 +225,7 @@ class ViewLine extends alfrid.View {
 		var startPoint = this.line.vert[this.line.vert.length-1];
 		this.path = []
 
-		let pathLine = this.target.finalP;
+		let pathLine = this.animal.finalP;
 		for (var i = 0; i < pathLine.length; i++) {
 			this.path[this.path.length] = pathLine[i];
 		}
@@ -236,7 +243,7 @@ class ViewLine extends alfrid.View {
 			];
 
 			if(pt[1] > -1) pt[1] = -1;
-			pathToLeave[index++] = pt;
+			pathToLeave[pathToLeave.length] = pt;
 
 			tick++;
 			index++;
@@ -278,7 +285,7 @@ class ViewLine extends alfrid.View {
 		return [x, y, z];
 	}
 
-	transformTo(target){
+	transformTo(animal){
 		Easings.instance.to(this, 4, {
 			alpha: .9,
 			ease: Easings.instance.easeOutCubic
@@ -291,9 +298,9 @@ class ViewLine extends alfrid.View {
 		let index = 0;
 
 
-		this.target = target;
+		this.animal = animal;
 
-		let nbPointsTarget = this.target.finalP.length/ 6 ;
+		let nbPointsTarget = this.animal.finalP.length/ 6 ;
 
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
@@ -343,9 +350,9 @@ class ViewLine extends alfrid.View {
 		// pathLine.reverse();
 
 		let firstPointLine = this.line.points[0];
-		let firstPointTarget = this.target.finalP[0];
+		let firstPointTarget = this.animal.finalP[0];
 		let pathToTarget = this.getPoints([firstPointLine, firstPointTarget]);
-		let pathTarget = this.target.finalP;
+		let pathTarget = this.animal.finalP;
 
 		index = 0;
 		for (var i = pathLine.length-1; i > -1; i--) {
@@ -366,7 +373,7 @@ class ViewLine extends alfrid.View {
 	pause() {
 		this.isPaused = !this.isPaused;
 	}
-	
+
 	render() {
 		if(Easings.instance.tweens.length){
 			Easings.instance.update();

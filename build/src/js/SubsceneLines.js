@@ -1,6 +1,6 @@
 // SubsceneLines.js
 import Controller from './controller/controller'
-import ViewDear from './views/ViewDear'
+import ViewDear from './views/viewsAnimals/ViewDear'
 import ViewLine from './views/ViewLine'
 
 

@@ -25,14 +25,14 @@ class SubsceneLines {
 
 		this.lines = [];
 
-		for (var i = 0; i < 10; i++) {
-			// var l = new ViewLine(this);
-			// l.alpha = .3 + Math.random() * .5
-			// this.lines.push(l);
+		for (var i = 0; i < 4; i++) {
+			var l = new ViewLine(this);
+			l.alpha = .3 + Math.random() * .5
+			this.lines.push(l);
 		}
 
-		this._vLine = new ViewLine(this);
-		this._vLine.alpha = .3 + Math.random() * .5
+		// this._vLine = new ViewLine(this);
+		// this._vLine.alpha = .3 + Math.random() * .5
 
 	}
 
@@ -47,15 +47,16 @@ class SubsceneLines {
   }
 
 	undraw(){
-		this._vLine.undraw();
+		this.l.undraw();
 	}
 
 	transform(){
 		// console.log(this._scene);
 		// this._scene.orbitalControl.rx.value = 0;
 		// this._scene.orbitalControl.ry.value = 0;
-
-		this._vLine.transformTo(this._viewDear);
+		this.l = this.lines[Math.floor(Math.random() * this.lines.length)]
+		// this._vLine.transformTo(this._viewDear);
+		this.l.transformTo(this._viewDear);
 	}
 
 	update() {
@@ -68,7 +69,7 @@ class SubsceneLines {
 		for (var i = 0; i < this.lines.length; i++) {
 			this.lines[i].render();
 		}
-		this._vLine.render();
+		// this._vLine.render();
 		// this._viewDear.render();
 	}
 }

@@ -29,7 +29,7 @@ class ViewLine extends alfrid.View {
 		this.app = app;
 		this.time = Math.random() * 0xFF;
 
-		this.mainSpeed = 1;
+		this.mainSpeed = .6;
 
 		this.perlin = new Perlin.Noise(Math.random());
 
@@ -137,8 +137,8 @@ class ViewLine extends alfrid.View {
 				// console.log(line.vert.length, this.path.length);
 				let index = 0;
 				for (var i = 0; i < line.vert.length; i++) {
-					var startIndex = i//( (line.vert.length -1 ) - i)
-					var endIndex =  line.vert.length-1 + i//(this.path.length - 1) - i
+					var startIndex = ( (line.vert.length -1 ) - i)
+					var endIndex =  (this.path.length - 1) - i
 
 					if(i === 0) console.log(startIndex, endIndex);
 
@@ -148,7 +148,7 @@ class ViewLine extends alfrid.View {
 						currentIndex: startIndex
 					}
 
-					var o = Easings.instance.returnVariable(obj, 5 + .1, {
+					var o = Easings.instance.returnVariable(obj, 2, {
 						currentIndex: endIndex
 					});
 
@@ -238,13 +238,34 @@ class ViewLine extends alfrid.View {
 
 	undraw(){
 		this.state = STATES.leaving;
+
+		Easings.instance.to(this, 4, {
+			delay: 2,
+			alpha: Math.random() * .6 + .2,
+			ease: Easings.instance.easeInCubic
+		});
+
+		// return;
+		if(Math.random() > .5){
+
+			return;
+		}
+		let disappearFunctions = [this.disappear1.bind(this), this.disappear2.bind(this)];
+		let rand = Math.random()
+		let dFunction;
+		if(Math.random() > .49){
+			dFunction = 0;
+		}
+		else {
+			dFunction = 1;
+		}
 		// for (var i = 0; i < this.line.points.length; i++) {
 		// 	this.line.points[i] = this.line.vert[i*6];
 		// }
 
 		this.nbPointsBeforeWandering = this.line.points * 6;
 
-		this.mainSpeed = .01
+		// this.mainSpeed = .01
 		// get the main direction to place the target on x
 
 		let p1 = this.line.vert[this.line.vert.length -1];
@@ -287,12 +308,25 @@ class ViewLine extends alfrid.View {
 		for (var i = 1; i < length; i++) {
 
 
-				var angleA = Math.random() * Math.PI * 2;
-				var angleB = Math.random() * Math.PI * 2;
-				var r = Math.random() * .1 + .02;
+			// first way to disappear
+			// var angleA = Math.cos(tick/10) * Math.PI * 2;
+			// var angleB = Math.cos(tick/20) * Math.PI/2 + Math.PI;
+			// var r = Math.random() * .5 + .2;
 
-				var posAdd = this.getRandomPos(r, angleA, angleB);
+			// second way to disappear
+			// var angleA = Math.cos(tick/20) * Math.random() * Math.PI;
+			// var angleB = Math.cos(tick/20) * Math.random() * -Math.PI + Math.PI;
+			// var r = Math.random() * .5 + .2;
+			//
+			// 	var angleA = Math.cos(tick/10) * Math.PI * 2;
+			// 	var angleB = Math.cos(tick/20) * Math.PI/2 + Math.PI;
+			// 	var r = Math.random() * .5 + .2;
+			//
+			// 	var posAdd = this.getRandomPos(r, angleA, angleB);
 
+			var posAdd = disappearFunctions[dFunction](tick, rand);
+
+				// console.log(posAdd);
 			// let pt = [];
 
 
@@ -301,6 +335,8 @@ class ViewLine extends alfrid.View {
 					pathToLeave[i-1][1]  + posAdd[1],
 					pathToLeave[i-1][2]  + posAdd[2],
 				];
+
+				if(pt[1] > -1) pt[1] = -1;
 			// if(i > 1){
 				tick++;
 				pathToLeave.push(pt)
@@ -310,9 +346,9 @@ class ViewLine extends alfrid.View {
 		}
 		// pathToLeave.push(endPoint)
 
-		console.log("pathToLeave.length", pathToLeave.length);
+		// console.log("pathToLeave.length", pathToLeave.length);
 		let pathLeaving = this.getPoints(pathToLeave);
-		console.log("pathLeaving.length", pathLeaving.length);
+		// console.log("pathLeaving.length", pathLeaving.length);
 
 		for (var i = 0; i < pathLeaving.length; i++) {
 			this.path.push(pathLeaving[i]);
@@ -323,10 +359,26 @@ class ViewLine extends alfrid.View {
 
 	}
 
+	disappear1(tick,rand){
+		var angleA = Math.cos(tick/20) * Math.random() * Math.PI +  Math.PI * 2 * rand;
+		var angleB = Math.cos(tick/20) * Math.random() * -Math.PI + Math.PI + Math.PI * 2 * rand;
+		var r = Math.random() * .5 + .2;
+		var posAdd = this.getRandomPos(r, angleA, angleB);
+
+		return posAdd;
+	}
+
+	disappear2(tick,rand){
+		var angleA = Math.cos(tick/10) * Math.PI * 2 + Math.PI * 2 * rand;
+		var angleB = Math.cos(tick/20) * Math.PI/2 + Math.PI + Math.PI * 2 * rand;
+		var r = Math.random() * .5 + .2;
+
+		return this.getRandomPos(r, angleA, angleB);
+	}
 	getRandomPos(r, s, t){
-		let x = r * cos(s) * sin(t)
-		let y = r * sin(s) * sin(t)
-		let z = r * cos(t)
+		let x = r * Math.cos(s) * Math.sin(t)
+		let y = r * Math.sin(s) * Math.sin(t)
+		let z = r * Math.cos(t)
 
 		return [x, y, z];
 	}
@@ -339,7 +391,7 @@ class ViewLine extends alfrid.View {
 
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
-		this.mainSpeed = .4;
+		this.mainSpeed = .3;
 		this.state = STATES.muting;
 		let index = 0;
 
@@ -491,7 +543,7 @@ class ViewLine extends alfrid.View {
 			}
 			else if(this.state === STATES.leaving){
 				this.beenInside = false;
-				this.mainSpeed = 1;
+				this.mainSpeed = .6;
 				for (var i = 0; i < this.line.points.length; i++) {
 					this.line.points[this.line.points.length - 1- i] = this.line.vert[i*6];
 				}
@@ -540,6 +592,9 @@ class ViewLine extends alfrid.View {
 		return c*(t*t*t + 1) + b;
 	};
 
+	easeInSine (t, b, c, d) {
+		return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+	}
 
 }
 

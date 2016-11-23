@@ -87,6 +87,8 @@ class ViewLine extends alfrid.View {
 				this.beenInside = true;
 
 				let index = 0;
+
+				// console.log(line.vert.length, this.path.length);
 				for (var i = 0; i < line.vert.length; i++) {
 					var startIndex = ( (line.vert.length -1 ) - i)   // 4 is hardcoded but correspond to the sub points of the dear spline
 					var endIndex =  (this.path.length - 1) - i  // 4 is hardcoded but correspond to the sub points of the dear spline
@@ -128,25 +130,32 @@ class ViewLine extends alfrid.View {
 		}
 
 		else if (this.state === STATES.leaving) {
-			var pt0 = line.points[0];
+			if(!this.beenInside){
+				this.objectsToTween = [];
+				this.beenInside = true;
 
-	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed;
-	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed;
-			pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4 * this.mainSpeed;
+				// console.log(line.vert.length, this.path.length);
+				let index = 0;
+				for (var i = 0; i < line.vert.length; i++) {
+					var startIndex = i//( (line.vert.length -1 ) - i)
+					var endIndex =  line.vert.length-1 + i//(this.path.length - 1) - i
 
-			// pt0[0] = this.targetPoint[0];
-	    // pt0[1] = this.targetPoint[1];
-			// pt0[2] = this.targetPoint[2];
+					if(i === 0) console.log(startIndex, endIndex);
 
-			// for (var i = 1; i < line.points.length; i++) {
-			// 	line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4 * this.mainSpeed;
-			// 	line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .4 * this.mainSpeed;
-			// 	line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .4 * this.mainSpeed;
-			// }
+					var obj = {
+						startIndex: startIndex,
+						endIndex: endIndex,
+						currentIndex: startIndex
+					}
 
-			var pts = this.getPoints(line.points);
+					var o = Easings.instance.returnVariable(obj, 5 + .1, {
+						currentIndex: endIndex
+					});
 
-			return pts
+					o.point = startIndex;
+					this.objectsToTween[index++] = o;
+				}
+			}
 
 		}
 
@@ -229,50 +238,98 @@ class ViewLine extends alfrid.View {
 
 	undraw(){
 		this.state = STATES.leaving;
-
-		// console.log(this.line.points.length);
-		// this.line.points = this.target.dear.vertices.reverse();
-
-		var pt = 0;
-		for (var i = 0; i < this.target.dear.vertices.length; i++) {
-			this.line.points[this.line.points.length - 1 - i] = this.target.dear.vertices[i]
-			// pt++;
-		}
-
-		// for (var i = 0; i < this.line.vert.length; i+=6) {
-		// 	this.line.points[pt] = this.line.vert[i]
-		// 	pt++;
+		// for (var i = 0; i < this.line.points.length; i++) {
+		// 	this.line.points[i] = this.line.vert[i*6];
 		// }
 
 		this.nbPointsBeforeWandering = this.line.points * 6;
 
 		this.mainSpeed = .01
 		// get the main direction to place the target on x
-		let p1 = this.line.points[0];
-		let p2 = this.line.points[1];
+
+		let p1 = this.line.vert[this.line.vert.length -1];
+		let p2 = this.line.vert[this.line.vert.length -2];
 
 		let sub = [];
 		glmatrix.vec3.subtract(sub, p1, p2)
 		let dir = [];
 		glmatrix.vec3.normalize(dir, sub);
 
-		this.targetPoint.dir = dir;
+		// this.targetPoint.dir = dir;
 
-		// this.targetPoint[0] = p1[0] + Math.random();
-		// this.targetPoint[1] = p1[1] + Math.random();
-		// this.targetPoint[2] = p1[2] - Math.random();
-		// this.line.points[this.line.points.length-1][0] = p1[0] + dir[0] * .1;
-		// this.line.points[this.line.points.length-1][1] = p1[1] - 1;
-		// this.line.points[this.line.points.length-1][2] = p1[2] + dir[1] * .1;
-		this.targetPoint[0] = p1[0] + dir[0] * .5;
-		this.targetPoint[1] = p1[1] - 1 - Math.random() * 1;
-		this.targetPoint[2] = p1[2] + dir[1] * .5;
+		// tempArray[0] = p1[0] + dir[0] * .5;
+		// tempArray[1] = p1[1] - 1 - Math.random() * 1;
+		// tempArray[2] = p1[2] + dir[1] * .5;
 
-		// this.line.render(this.getPoints(this.line.points));
+		var startPoint = this.line.vert[this.line.vert.length-1];
+		var endPoint = [Math.random() * 0.01 - 0.01/2, -Math.random(p1[1] * dir[1] * .01), Math.random() * .01 - 0.01/2];
+		// var endPoint = [p1[0] + dir[0] * .01, -Math.abs(p1[1] * dir[1] * .01), p1[2] + dir[2] * .01];
+		let dist = glmatrix.vec3.distance(startPoint, endPoint)
 
-		// console.log(this.targetPoint);
+		// console.log(dist);
+
+		// create some points between these two
+		this.path = []
+
+		let pathLine = this.target.finalP;
+
+		// console.log(pathLine.length);
+		for (var i = 0; i < pathLine.length; i++) {
+			this.path.push(pathLine[i])
+		}
+
+
+		// this.path.push(startPoint)
+		let lastPt = null
+		let length = this.line.points.length;
+		let pathToLeave = [startPoint];
+		let tick = 0
+		for (var i = 1; i < length; i++) {
+
+
+				var angleA = Math.random() * Math.PI * 2;
+				var angleB = Math.random() * Math.PI * 2;
+				var r = Math.random() * .1 + .02;
+
+				var posAdd = this.getRandomPos(r, angleA, angleB);
+
+			// let pt = [];
+
+
+				let pt = [
+					pathToLeave[i-1][0]  + posAdd[0],
+					pathToLeave[i-1][1]  + posAdd[1],
+					pathToLeave[i-1][2]  + posAdd[2],
+				];
+			// if(i > 1){
+				tick++;
+				pathToLeave.push(pt)
+			// }
+
+			// lastPt = pt
+		}
+		// pathToLeave.push(endPoint)
+
+		console.log("pathToLeave.length", pathToLeave.length);
+		let pathLeaving = this.getPoints(pathToLeave);
+		console.log("pathLeaving.length", pathLeaving.length);
+
+		for (var i = 0; i < pathLeaving.length; i++) {
+			this.path.push(pathLeaving[i]);
+		}
+
+		this.beenInside = false;
+		this.newPoints(this.line)
+
 	}
 
+	getRandomPos(r, s, t){
+		let x = r * cos(s) * sin(t)
+		let y = r * sin(s) * sin(t)
+		let z = r * cos(t)
+
+		return [x, y, z];
+	}
 	transformTo(target){
 
 		Easings.instance.to(this, 4, {
@@ -334,6 +391,7 @@ class ViewLine extends alfrid.View {
 
 		// NOW DEFINE THE TOTAL PATH FROM THE LAST LINE POINTS TO THE LAST TARGET POINT
 
+		console.log("HERE");
 		this.path = [];
 
 		this.line.vert = this.getPoints(this.line.points)
@@ -389,7 +447,7 @@ class ViewLine extends alfrid.View {
 			return;
 		}
 
-		if(this.state === STATES.wandering || this.state === STATES.leaving){
+		if(this.state === STATES.wandering ){
 
 
 			var pts = this.newPoints(this.line);
@@ -397,14 +455,19 @@ class ViewLine extends alfrid.View {
 				this.line.render(pts, this.needsUpdate);
 			}
 		}
-		else if(this.state === STATES.muting) {
+		else if(this.state === STATES.muting || this.state === STATES.leaving) {
 			for (var i = 0; i < this.objectsToTween.length; i++) {
 				let o = this.objectsToTween[i]
 				if(!o.delete){
 					for (var k = 0; k < o.props.length; k++) {
 						var e = o.props[k];
 
-						o.obj[e.var] = this.easeOutCubic(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+						if(this.state === STATES.muting){
+							o.obj[e.var] = this.easeOutCubic(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+						}
+						else {
+							o.obj[e.var] = this.easeInCubic(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+						}
 
 						let indexFloor = Math.floor(o.obj[e.var]);
 						this.line.vert[o.point][0] = this.path[indexFloor][0];
@@ -425,6 +488,14 @@ class ViewLine extends alfrid.View {
 
 			if(this.objectsToTween.length){
 				this.line.render(this.line.vert, this.needsUpdate);
+			}
+			else if(this.state === STATES.leaving){
+				this.beenInside = false;
+				this.mainSpeed = 1;
+				for (var i = 0; i < this.line.points.length; i++) {
+					this.line.points[this.line.points.length - 1- i] = this.line.vert[i*6];
+				}
+				this.state = STATES.wandering;
 			}
 
 		}
@@ -448,6 +519,11 @@ class ViewLine extends alfrid.View {
 
      arr.length--;
   };
+
+	easeInCubic(t, b, c, d) {
+		t /= d;
+		return c*t*t*t + b;
+	};
 
 	easeOutSine(t, b, c, d) {
 		return c * Math.sin(t/d * (Math.PI/2)) + b;

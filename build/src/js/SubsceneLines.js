@@ -69,6 +69,7 @@ class SubsceneLines {
 			this.lines[i].render();
 		}
 		this._vLine.render();
+		// this._viewDear.render();
 	}
 }
 

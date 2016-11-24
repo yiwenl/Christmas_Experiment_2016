@@ -13,8 +13,12 @@ import fs from '../shaders/line.frag';
 let tempArray = [];
 class ViewDear extends alfrid.View {
 
-	constructor() {
+	constructor(pos) {
+		this.pos = pos;
+		alert();
 		super(vs, fs);
+
+		console.log("-----------------", pos);
 		this.time = Math.random() * 0xFF;
 
     this.totalPts = [];
@@ -38,14 +42,15 @@ class ViewDear extends alfrid.View {
 			// Upload the image into the this.texture.
 			GL.gl.texImage2D(GL.gl.TEXTURE_2D, 0, GL.gl.RGBA, GL.gl.RGBA, GL.gl.UNSIGNED_BYTE, image);
 	  }.bind(this)
+
 	}
 
 
 	_init() {
-		this.dear = new Dear();
+		this.dear = new Dear(this.pos);
 
-    this.points = []
-    this.spline = new Spline([]);
+		this.points = []
+		this.spline = new Spline([]);
 
 
 
@@ -53,13 +58,8 @@ class ViewDear extends alfrid.View {
 
 
 
-    this.finalP = this.getPoints(this.dear.getPoints());
-    this.line = new Line(this.finalP);
-
-
-
-
-
+		this.finalP = this.getPoints(this.dear.getPoints());
+		this.line = new Line(this.finalP);
 	}
 
 

@@ -9,6 +9,8 @@ class SubsceneLines {
 		this._scene = mScene;
 		this._initTextures();
 		this._initViews();
+
+
 	}
 
 	_initTextures() {
@@ -16,16 +18,30 @@ class SubsceneLines {
 	}
 
 	_initViews() {
+		this._step = 0;
+		this._spots = [
+			[-15, -5, 15],
+			[15, -5, 15],
+			[15, -5, -15],
+			[0, -5, -0]
+		]
 
 		this.controller = new Controller(this);
 
 		// just a dear
-		this._viewDear = new ViewDear();
+		// this._viewDear = new ViewDear();
+		this.animals = [];
+		for (var i = 0; i < this._spots.length; i++) {
+			let vDear = new ViewDear()
+			vDear.reset([this._spots[i][0], -1, this._spots[i][2]])
+
+			this.animals.push(vDear);
+		}
 
 
 		this.linesManager = new LinesManager();
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 6; i++) {
 			this.linesManager.addLine();
 		}
 
@@ -36,7 +52,7 @@ class SubsceneLines {
 
 	pause(){
 		// this._vLine.pause();
-
+		// this.linesManager.moveTo([-5, -2, 5])
 	}
 
 	onClick(pt){
@@ -50,13 +66,9 @@ class SubsceneLines {
 	}
 
 	transform(){
-		// console.log(this._scene);
-		// this._scene.orbitalControl.rx.value = 0;
-		// this._scene.orbitalControl.ry.value = 0;
-		this.linesManager.draw(this._viewDear);
-		// this.l = this.lines[Math.floor(Math.random() * this.lines.length)]
-		// this._vLine.transformTo(this._viewDear);
-		// this.l.transformTo(this._viewDear);
+		// this.linesManager.draw(this._viewDear);
+		this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
+		this._step++
 	}
 
 	update() {

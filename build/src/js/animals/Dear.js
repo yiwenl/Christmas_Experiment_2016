@@ -3,7 +3,7 @@
 import glmatrix from 'gl-matrix';
 
 class Dear {
-  constructor(){
+  constructor(pos){
     this.vertices = [
       [813, 68, 0],
 			[788, 157, 0],
@@ -65,7 +65,8 @@ class Dear {
 
 
 
-    this.position = [0,-1, 2];
+    this.position = pos || [0,-1, 2];
+    console.log(pos);
     this.m = glmatrix.mat4.create();
 
 

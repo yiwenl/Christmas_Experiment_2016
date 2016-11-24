@@ -16,6 +16,8 @@ const STATES = {
 	wandering: 0,
 	muting: 1,
 	leaving: 2,
+	travelling: 3,
+	dying: 4,
 }
 let tempArray = [];
 class ViewLine extends alfrid.View {
@@ -28,10 +30,12 @@ class ViewLine extends alfrid.View {
 		this.isPaused = false;
 		this.app = app;
 		this.time = Math.random() * 0xFF;
+		this.tickLeaving = 0;
 
 		this.mainSpeed = .6;
 
 		this.perlin = new Perlin.Noise(Math.random());
+		this.position = [0, 0, 0]
 
 	}
 
@@ -50,6 +54,7 @@ class ViewLine extends alfrid.View {
 		this.line.points = this.points;
 
 		// properties for wandering animation
+		this.willDraw = false; // sorry, will change that, used to know if the line is supposed to draw after travelling
 		this.mainSpeed = .6;
 		this.tick = Math.random() * Math.PI*2 * 100;
 		this.startAngle = Math.random() * Math.PI*2;
@@ -62,13 +67,39 @@ class ViewLine extends alfrid.View {
 		this.motion = null;
 
 		this.motions = {
-			0: [this.circle.bind(this), this.snake.bind(this)],
-			2: [this.disappear1.bind(this), this.disappear2.bind(this)]
+			0: [this.circle.bind(this), this.snake.bind(this), this.basic.bind(this)],
+			2: [this.disappear1.bind(this), this.disappear2.bind(this)],
+			3: [this.travel1.bind(this), this.travel2.bind(this), this.travel3.bind(this)]
 		}
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
 
 		this.wander()
+
+	}
+
+	travel(index){
+		if(this.state === STATES.muting){
+			for (var i = 0; i < this.line.points.length; i++) {
+				this.line.points[this.line.points.length - 1- i] = this.line.vert[i*6];
+			}
+		}
+
+		this.state = STATES.travelling;
+
+		if(index){
+			if(index === 1){
+				this.motion = this.travelPair1.bind(this)
+			}
+			else {
+				this.motion = this.travelPair2.bind(this)
+			}
+		}
+		else {
+			var ix = Math.floor(Math.random() * this.motions[this.state].length)
+			console.log(ix);
+			this.motion = this.motions[this.state][ix];
+		}
 
 	}
 
@@ -79,7 +110,7 @@ class ViewLine extends alfrid.View {
 		this.tick = Math.random() * Math.PI*2 * 100;
 		this.startAngle = Math.random() * Math.PI*2;
 		this.radius = Math.floor(Math.random() * 3) + 2;
-		this.targetPoint = [0,0,0];
+
 		this.xoff = Math.random() * 100;
 		this.yoff = Math.random() * 100;
 		this.speed = .5 + Math.random();
@@ -109,7 +140,7 @@ class ViewLine extends alfrid.View {
 				}
 			}
 		}
-		else if (this.state === STATES.wandering) {
+		else if (this.state === STATES.wandering || this.state === STATES.travelling) {
 			var pt0 = line.points[0];
 
 	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed;
@@ -162,14 +193,76 @@ class ViewLine extends alfrid.View {
 		return tempArray;
 	}
 
+	stop(){
+		this.state = STATES.dying;
+	}
+
+	travel1(){
+		this.targetPoint[0] += (this.position[0] - this.targetPoint[0]) * .01;
+		this.targetPoint[1] += (this.position[1] - this.targetPoint[1]) * .01;
+		this.targetPoint[2] += (this.position[2] - this.targetPoint[2]) * .01;
+	}
+
+	travel2(){
+		this.targetPoint[0] += (this.position[0] - this.targetPoint[0]) * .01;
+		this.targetPoint[1] += (this.position[1] - this.targetPoint[1]) * .01;
+		this.targetPoint[2] += (this.position[2] - this.targetPoint[2]) * .01;
+		// this.targetPoint[0] += Math.cos(this.time/10 + Math.PI /4) * .08
+		this.targetPoint[0] +=  Math.cos(this.time/10 + Math.PI /4) * .08
+		// this.targetPoint[1] += 	Math.cos(this.time/10 + Math.PI /4) * .08
+		// this.targetPoint[2] += Math.sin(this.time/10 + Math.PI /4) * .08
+	}
+
+	travel3(){
+		this.targetPoint[0] += (this.position[0] - this.targetPoint[0]) * .1;
+		this.targetPoint[1] += (this.position[1] - this.targetPoint[1]) * .06;
+		this.targetPoint[2] += (this.position[2] - this.targetPoint[2]) * .1;
+		// this.targetPoint[0] += Math.cos(this.time/10 + Math.PI /4) * .08
+		// this.targetPoint[0] +=  Math.sin(this.time/10 + Math.PI /4) * .8
+		this.targetPoint[1] += 	Math.sin(this.time/10) * .1
+		// this.targetPoint[2] += Math.cos(this.time/10 + Math.PI /4) * .08
+	}
+
+	travelPair2(){
+		this.targetPoint[0] = this.position[0];
+		this.targetPoint[1] = this.position[1];
+		this.targetPoint[2] = this.position[2];
+
+		let tickLeaving = Math.sin(this.time/10) * 10
+		let tickLeaving2 = Math.cos(this.time/10) * 10
+		// let tickLeaving3 = Math.sin(this.time/40) * 10
+		// this.targetPoint[0] += Math.cos(this.time/10 + Math.PI /4) * .08
+		this.targetPoint[0] -= tickLeaving * .1
+		// this.targetPoint[1] += tickLeaving2 * .1
+		// this.targetPoint[2] += tickLeaving3 * .1
+		// this.targetPoint[2] += tickLeaving * .2
+		// this.targetPoint[2] += Math.cos(this.time/10 + Math.PI / 4) * .08
+	}
+
+	travelPair1(){
+		this.targetPoint[0] = this.position[0];
+		this.targetPoint[1] = this.position[1];
+		this.targetPoint[2] = this.position[2];
+
+		let tickLeaving = Math.sin(this.time/10) * 10
+		let tickLeaving2 = Math.sin(this.time/20) * 10
+		// let tickLeaving3 = Math.sin(this.time/40) * 10
+		// this.targetPoint[0] += Math.cos(this.time/10 + Math.PI /4) * .08
+		this.targetPoint[0] += tickLeaving * .1
+		// this.targetPoint[1] += tickLeaving2 * .1
+		// this.targetPoint[2] += tickLeaving3 * .1
+		// this.targetPoint[2] += tickLeaving * .2
+		// this.targetPoint[2] += Math.cos(this.time/10 + Math.PI / 4) * .08
+	}
+
 	basic(){
-		this.targetPoint[0] = Math.cos(this.time/20 + this.startAngle) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/20 + this.startAngle) * this.radius;
+		this.targetPoint[0] = this.position[0] + Math.cos(this.time/20 + this.startAngle) * this.radius;
+		this.targetPoint[2] = this.position[2] + Math.sin(this.time/20 + this.startAngle) * this.radius;
 	}
 
 	circle(){
-		this.targetPoint[0] = Math.cos(this.time/20 + this.startAngle) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/20 + this.startAngle) * this.radius;
+		this.targetPoint[0] = this.position[0] + Math.cos(this.time/20 + this.startAngle) * this.radius;
+		this.targetPoint[2] = this.position[2] + Math.sin(this.time/20 + this.startAngle) * this.radius;
 
 		this.xoff += .01;
 		this.yoff += .01;
@@ -180,10 +273,10 @@ class ViewLine extends alfrid.View {
 	}
 
 	snake(){
-		this.targetPoint[0] = Math.cos(this.time/40 + this.startAngle) * this.radius;
-		this.targetPoint[2] = Math.sin(this.time/50 + this.startAngle) * this.radius * 1.2 ;
+		this.targetPoint[0] = this.position[0] + Math.cos(this.time/40 + this.startAngle) * this.radius;
+		this.targetPoint[2] = this.position[2] + Math.sin(this.time/50 + this.startAngle) * this.radius * 1.2 ;
 
-		this.targetPoint[1] = - Math.abs(Math.sin(this.time / 100) * 4) - 2;
+		this.targetPoint[1] = this.position[1] - Math.abs(Math.sin(this.time / 100) * 4) - 2;
 		this.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(this.time/40 + this.startAngle))) * .5;
 		this.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(this.time/20 + this.startAngle))) * 1;
 	}
@@ -200,9 +293,18 @@ class ViewLine extends alfrid.View {
 			this.targetPoint[1] = this.animal.shape.vertices[0][1];
 			this.targetPoint[2] = this.animal.shape.vertices[0][2];
 		}
+		else if(this.state === STATES.travelling){
+			this.time += 1 * this.speed * this.mainSpeed;
+
+			// this.travel1()
+
+			this.motion();
+		}
 	}
 
 	undraw(){
+		this.willDraw = false;
+
 		Easings.instance.to(this, 4, {
 			delay: 2,
 			alpha: Math.random() * .6 + .2,
@@ -291,6 +393,7 @@ class ViewLine extends alfrid.View {
 			ease: Easings.instance.easeOutCubic
 		});
 
+		this.willDraw = null;
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
 		this.mainSpeed = .3;
@@ -395,9 +498,7 @@ class ViewLine extends alfrid.View {
 			return;
 		}
 
-		if(this.state === STATES.wandering ){
-
-
+		if(this.state === STATES.wandering || this.state === STATES.travelling){
 			var pts = this.newPoints(this.line);
 			if(pts){
 				this.line.render(pts, this.needsUpdate);

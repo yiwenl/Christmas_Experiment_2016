@@ -13,11 +13,12 @@ import fs from '../../../shaders/line.frag';
 let tempArray = [];
 class ViewAnimal extends alfrid.View {
 
-	constructor(vs, fs) {
+	constructor(vs, fs, pos) {
 		super(vs, fs);
+		this.pos = pos;
 
-		console.log("0-----");
-		this.shape = new Dear();
+		console.log("0-----", this.pos);
+		// this.shape = new Dear();
 
 		this.time = Math.random() * 0xFF;
 
@@ -26,7 +27,13 @@ class ViewAnimal extends alfrid.View {
 
 
 	_init() {
-    this.points = []
+
+	}
+
+	reset(pos){
+		this.pos = pos;
+
+		this.points = []
     this.spline = new Spline([]);
 		this.tick = 0;
     this.finalP = this.getPoints(this.shape.getPoints());

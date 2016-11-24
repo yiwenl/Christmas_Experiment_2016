@@ -8,14 +8,17 @@ import fs from '../../../shaders/line.frag';
 
 class ViewDear extends ViewAnimal {
 
-	constructor() {
-		super(vs, fs);
+	constructor(pos) {
+		super(vs, fs, pos);
 	}
 
-	_init(){
-		this.shape = new Dear();
-		super._init();
+	reset(pos){
+		this.shape = new Dear(pos);
+		super.reset(pos);
 	}
+	// _init(){
+	//
+	// }
 }
 
 export default ViewDear;

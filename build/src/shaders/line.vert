@@ -23,7 +23,7 @@ varying float vCounters;
 
 void main() {
 
-  float thickness = .2;
+  float thickness = .1;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);

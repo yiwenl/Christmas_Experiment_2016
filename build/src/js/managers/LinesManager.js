@@ -7,6 +7,14 @@ const STATES = {
   travelling: 1
 }
 
+const STATES_LINE = {
+  wandering: 0,
+	muting: 1,
+	leaving: 2,
+	travelling: 3,
+	dying: 4,
+}
+
 class LinesManager {
   constructor(){
     this.state = STATES.wandering;
@@ -41,18 +49,18 @@ class LinesManager {
   }
 
   moveTo(pt, animal){
-    // this.undraw();
+    let freeLines = [];
+    for (var i = 0; i < this.lines.length; i++) {
+      if(this.lines[i].state !== STATES_LINE.muting){
+        freeLines.push(i);
+      }
+    }
 
     this.state = STATES.travelling;
 
-    // Im tired but Im gonna try something
-    let freeLines = [];
-    for (var i = 0; i < this.lines.length; i++) {
-      freeLines.push(i);
-    }
 
     // get one index, it will draw
-    let idx = Math.floor(Math.random() * this.lines.length);
+    let idx = Math.floor(Math.random() * freeLines.length);
     let indexToDraw = freeLines[idx];
     this.splice(freeLines, idx);
 
@@ -61,7 +69,6 @@ class LinesManager {
     if(freeLines.length >= 2){
       indexPair1 = freeLines[0];
       this.splice(freeLines, 0);
-
       // brain.exe just crashed
       indexPair2 = freeLines[0];
       this.splice(freeLines, 0);
@@ -90,23 +97,17 @@ class LinesManager {
         this.targetPoints[i][2] = pt[2] + Math.random() * 8 - 8/2;
       }
 
-      let duration = (6 + Math.random() * 10);
+      let duration = (6 + Math.random() * 5);
       if(i === indexToDraw){
         duration = 2
         l.willDraw = animal;
       }
       // set the easings
-      var obj = { "0": l.position[0], "1": l.position[1], "2": l.position[2]}
-
-      // fake tween, just to get the info we want for the tween
-      // let duration = (i === indexToDraw ? 2 : (6 + Math.random() * 10))
-      var o = Easings.instance.returnVariable(obj, duration, {
-        "0": this.targetPoints[i][0],
-        "1": this.targetPoints[i][1],
-        "2": this.targetPoints[i][2]
+      this._moveLineTo({
+        line: l,
+        pt: this.targetPoints[i],
+        duration: duration
       });
-
-      this.objectsToTween[index++] = o;
 
       if(i === indexPair1){
         this.lines[i].travel(1);
@@ -120,8 +121,26 @@ class LinesManager {
     }
   }
 
+  // this method has been created cause I needed one for the callback after undrawing
+  _moveLineTo(data){
+    var obj = { "0": data.line.position[0], "1": data.line.position[1], "2": data.line.position[2]}
 
-  undraw(){
+    // fake tween, just to get the info we want for the tween
+    var o = Easings.instance.returnVariable(obj, data.duration, {
+      "0": data.pt[0],
+      "1": data.pt[1],
+      "2": data.pt[2]
+    });
+
+    this.objectsToTween[this.objectsToTween.length] = o;
+
+    if(data.travel){
+      line.travel();
+    }
+
+  }
+
+  undraw(callback){
     for (let i = 0; i < this.linesDrawing.length; i++) {
       let l = this.linesDrawing[i];
       l.undraw();

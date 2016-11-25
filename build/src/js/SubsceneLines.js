@@ -23,7 +23,10 @@ class SubsceneLines {
 			[-15, -5, 15],
 			[15, -5, 15],
 			[15, -5, -15],
-			[0, -5, -0]
+			[0, -5, -0],
+			// [0, -5, -0],
+			// [0, -5, -0],
+			// [0, -5, -0],
 		]
 
 		this.controller = new Controller(this);
@@ -33,7 +36,9 @@ class SubsceneLines {
 		this.animals = [];
 		for (var i = 0; i < this._spots.length; i++) {
 			let vDear = new ViewDear()
+			// vDear.reset(this._spots[3])
 			vDear.reset([this._spots[i][0], -1, this._spots[i][2]])
+			// vDear.reset([this._spots[3][0], -1, this._spots[3][2]])
 
 			this.animals.push(vDear);
 		}

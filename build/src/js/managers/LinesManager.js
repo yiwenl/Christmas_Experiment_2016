@@ -33,7 +33,7 @@ class LinesManager {
     this.linesAvailableForDrawing[this.linesAvailableForDrawing.length] = line;
   }
 
-  draw(target){
+  draw(target){ // not used anymore really, drawing line is now called from moveTo function as a callback
 
     if(this.linesAvailableForDrawing.length === 0){
       return;
@@ -42,6 +42,12 @@ class LinesManager {
     let indexL = Math.floor(Math.random() * this.linesAvailableForDrawing.length)
     let l = this.linesAvailableForDrawing[indexL];
     l.transformTo(target);
+
+    if(!this.firstTime){
+      console.log("here");
+      l.hasDrawn = true
+      this.firstTime =true;
+    }
 
     this.splice(this.linesAvailableForDrawing, indexL);
 
@@ -180,7 +186,7 @@ class LinesManager {
   update(){
 
     for (var i = 0; i < this.lines.length; i++) {
-      if(this.state === STATES.travelling && this.lines[i].state === 3){
+      if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
         this.moveTargetPoints(i);
       }
 

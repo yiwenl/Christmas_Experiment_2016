@@ -238,6 +238,7 @@ class ViewLine extends alfrid.View {
 
 			this.motion(this.motionOptions);
 		}
+
 	}
 
 	undraw(){
@@ -308,6 +309,7 @@ class ViewLine extends alfrid.View {
 		});
 
 		this.willDraw = null;
+
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
 		this.mainSpeed = .3;
@@ -322,7 +324,7 @@ class ViewLine extends alfrid.View {
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
 
-			var diff = nbPointsTarget - this.line.points.length;
+			let diff = nbPointsTarget - this.line.points.length;
 			let lastP1 = this.line.points[this.line.points.length-1];
 			let lastP2 = this.line.points[this.line.points.length-2];
 
@@ -368,7 +370,38 @@ class ViewLine extends alfrid.View {
 
 		let firstPointLine = this.line.points[0];
 		let firstPointTarget = this.animal.finalP[0];
-		let pathToTarget = this.getPoints([firstPointLine, firstPointTarget]);
+		let secondPointTarget = this.animal.finalP[1];
+
+		// path to target
+		let dist = glmatrix.vec3.distance(firstPointLine, firstPointTarget);
+		let midPoint = [(firstPointLine[0] + firstPointTarget[0])/2, (firstPointLine[1] + firstPointTarget[1])/2, (firstPointLine[2] + firstPointTarget[2])/2];
+		let ptsToTarget = [firstPointLine];
+		for (var i = 0; i < 2; i++) {
+			let pt = this.getRandomPos(Math.random() * dist/5, Math.random() * Math.PI*2, Math.random() * Math.PI*2)
+			pt[0] += midPoint[0];
+			pt[1] += midPoint[1];
+			pt[2] +=midPoint[2];
+
+			ptsToTarget[ptsToTarget.length] = pt;
+		}
+
+		// get a point just before the target entry point, same direction
+		let sub2 = [];
+		glmatrix.vec3.subtract(sub2, firstPointTarget, secondPointTarget)
+		let dir2 = [];
+		glmatrix.vec3.normalize(dir2, sub2);
+
+		let pointJustBeforeEntryPoint = [
+			firstPointTarget[0] + dir2[0] * dist/5,
+			firstPointTarget[1] + dir2[1] * dist/5,
+			firstPointTarget[2] + dir2[2] * dist/5,
+		]
+
+		ptsToTarget[ptsToTarget.length] = pointJustBeforeEntryPoint;
+		ptsToTarget[ptsToTarget.length] = firstPointTarget;
+
+		let pathToTarget = this.getPoints(ptsToTarget);
+		// let pathToTarget = this.getPoints([firstPointLine, firstPointTarget]);
 		let pathTarget = this.animal.finalP;
 
 		index = 0;
@@ -385,6 +418,14 @@ class ViewLine extends alfrid.View {
 		}
 
 		this.newPoints(this.line, true)
+	}
+
+	getRandomPos(r, s, t){
+		let x = r * Math.cos(s) * Math.sin(t)
+		let y = r * Math.sin(s) * Math.sin(t)
+		let z = r * Math.cos(t)
+
+		return [x, y, z];
 	}
 
 	pause() {
@@ -481,10 +522,14 @@ class ViewLine extends alfrid.View {
 	}
 
 	_cutExtraPoints(max) {
-		if(this.line.points.length > max){
-			this.line.points = this.line.points.slice(0, max);
+
+		if(this.points.length > max){
+			this.points = this.line.points.slice(0, max);
+			this.line.points = this.points;
 			this.needsUpdate = true;
 		}
+
+		// debbugger;
 	}
 
 	spliceOne(arr, index) {

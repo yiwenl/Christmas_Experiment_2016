@@ -57,7 +57,7 @@ class Dear {
 
 			this.vertices[i][0] /= 300;
 			this.vertices[i][1] /= 300;
-			this.vertices[i][2] = Math.random()//Math.cos(this.tick);
+			this.vertices[i][2] = Math.cos(this.tick/2) * .4;
 			this.vertices[i][0] -= 2;
 			this.vertices[i][1] -= 2;
 		}
@@ -66,7 +66,6 @@ class Dear {
 
 
     this.position = pos || [0,-1, 2];
-    console.log(pos);
     this.m = glmatrix.mat4.create();
 
 

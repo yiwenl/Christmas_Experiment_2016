@@ -81,7 +81,7 @@ class ViewLine extends alfrid.View {
 
 		this.motions = {
 			0: [Motions.circle.bind(Motions), Motions.snake.bind(Motions)],
-			2: [Motions.disappear1.bind(Motions), Motions.disappear2.bind(Motions)],
+			2: [Motions.disappear1.bind(Motions)],
 			3: [Motions.travel1.bind(Motions), Motions.travel2.bind(Motions), Motions.travel3.bind(this)]
 		}
 
@@ -241,16 +241,18 @@ class ViewLine extends alfrid.View {
 
 	}
 
-	undraw(){
+	undraw(callback){
+		this.callback = callback;
 		this.willDraw = false;
 
-		Easings.instance.to(this, 4, {
-			delay: 2,
-			alpha: Math.random() * .6 + .2,
-			ease: Easings.instance.easeInCubic
-		});
+		// Easings.instance.to(this, 4, {
+		// 	delay: 2,
+		// 	alpha: Math.random() * .6 + .2,
+		// 	ease: Easings.instance.easeInCubic
+		// });
 
-		if(Math.random() > .5){
+		// if(Math.random() > .5){
+		if(false){
 			for (var i = 0; i < this.line.points.length; i++) {
 				this.line.points[this.line.points.length - 1- i] = this.line.vert[i*6];
 			}
@@ -264,6 +266,7 @@ class ViewLine extends alfrid.View {
 		this.motion = this.motions[this.state][Math.floor(Math.random() * this.motions[this.state].length)];
 
 		var startPoint = this.line.vert[this.line.vert.length-1];
+		var secondPoint = this.line.vert[this.line.vert.length-2];
 		this.path = []
 
 		let pathLine = this.animal.finalP;
@@ -273,6 +276,66 @@ class ViewLine extends alfrid.View {
 
 		let rand = Math.random();
 		let pathToLeave = [startPoint];
+
+		// let sub2 = [];
+		// glmatrix.vec3.subtract(sub2, secondPoint, startPoint)
+		// let zaxis = [];
+		// glmatrix.vec3.normalize(zaxis, sub2);
+		//
+		// let pointJustAfterEntryPoint = [
+		// 	firstPointTarget[0] + zaxis[0] * .1,
+		// 	firstPointTarget[1] + zaxis[1] * .1,
+		// 	firstPointTarget[2] + zaxis[2] * .1,
+		// ]
+		// pathToLeave[pathToLeave.length] = pointJustAfterEntryPoint;
+		//
+		// let lastPoint = [
+		// 	pointJustAfterEntryPoint[0] + Math.random() * 2,
+		// 	pointJustAfterEntryPoint[1] - Math.random() * 2,
+		// 	pointJustAfterEntryPoint[2] + Math.random() * 2,
+		// ]
+		//
+		// let dist = glmatrix.vec3.distance(pointJustAfterEntryPoint, lastPoint)
+		//
+		// let up = [0, -1, 0];
+		//
+		// let xaxis = []
+		// glmatrix.vec3.cross(xaxis, zaxis, up);
+		//
+		// let yaxis = []
+		// glmatrix.vec3.cross(yaxis, zaxis, xaxis);
+		//
+		// for (var i = 0; i <= 3; i++) {
+		// 	let d = 0;
+		// 	if(i===0){
+		// 		d = dist / 3 * i  + Math.random() * (dist/3)/2
+		// 	}
+		// 	else if(i===3){
+		// 		d = dist / 3 * i  - Math.random() * (dist/3)/2
+		// 	}
+		// 	else {
+		// 		d = dist / 3 * i  + Math.random() * dist/3 - (dist/3)/ 2
+		// 	}
+		// 	let r = Math.random() * .4 - .2;
+		// 	let origin = [
+		// 		pointJustAfterEntryPoint[0] + zaxis[0] *d,
+		// 		pointJustAfterEntryPoint[1] + zaxis[1] *d,
+		// 		pointJustAfterEntryPoint[2] + zaxis[2] *d,
+		// 	]
+		// 	let pos = [
+		// 		origin[0] + xaxis[0] * r,
+		// 		origin[1] + xaxis[1] * r,
+		// 		origin[2] + xaxis[2] * r,
+		// 	]
+		//
+		// 	let rotPos = [];
+		// 	glmatrix.vec3.rotateY(rotPos, pos, origin, Math.random() * Math.PI * 2)
+		//
+		// 	pathToLeave[pathToLeave.length] = rotPos;
+		// }
+		//
+		// pathToLeave[pathToLeave.length] = lastPoint;
+
 		let tick = 0
 		let index = 1;
 		for (var i = 1; i < this.line.points.length; i++) {
@@ -506,7 +569,14 @@ class ViewLine extends alfrid.View {
 
 					this._cutExtraPoints(20);
 
-					this.wander();
+					this.line.render(this.line.points, this.needsUpdate)
+					if(this.callback){
+						this.callback();
+						this.callback = null;
+					}
+					else {
+						this.wander();
+					}
 				}
 			}
 

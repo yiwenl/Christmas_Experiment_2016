@@ -43,12 +43,7 @@ class LinesManager {
     let l = this.linesAvailableForDrawing[indexL];
     l.transformTo(target);
 
-    if(!this.firstTime){
-      console.log("here");
-      l.hasDrawn = true
-      this.firstTime =true;
-    }
-
+  
     this.splice(this.linesAvailableForDrawing, indexL);
 
     this.linesDrawing.push(l);
@@ -108,22 +103,59 @@ class LinesManager {
         duration = 2
         l.willDraw = animal;
       }
-      // set the easings
-      this._moveLineTo({
-        line: l,
-        pt: this.targetPoints[i],
-        duration: duration
-      });
 
-      if(i === indexPair1){
-        this.lines[i].travel(1);
-      }
-      else if(i === indexPair2) {
-        this.lines[i].travel(2);
+      // set the easings
+      // this._moveLineTo({
+      //   line: l,
+      //   pt: this.targetPoints[i],
+      //   duration: duration
+      // });
+      //
+      // if(i === indexPair1){
+      //   this.lines[i].travel(1);
+      // }
+      // else if(i === indexPair2) {
+      //   this.lines[i].travel(2);
+      // }
+      // else {
+      //   this.lines[i].travel();
+      // }
+
+      if(l.state === STATES_LINE.muting){
+        let indexL = i;
+        let pt = this.targetPoints[indexL]
+        l.undraw(()=>{
+          let o = this._moveLineTo({
+            line: l,
+            pt: pt,
+            duration: duration
+          });
+
+          this.objectsToTween[indexL] = o;
+          l.travel();
+        })
+
       }
       else {
-        this.lines[i].travel();
+        let o = this._moveLineTo({
+          line: l,
+          pt: this.targetPoints[i],
+          duration: duration
+        });
+
+        this.objectsToTween[i] = o;
+
+        if(i === indexPair1){
+          l.travel(1);
+        }
+        else if(i === indexPair2) {
+          l.travel(2);
+        }
+        else {
+          l.travel();
+        }
       }
+
     }
   }
 
@@ -138,12 +170,7 @@ class LinesManager {
       "2": data.pt[2]
     });
 
-    this.objectsToTween[this.objectsToTween.length] = o;
-
-    if(data.travel){
-      line.travel();
-    }
-
+    return o;
   }
 
   undraw(callback){

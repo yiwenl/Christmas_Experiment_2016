@@ -1,5 +1,5 @@
 const Motions = {
-	
+
 	travel1: (options)=>{
 		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .01;
 		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .01;
@@ -75,10 +75,10 @@ const Motions = {
 			return [x, y, z];
 		}
 
-		var angleA = Math.cos(options.time/20) * Math.random() * Math.PI +  Math.PI * 2 * rand;
-		var angleB = Math.cos(options.time/20) * Math.random() * -Math.PI + Math.PI + Math.PI * 2 * rand;
-		var r = Math.random() * .5 + .2;
-		var posAdd = this.getRandomPos(r, angleA, angleB);
+		var angleA = Math.random() * Math.PI*2;
+		var angleB = Math.random() * Math.PI*2;
+		var r = Math.random() * .2 + .1;
+		var posAdd = getRandomPos(r, angleA, angleB);
 
 		return posAdd;
 	},
@@ -93,9 +93,9 @@ const Motions = {
 		}
 		var angleA = Math.cos(options.time/10) * Math.PI * 2 + Math.PI * 2 * rand;
 		var angleB = Math.cos(options.time/20) * Math.PI/2 + Math.PI + Math.PI * 2 * rand;
-		var r = Math.random() * .5 + .2;
+		var r = Math.random() * .1 + .01;
 
-		return this.getRandomPos(r, angleA, angleB);
+		return getRandomPos(r, angleA, angleB);
 	}
 }
 

@@ -102,7 +102,7 @@ class LinesManager {
         this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 
-      let duration = (6 + Math.random() * 3);
+      let duration = (5 + Math.random() * 3);
       if(i === indexToDraw){
         duration = 3
         l.willDraw = animal;

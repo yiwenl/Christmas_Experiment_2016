@@ -164,9 +164,9 @@ class ViewLine extends alfrid.View {
 	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed;
 
 			for (var i = 1; i < line.points.length; i++) {
-				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .35 * this.mainSpeed;
-				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .35 * this.mainSpeed;
-				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .35 * this.mainSpeed;
+				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4 * this.mainSpeed;
+				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .4 * this.mainSpeed;
+				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .4 * this.mainSpeed;
 			}
 
 			var pts = this.getPoints(line.points);

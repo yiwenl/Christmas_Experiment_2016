@@ -21,6 +21,7 @@ class LinesManager {
     this.linesDrawing = [];
     this.linesAvailableForDrawing = [];
     this.lines = [];
+    this.tick = 0;
 
     this.targetPoints = [];
   }
@@ -43,7 +44,7 @@ class LinesManager {
     let l = this.linesAvailableForDrawing[indexL];
     l.transformTo(target);
 
-  
+
     this.splice(this.linesAvailableForDrawing, indexL);
 
     this.linesDrawing.push(l);
@@ -93,14 +94,17 @@ class LinesManager {
         this.targetPoints[i][2] = pt[2]
       }
       else {
-        this.targetPoints[i][0] = pt[0] + Math.random() * 8 - 8/2;
+        // this.targetPoints[i][0] = pt[0];
+        // this.targetPoints[i][1] = pt[1];
+        // this.targetPoints[i][2] = pt[2];
+        this.targetPoints[i][0] = pt[0] + Math.random() * 1 - 1/2;
         this.targetPoints[i][1] = pt[1] - Math.random() * 2 ;
-        this.targetPoints[i][2] = pt[2] + Math.random() * 8 - 8/2;
+        this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 
-      let duration = (6 + Math.random() * 5);
+      let duration = (6 + Math.random() * 3);
       if(i === indexToDraw){
-        duration = 2
+        duration = 3
         l.willDraw = animal;
       }
 
@@ -125,10 +129,12 @@ class LinesManager {
         let indexL = i;
         let pt = this.targetPoints[indexL]
         l.undraw(()=>{
+          // console.log("here");
           let o = this._moveLineTo({
             line: l,
             pt: pt,
-            duration: duration
+            duration: 4,
+            ease: this.easeInOutCirc.bind(this)
           });
 
           this.objectsToTween[indexL] = o;
@@ -140,7 +146,8 @@ class LinesManager {
         let o = this._moveLineTo({
           line: l,
           pt: this.targetPoints[i],
-          duration: duration
+          duration: duration,
+          ease: this.easeOutCirc.bind(this)
         });
 
         this.objectsToTween[i] = o;
@@ -174,6 +181,7 @@ class LinesManager {
   }
 
   undraw(callback){
+    console.log("here");
     for (let i = 0; i < this.linesDrawing.length; i++) {
       let l = this.linesDrawing[i];
       l.undraw();
@@ -191,7 +199,7 @@ class LinesManager {
     if(!o.delete){
       for (var k = 0; k < o.props.length; k++) {
         var e = o.props[k];
-        o.obj[e.var] = this.easeOutCubic(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+        o.obj[e.var] = o.ease(o.currentIteration, e.value, e.toValue - e.value, o.duration);
 
         line.position[e.var] += (o.obj[e.var] - line.position[e.var]) * .08;
       }
@@ -211,14 +219,38 @@ class LinesManager {
   }
 
   update(){
+    this.tick++;
 
-    for (var i = 0; i < this.lines.length; i++) {
-      if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
-        this.moveTargetPoints(i);
+    if(this.tick %2===0){
+
+      for (var i = 0; i < this.lines.length; i++) {
+
+        // console.log(i,this.lines[i].line.points.length);
+        if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
+          this.moveTargetPoints(i);
+        }
+        this.lines[i].render();
       }
-
-      this.lines[i].render();
     }
+  }
+
+  easeInCubic(t, b, c, d) {
+		t /= d;
+		return c*t*t*t + b;
+	}
+
+  easeOutSine(t, b, c, d) {
+    return c * Math.sin(t/d * (Math.PI/2)) + b;
+  }
+  easeOutCirc(t, b, c, d) {
+    return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+  }
+
+  easeInOutCirc(t, b, c, d) {
+    t /= d/2;
+    if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+    t -= 2;
+    return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
   }
 
   easeOutCubic(t, b, c, d) {

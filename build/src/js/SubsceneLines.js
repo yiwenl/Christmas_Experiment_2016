@@ -20,10 +20,10 @@ class SubsceneLines {
 	_initViews() {
 		this._step = 0;
 		this._spots = [
-			[-15, -5, 15],
-			[15, -5, 15],
-			[15, -5, -15],
-			[0, -5, -0],
+			[0, -3, -0],
+			[-15, -3, 15],
+			[15, -3, 15],
+			[15, -3, -15],
 			// [0, -5, -0],
 			// [0, -5, -0],
 			// [0, -5, -0],
@@ -71,7 +71,7 @@ class SubsceneLines {
 	}
 
 	transform(){
-		// this.linesManager.draw(this._viewDear);
+		// this.linesManager.draw(this.animals[this._step % this.animals.length]);
 		this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
 		this._step++
 	}

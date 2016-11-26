@@ -23,9 +23,10 @@ class Controller {
   }
 
   undrawPress(e){
+    // console.log("undraw");
     this.owner.undraw();
   }
-  
+
   transformPress(e){
     this.owner.transform();
   }

@@ -212,7 +212,7 @@ class ViewLine extends alfrid.View {
 					// var endIndex =  this.animal.finalP - i
 
 					var obj = { startIndex: startIndex, endIndex: endIndex, currentIndex: startIndex}
-					var o = Easings.instance.returnVariable(obj, 3, { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
+					var o = Easings.instance.returnVariable(obj, 2, { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
 
 					o.point = startIndex;
 					this.objectsToTween[index++] = o;
@@ -327,9 +327,9 @@ class ViewLine extends alfrid.View {
 		pathToLeave[pathToLeave.length] = pointJustAfterEntryPoint;
 
 		let lastPoint = [
-			pointJustAfterEntryPoint[0] + zaxis[0] * Math.random() * 6 - 3,
+			pointJustAfterEntryPoint[0] +  Math.random() * 6 - 3,
 			pointJustAfterEntryPoint[1] -  Math.random() * 2 ,
-			pointJustAfterEntryPoint[2] + zaxis[2] * Math.random() * 6 - 3,
+			pointJustAfterEntryPoint[2] +  Math.random() * 6 - 3,
 		]
 
 		let dist = glmatrix.vec3.distance(pointJustAfterEntryPoint, lastPoint)
@@ -589,7 +589,7 @@ class ViewLine extends alfrid.View {
 								o.obj[e.var] = this.easeOutCirc(o.currentIteration, e.value, e.toValue - e.value, o.duration);
 							}
 							else {
-								o.obj[e.var] = this.easeInCirc(o.currentIteration, e.value, e.toValue - e.value, o.duration);
+								o.obj[e.var] = this.easeInSine(o.currentIteration, e.value, e.toValue - e.value, o.duration);
 							}
 
 							let indexFloor = Math.floor(o.obj[e.var]);

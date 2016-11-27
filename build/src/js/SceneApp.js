@@ -25,6 +25,8 @@ import CameraStops from './CameraStops';
 import fsSoftLight from '../shaders/softlight.frag';
 
 const RAD = Math.PI / 180;
+const TweenSpeed = 0.0035;
+const rotSpeed = 0.002;
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -35,10 +37,6 @@ class SceneApp extends alfrid.Scene {
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
 		this.orbitalControl.radius.value = 7;
 
-		const rotSpeed = 0.002;
-		this.orbitalControl.rx = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
-		this.orbitalControl.ry = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
-
 
 		this.orbitalControl.rx.setTo(0.3);
 		this.orbitalControl.ry.setTo(0.0);
@@ -48,7 +46,7 @@ class SceneApp extends alfrid.Scene {
 
 		this.cameraYOffset = hasVR ? -2 : 0;
 
-		const TweenSpeed = 0.0035;
+
 		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
@@ -62,6 +60,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._pointTarget = [0, 2.5, 0];
 		this._stop = 0;
+		this._hasTouchControl = true;
 
 		this.resize();
 
@@ -69,15 +68,33 @@ class SceneApp extends alfrid.Scene {
 			this.toRender();
 		}
 
-		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
-		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
-		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+		// socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
+		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
 		window.addEventListener('keydown', (e)=> {
 			if(e.keyCode === 39) {
 				this.nextStop();
 			}
 		});
+
+
+		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
+		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
+	}
+
+	_enableCameraTouchControl() {
+		if(this._hasTouchControl) {	return;	}
+
+		console.debug('Enable camera touch control');
+
+		const rx = this.orbitalControl.rx.value;
+		const ry = this.orbitalControl.ry.value;
+
+		this.orbitalControl.rx = new alfrid.EaseNumber(rx);
+		this.orbitalControl.ry = new alfrid.EaseNumber(ry);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this._hasTouchControl = true;
 	}
 
 	_onCameraAngle(angles) {
@@ -86,15 +103,12 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_onCameraPosition(pos) {
-		console.log('On camera position :', pos);
 		this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
 	}
 
 	_onTargetPosition(pos) {
-		// console.log('Target position', pos);
 		this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
-		console.log('Point target:', this._pointTarget, pos);
 	}
 
 	_initTextures() {
@@ -111,7 +125,7 @@ class SceneApp extends alfrid.Scene {
 		this._textureNoise = new GLTexture(getAsset('noise'));
 		this._textureGradient = new GLTexture(getAsset('gradient'));
 
-		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		this._resetFrameBuffer();
 	}
 
 	_initViews() {
@@ -142,13 +156,7 @@ class SceneApp extends alfrid.Scene {
 
 	_getReflectionMatrix() {
 		const camera = hasVR ? this.cameraVive : this.camera;
-		// mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(0, this.cameraYOffset, 0));
-
-		if(this.cameraOffsetX) {
-			mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));
-		} else {
-			console.log(' not setted');
-		}
+		mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));
 
 		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
@@ -170,6 +178,14 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this._hasTouchControl = false;
+		const rx = this.orbitalControl.rx.value;
+		const ry = this.orbitalControl.ry.value;
+
+		this.orbitalControl.rx = new alfrid.TweenNumber(rx, 'expInOut', rotSpeed);
+		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+
 		this._stop = i;
 		const dataStop = CameraStops[this._stop];
 
@@ -177,7 +193,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._subLines.goTo(this._pointTarget);
 
-		
+
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
 		this.orbitalControl.rx.value = dataStop.rx;
@@ -354,10 +370,9 @@ class SceneApp extends alfrid.Scene {
 		if(withWater) {
 			this._vWater.render(this._fboReflection.getTexture());
 		}
-		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
-		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
+		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
+		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 
-		// console.log(this.cameraOffsetX.value);
 		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();
@@ -382,7 +397,14 @@ class SceneApp extends alfrid.Scene {
 			this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		}
 
-		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+
+		this._resetFrameBuffer();
+	}
+
+	_resetFrameBuffer() {
+		const scale = GL.isMobile ? 0.5 : 1;
+		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
+		console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
 	}
 }
 

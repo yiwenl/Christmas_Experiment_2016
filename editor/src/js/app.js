@@ -153,6 +153,9 @@ function render() {
 	ctx.clearRect(0, 0, size, size);
 	ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, size, size);
 
+
+	renderPoints();
+
 	const px = point.x * size;
 	const py = point.y * size;
 	const angle = params.ry - Math.PI/2;
@@ -171,9 +174,8 @@ function render() {
 	ctx.fillStyle = '#0f6';
 	ctx.fillRect(0, -s, params.radius, s*2);
 	ctx.restore();
-
-	renderPoints();
 }
+
 
 function renderPoints() {
 	for(let i=0; i<points.length; i++) {
@@ -182,14 +184,22 @@ function renderPoints() {
 }
 
 function _renderPoints(p) {
-	circle(p.x * size, p.y * size, 1.5, '#f70');
+	const px = p.x * size;
+	const py = p.z * size;
+	const angle = params.ry - Math.PI/2;
+	const tx = px + Math.cos(angle) * params.radius;
+	const ty = py + Math.sin(angle) * params.radius;
+
+	circle(px, py, 2, '#222');
+	circle(tx, ty, 2, '#333');
+
 
 	ctx.save();
-	ctx.translate(p.x * size, p.y * size);
+	ctx.translate(px, py);
 	ctx.rotate(p.ry - Math.PI/2);
 
 	const s = 1;
-	ctx.fillStyle = '#7fA';
+	ctx.fillStyle = '#555';
 	ctx.fillRect(0, -s, p.radius, s*2);
 	ctx.restore();
 }

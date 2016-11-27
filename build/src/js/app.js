@@ -20,9 +20,11 @@ const assets = [
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
 	{ id:'fg', url:'assets/img/fg.png' },
+	{ id:'fgMobile', url:'assets/img/fgMobile.png' },
 	{ id:'gradient', url:'assets/img/gradient.jpg' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
+	{ id:'starsmapMobile', url:'assets/img/starsmapMobile.jpg' },
 	{ id:'stroke', url:'assets/img/stroke3.png' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
@@ -123,8 +125,12 @@ function _init3D() {
 	//	INIT 3D TOOL
 	GL.init(canvas);
 
+	if(GL.isMobile) {
+		document.body.classList.add('is-mobile');
+	}
+
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
+	// window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();
@@ -137,16 +143,16 @@ function _init3D() {
 	}
 	
 	
-	gui.add(Params, 'gamma', 1, 5);
-	gui.add(Params, 'exposure', 1, 25);
-	gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
-		console.log(Params);
-	});
-	gui.add(Params, 'postEffect');
+	// gui.add(Params, 'gamma', 1, 5);
+	// gui.add(Params, 'exposure', 1, 25);
+	// gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
+	// 	console.log(Params);
+	// });
+	// gui.add(Params, 'postEffect');
 
-	const fFog = gui.addFolder('Fog');
-	fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
-	fFog.open();
+	// const fFog = gui.addFolder('Fog');
+	// fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
+	// fFog.open();
 }
 
 function _initSound() {

@@ -100,7 +100,7 @@ class LinesManager {
         // this.targetPoints[i][1] = -2;
         // this.targetPoints[i][2] = pt[2];
         this.targetPoints[i][0] = pt[0] + Math.random() * 1 - 1/2;
-        this.targetPoints[i][1] = -2 - Math.random() * 2 ;
+        this.targetPoints[i][1] = -1 - Math.random() * 2 ;
         this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 

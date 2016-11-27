@@ -43,48 +43,54 @@ class ViewLineFinale extends alfrid.View {
 
 	_init() {
 
-
+		this.isReady = false;
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
-		this.points = []
-		const max = 20;
+		// this.points = []
+		// const max = 20;
 
-		let index = 0;
-		let x, y=-.3, z, r = .05, pt = [], t = Math.PI;
-		for (var i = 0; i < 15; i++) {
-			t+= 1;
-			x = Math.sin(t * 1.3) * r;
-			z = Math.cos(t * 1.3) * r;
-			y -= .3;
-			r+= .08;
+		// let index = 0;
+		// let x, y=-.3, z, r = .05, pt = [], t = Math.PI;
+		// for (var i = 0; i < 15; i++) {
+		// 	t+= 1;
+		// 	x = Math.sin(t * 1.3) * r;
+		// 	z = Math.cos(t * 1.3) * r;
+		// 	y -= .3;
+		// 	r+= .06;
+		//
+		// 	if(r > 2) r = 2;
+		//
+		// 	// console.log(y);
+		// 	//
+		//
+		// 	// this.points[index++] = [0,0,0];
+		// 	// pt = [x,y,z]
+		// 	this.points[index++] = [x,y,z];
+		//
+		// }
 
-			if(r > 2) r = 2;
 
-			// console.log(y);
-			//
-
-			// this.points[index++] = [0,0,0];
-			// pt = [x,y,z]
-			this.points[index++] = [x,y,z];
-
-		}
-
-
-		let division = 10;
+		// let division = 20;
 		// this.line = new Line();
-		this.line = new Line(this.getPoints(this.points),(p)=>{
-			return p * division });
+		// console.log(this.getPoints(this.points).toString());
+		// this.line = new Line(this.getPoints(this.points),(p)=>{
+		// 	return p * division });
 		// this.line.points = this.points;
 
 		// properties for wandering animation
 		this.tick = Math.random() * Math.PI*2 * 100;
 
-		this.texture = new alfrid.GLTexture(getAsset('stroke'));
-
-		this.pause();
-
 	}
 
+	reset(data){
+		console.log(data.points);
+		this.isReady = true;
+		this.data = data;
+		this.line = new Line(this.getPoints(data.points),(p)=>{
+			return p * data.division });
+
+		this.texture = new alfrid.GLTexture(getAsset('stroke'));
+	}
 
   getPoints(pts){
 		this.spline.points = pts;
@@ -110,8 +116,11 @@ class ViewLineFinale extends alfrid.View {
 	}
 
 	render() {
+
+		if(!this.isReady) return;
+
 		// console.log(this.isPaused);
-		this._tick-= .05;
+		this._tick += this.data.deltaTime;
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
@@ -128,7 +137,8 @@ class ViewLineFinale extends alfrid.View {
 		this.texture.bind(0);
 
 		this.shader.uniform("uTime", "float", this._tick);
-		this.shader.uniform("alpha", "float", this.alpha);
+		this.shader.uniform("alpha", "float", this.data.alpha);
+		this.shader.uniform("thickness", "float", this.data.thickness);
 		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
 		this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
 

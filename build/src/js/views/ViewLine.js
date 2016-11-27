@@ -47,6 +47,7 @@ class ViewLine extends alfrid.View {
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
 		this.points = []
+		this.thickness = Math.random() * .05 + .02;
 		const max = 20;
 
 		let index = 0;
@@ -560,6 +561,7 @@ class ViewLine extends alfrid.View {
 		this.shader.uniform("texture", "uniform1i", 0);
 		this.texture.bind(0);
 
+		this.shader.uniform("thickness", "float", this.thickness);
 		this.shader.uniform("uTime", "float", this._tick);
 		this.shader.uniform("alpha", "float", this.alpha);
 		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);

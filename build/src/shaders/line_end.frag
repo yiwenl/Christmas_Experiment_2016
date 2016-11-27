@@ -10,7 +10,7 @@ uniform float alpha;
 
 void main() {
 
-  vec4 color = vec4(alpha);
+  vec4 color = vec4(1., 1., 1., 1.);
   // vec4 color = vec4(1.0);
   // vec4 colorEnd = color;
 

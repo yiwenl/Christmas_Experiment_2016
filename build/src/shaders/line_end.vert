@@ -16,6 +16,7 @@ uniform mat4 uProjectionMatrix;
 uniform float uTime;
 
 
+uniform float thickness;
 uniform float aspect;
 
 varying vec2 vUV;
@@ -25,7 +26,7 @@ varying float vCounters;
 
 void main() {
 
-  float thickness = .1;
+  // float thickness = .1;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);

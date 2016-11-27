@@ -23,7 +23,7 @@ class SubsceneFinale {
 			let data = methods[i % methods.length]();
 			// console.log(data);
 			data.alpha = Math.random() * .8 + .2;
-			data.thickness = Math.random() * .2 + .05;
+			data.thickness = Math.random() * .05 + .02;
 			let l = new ViewLineFinale(this)
 			l.reset(data);
 			this.lines[index++] = l;
@@ -63,7 +63,7 @@ class SubsceneFinale {
 		  points[index++] = [x,y,z];
 		}
 
-		return  {points: points, division: Math.floor(Math.random() * 10 - 10/2 + 40), deltaTime: -(Math.random() * .1 + .05)}
+		return  {points: points, division: Math.floor(Math.random() * 10 - 10/2 + 40), deltaTime: -(Math.random() * .05 + .05)}
 	}
 
 	secondLine(){
@@ -97,7 +97,7 @@ class SubsceneFinale {
 
 		}
 
-		return  {points: points, division: Math.floor(Math.random() * 5 - 5/2 + 20), deltaTime: -(Math.random() * .05 + .02)}
+		return  {points: points, division: Math.floor(Math.random() * 4 - 4/2 + 20), deltaTime: -(Math.random() * .05 + .01)}
 	}
 
 	pause(){

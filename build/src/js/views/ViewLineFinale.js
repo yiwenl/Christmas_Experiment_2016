@@ -10,7 +10,7 @@ import Dear from '../animals/Dear'
 import Spline from '../libs/Spline';
 // import vs from '../../shaders/line.vert';
 import vs from '../../shaders/line_end.vert';
-import fs from '../../shaders/line.frag';
+import fs from '../../shaders/line_end.frag';
 import Easings from '../libs/Easings';
 import Motions from '../LinesMotions';
 

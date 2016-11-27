@@ -31,7 +31,8 @@ class ViewTerrain extends alfrid.View {
 
 	_init() {
 		const size = Params.terrainSize;
-		this.mesh = alfrid.Geom.plane(size, size, 120, 'xz');
+		const num = GL.isMobile ? 80 : 120;
+		this.mesh = alfrid.Geom.plane(size, size, num, 'xz');
 
 		this._textureHeight = new GLTexture(getAsset('height'));
 		this._textureNormal = new GLTexture(getAsset('normal'));

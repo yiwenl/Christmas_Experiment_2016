@@ -12,7 +12,9 @@ let isLocked = false;
 
 window.params = {
 	rx:0,
-	ry:0
+	ry:0,
+	y:2.5,
+	radius:10
 }
 
 const assets = [
@@ -38,8 +40,9 @@ function _init() {
 
 	window.gui = new dat.GUI({width:300});
 	gui.add(params, 'rx', 0, Math.PI/2).onChange(onChange);
-	gui.add(params, 'ry', 0, Math.PI * 2.0).onChange(onChange);
-
+	gui.add(params, 'ry', -Math.PI, Math.PI).onChange(onChange);
+	gui.add(params, 'y', 0, 5).onChange(onChange);
+	gui.add(params, 'radius', 0, 50).onChange(onChange);
 
 	window.addEventListener('keydown', _onKey);
 }
@@ -47,6 +50,7 @@ function _init() {
 let canvas, ctx, size;
 let point = {x:0.5, y:0.5}
 let divContainer, divTemplate;
+
 function _onImageLoaded() {
 	canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -69,7 +73,6 @@ function _onImageLoaded() {
 	divTemplate = document.body.querySelector('.template-point');
 }
 
-
 function getNumber(value, prec = 100) {
 	return Math.floor(value * prec) / prec;
 }
@@ -81,20 +84,29 @@ function _saveJson() {
 function _addPoint() {
 	const p = {
 		x:point.x, 
-		y:point.y,
+		y:params.y,
+		z:point.y,
 		rx:params.rx,
-		ry:params.ry
+		ry:params.ry,
+		radius:radius
 	}
 
 	points.push(p);
+}
 
+function updatePoints() {
+	while (divContainer.hasChildNodes()) {
+		divContainer.removeChild(divContainer.lastChild);
+	}
 
-	const div = divTemplate.cloneNode(true);
-	const pTag = div.querySelector('p');
-	pTag.innerHTML = `x:${getNumber(p.x)}, y:${getNumber(p.y)}, rx:${getNumber(p.rx)}, ry:${getNumber(p.ry)}`;
-	divContainer.appendChild(div);
-	div.classList.remove('template');
-
+	for(let i=0; i<points.length; i++) {
+		let p = points[i];
+		const div = divTemplate.cloneNode(true);
+		const pTag = div.querySelector('p');
+		pTag.innerHTML = `x:${getNumber(p.x)}, y:${getNumber(p.y)}, rx:${getNumber(p.rx)}, ry:${getNumber(p.ry)}`;
+		divContainer.appendChild(div);
+		div.classList.remove('template');
+	}
 }
 
 function circle(x, y, radius=2, color='#f00') {
@@ -104,26 +116,31 @@ function circle(x, y, radius=2, color='#f00') {
 	ctx.fill();
 }
 
-
-
 function render() {
 	ctx.clearRect(0, 0, size, size);
 	ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, size, size);
 
-	circle(point.x * size, point.y * size, 10);
+	const px = point.x * size;
+	const py = point.y * size;
+	const angle = params.ry - Math.PI/2;
+	const tx = px + Math.cos(angle) * params.radius;
+	const ty = py + Math.sin(angle) * params.radius;
+
+	circle(px, py, 2);
+	circle(tx, ty, 2, '#f6f');
+
 
 	ctx.save();
 	ctx.translate(point.x * size, point.y * size);
 	ctx.rotate(params.ry - Math.PI/2);
 
-	const s = 5;
+	const s = 1;
 	ctx.fillStyle = '#0f6';
-	ctx.fillRect(0, -s, 50, s*2);
+	ctx.fillRect(0, -s, params.radius, s*2);
 	ctx.restore();
 
 	renderPoints();
 }
-
 
 function renderPoints() {
 	for(let i=0; i<points.length; i++) {
@@ -132,15 +149,15 @@ function renderPoints() {
 }
 
 function _renderPoints(p) {
-	circle(p.x * size, p.y * size, 8, '#f70');
+	circle(p.x * size, p.y * size, 1.5, '#f70');
 
 	ctx.save();
 	ctx.translate(p.x * size, p.y * size);
 	ctx.rotate(p.ry - Math.PI/2);
 
-	const s = 3;
+	const s = 1;
 	ctx.fillStyle = '#7fA';
-	ctx.fillRect(0, -s, 50, s*2);
+	ctx.fillRect(0, -s, p.radius, s*2);
 	ctx.restore();
 }
 
@@ -149,25 +166,39 @@ function _onPoint(e) {
 	point.x = e.clientX / size;
 	point.y = e.clientY / size;
 
-	const tx = -(point.x * 2.0 - 1.0);
-	const tz = -(point.y * 2.0 - 1.0);
+	const px = -(point.x * 2.0 - 1.0);
+	const pz = -(point.y * 2.0 - 1.0);
 
-	socket.emit('cameraPos', {x:tx, y:0, z:tz});
+	socket.emit('cameraPos', {x:px, y:0, z:pz});
+
+	onChange();
 }
-
 
 function _onKey(e) {
 	console.log(e.keyCode);
-	socket.emit('keyboard', e.keyCode)
+
+	if(e.keyCode === 83) {
+		_saveJson();
+	} else if(e.keyCode === 65) {
+		_addPoint();
+	}
+	// socket.emit('keyboard', e.keyCode)
 }
-
-
 
 function onChange() {
-	console.log('on Change :', params);
 	socket.emit('cameraAngle', params);
-}
 
+	const px = -(point.x * 2.0 - 1.0);
+	const pz = -(point.y * 2.0 - 1.0);
+	const angle = params.ry - Math.PI/2;
+	let tx = point.x * size + Math.cos(angle) * params.radius;
+	let tz = point.y * size + Math.sin(angle) * params.radius;
+
+	tx = tx / size * 2 - 1;
+	tz = tz / size * 2 - 1;
+	
+	socket.emit('targetPos', {x:tx, y:params.y, z:tz});
+}
 
 var saveJson = function(obj, name='points') {
 	var str = JSON.stringify(obj);
@@ -185,7 +216,6 @@ var saveJson = function(obj, name='points') {
 	event.initMouseEvent( 'click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
 	link.dispatchEvent( event );
 }
-
 
 var encode = function( s ) {
 	var out = [];

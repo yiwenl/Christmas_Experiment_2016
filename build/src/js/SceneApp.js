@@ -49,6 +49,8 @@ class SceneApp extends alfrid.Scene {
 
 		this.cameraVive = new CameraVive();
 
+		this._pointTarget = [0, 2.5, 0];
+
 		this.resize();
 
 		if(hasVR) {
@@ -57,6 +59,7 @@ class SceneApp extends alfrid.Scene {
 
 		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
 		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 	}
 
 	_onCameraAngle(angles) {
@@ -68,6 +71,12 @@ class SceneApp extends alfrid.Scene {
 		console.log('On camera position :', pos);
 		this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
+	}
+
+
+	_onTargetPosition(pos) {
+		console.log('Target position', pos);
+		this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
 	}
 
 	_initTextures() {
@@ -90,6 +99,7 @@ class SceneApp extends alfrid.Scene {
 	_initViews() {
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
+		this._bBall = new alfrid.BatchBall();
 
 		
 		this._vTerrain = new ViewTerrain();
@@ -288,7 +298,7 @@ class SceneApp extends alfrid.Scene {
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
-
+		this._bBall.draw(this._pointTarget, [0.5, 0.5, 0.5], [1, 0.8, 0.8]);
 		
 		this._subParticles.render();
 		this._subLines.render();

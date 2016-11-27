@@ -30,6 +30,7 @@ function _onConnected(socket) {
 
 	socket.on('cameraAngle', (angles)=>_onCameraAngle(angles));
 	socket.on('cameraPos', (pos)=>_onCameraPos(pos));
+	socket.on('targetPos', (pos)=>_onTargetPos(pos));
 }
 
 
@@ -41,6 +42,10 @@ function _onCameraAngle(angles) {
 function _onCameraPos(pos) {
 	console.log('Camera Position :', pos);
 	io.emit('cameraPositionChange', pos);
+}
+
+function _onTargetPos(pos) {
+	io.emit('targetPositionChange', pos);
 }
 
 function _onDisconnected() {

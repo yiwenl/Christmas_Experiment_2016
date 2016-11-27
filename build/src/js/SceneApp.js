@@ -25,8 +25,8 @@ import CameraStops from './CameraStops';
 import fsSoftLight from '../shaders/softlight.frag';
 
 const RAD = Math.PI / 180;
-const TweenSpeed = 0.0035;
-const rotSpeed = 0.002;
+const TweenSpeed = GL.isMobile ? 0.007 : 0.0035;
+const rotSpeed = GL.isMobile ? 0.004 : 0.002;
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -36,7 +36,6 @@ class SceneApp extends alfrid.Scene {
 
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
 		this.orbitalControl.radius.value = 7;
-
 
 		this.orbitalControl.rx.setTo(0.3);
 		this.orbitalControl.ry.setTo(0.0);
@@ -50,8 +49,6 @@ class SceneApp extends alfrid.Scene {
 		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
-
-		gui.add(this, 'cameraYOffset', -20, 0);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
 		this.cameraReflection.setPerspective(FOV, GL.aspectRatio, .1, 100);
@@ -71,6 +68,11 @@ class SceneApp extends alfrid.Scene {
 		// socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
 		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
 		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+
+		const btnNext = document.body.querySelector('.button-next');
+		btnNext.addEventListener('touchstart', (e)=> {
+			this.nextStop();
+		});
 
 		window.addEventListener('keydown', (e)=> {
 			if(e.keyCode === 39) {
@@ -121,7 +123,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._textureIrr = new alfrid.GLCubeTexture([irr_posx, irr_negx, irr_posy, irr_negy, irr_posz, irr_negz]);
 		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
-		this._textureStar = new GLTexture(getAsset('starsmap'));
+		this._textureStar = new GLTexture(getAsset(GL.isMobile ? 'starsmapMobile' : 'starsmap'));
 		this._textureNoise = new GLTexture(getAsset('noise'));
 		this._textureGradient = new GLTexture(getAsset('gradient'));
 
@@ -365,6 +367,7 @@ class SceneApp extends alfrid.Scene {
 		}
 
 
+
 		this._bSky.draw(this._textureStar);
 		this._vFg.render();
 		if(withWater) {
@@ -404,7 +407,7 @@ class SceneApp extends alfrid.Scene {
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
 		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
-		console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
+		// console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
 	}
 }
 

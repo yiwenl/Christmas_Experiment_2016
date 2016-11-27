@@ -135,10 +135,10 @@ class ViewTrees extends alfrid.View {
 
 		this._textureTree = new alfrid.GLTexture(getAsset('tree'));
 
-		const f = gui.addFolder('tree');
-		f.add(oUniforms, 'roughness', 0, 1);
-		f.add(oUniforms, 'specular', 0, 1);
-		f.add(oUniforms, 'metallic', 0, 1);
+		// const f = gui.addFolder('tree');
+		// f.add(oUniforms, 'roughness', 0, 1);
+		// f.add(oUniforms, 'specular', 0, 1);
+		// f.add(oUniforms, 'metallic', 0, 1);
 
 		this._treePositions = positionOffsets;
 		// window.addEventListener('keydown', (e)=> {

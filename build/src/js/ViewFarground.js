@@ -58,7 +58,7 @@ class ViewFarground extends alfrid.View {
 		this.mesh.bufferVertex(positions);
 		this.mesh.bufferTexCoord(uvs);
 		this.mesh.bufferIndex(indices);
-		this._textureFg = new GLTexture(getAsset('fg'));
+		this._textureFg = new GLTexture(getAsset(GL.isMobile ? 'fgMobile' : 'fg'));
 	}
 
 

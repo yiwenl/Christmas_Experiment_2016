@@ -285,10 +285,6 @@ class SceneApp extends alfrid.Scene {
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();
-
-			
-
-			
 			*/
 
 			VIVEUtils.submitFrame();

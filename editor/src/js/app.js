@@ -42,7 +42,7 @@ function _init() {
 	gui.add(params, 'rx', 0, Math.PI/2).onChange(onChange);
 	gui.add(params, 'ry', -Math.PI, Math.PI).onChange(onChange);
 	gui.add(params, 'y', 0, 5).onChange(onChange);
-	gui.add(params, 'radius', 0, 50).onChange(onChange);
+	gui.add(params, 'radius', 0, 150).onChange(onChange);
 
 	window.addEventListener('keydown', _onKey);
 }
@@ -88,10 +88,12 @@ function _addPoint() {
 		z:point.y,
 		rx:params.rx,
 		ry:params.ry,
-		radius:radius
+		radius:params.radius
 	}
 
 	points.push(p);
+
+	updatePoints();
 }
 
 function updatePoints() {
@@ -106,7 +108,38 @@ function updatePoints() {
 		pTag.innerHTML = `x:${getNumber(p.x)}, y:${getNumber(p.y)}, rx:${getNumber(p.rx)}, ry:${getNumber(p.ry)}`;
 		divContainer.appendChild(div);
 		div.classList.remove('template');
+
+		let btnRemove = div.querySelector('.btn-remove');
+		btnRemove.addEventListener('click', (e) => {
+			remove(i);
+		});
+
+		let btnSelect = div.querySelector('.btn-select');
+		btnSelect.addEventListener('click', (e) => {
+			select(i);
+		});
 	}
+}
+
+
+function select(index) {
+	console.log('Select', index);
+	const p = points[index];
+	console.log(p);
+
+	point.x = p.x;
+	point.y = p.z;
+
+	params.y = p.y;
+	params.rx = p.rx;
+	params.ry = p.ry;
+	params.radius = p.radius;
+}
+
+function remove(index) {
+	points.splice(index, 1);
+
+	updatePoints();
 }
 
 function circle(x, y, radius=2, color='#f00') {

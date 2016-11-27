@@ -16,6 +16,7 @@ import CameraVive from './CameraVive';
 
 import SubsceneParticles from './SubsceneParticles';
 import SubsceneLines from './SubsceneLines';
+import SubsceneFinale from './SubsceneFinale';
 
 import GetReflectionMatrix from './utils/GetReflectionMatrix';
 import CameraStops from './CameraStops';
@@ -133,6 +134,7 @@ class SceneApp extends alfrid.Scene {
 		//	Sub scenes
 		this._subParticles = new SubsceneParticles(this);
 		this._subLines = new SubsceneLines(this);
+		this._subFinale = new SubsceneFinale(this);
 
 		this._composer = new EffectComposer(GL.width, GL.height);
 		this._passSoftLight = new Pass(fsSoftLight)
@@ -147,11 +149,11 @@ class SceneApp extends alfrid.Scene {
 		// mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(0, this.cameraYOffset, 0));
 
 		if(this.cameraOffsetX) {
-			mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));	
+			mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));
 		} else {
 			console.log(' not setted');
 		}
-		
+
 		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
 
@@ -170,7 +172,7 @@ class SceneApp extends alfrid.Scene {
 		console.log(next, CameraStops.length);
 
 		this._gotoStop(next);
-		
+
 	}
 
 	_gotoStop(i) {
@@ -188,6 +190,7 @@ class SceneApp extends alfrid.Scene {
 		//	update subscenes
 		this._subParticles.update();
 		this._subLines.update();
+		this._subFinale.update();
 
 		if(!hasVR) {
 			const { eye, center } = this.camera;
@@ -260,11 +263,11 @@ class SceneApp extends alfrid.Scene {
 			this._renderScene(true);
 
 			GL.disable(GL.SCISSOR_TEST);
-			
-			
+
+
 
 			/*
-			
+
 
 			//	left
 			GL.viewport(0, 0, w2, GL.height);
@@ -360,6 +363,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._subParticles.render();
 		this._subLines.render();
+		this._subFinale.render();
 	}
 
 
@@ -376,9 +380,9 @@ class SceneApp extends alfrid.Scene {
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
 		if(!hasVR) {
 			this.camera.setAspectRatio(GL.aspectRatio);
-			this.cameraReflection.setAspectRatio(GL.aspectRatio);	
+			this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		}
-		
+
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 	}
 }

@@ -55,7 +55,7 @@ class ViewLine extends alfrid.View {
 		}
 
 		let division = 4;
-		this.line = new Line(this.getPoints(this.points),(p)=>{ return p * division });
+		this.line = new Line(this.getPoints(this.points));
 		this.line.points = this.points;
 
 		// properties for wandering animation

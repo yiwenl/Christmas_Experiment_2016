@@ -29,9 +29,9 @@ class SubsceneLines {
 			// [0, -5, -0],
 		]
 
-		setTimeout(()=>{
-			this.pause()
-		}, 2000)
+		// setTimeout(()=>{
+			// this.pause()
+		// }, 2000)
 
 		this.controller = new Controller(this);
 

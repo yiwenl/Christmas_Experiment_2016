@@ -25,7 +25,7 @@ varying float vCounters;
 
 void main() {
 
-  float thickness = 1. * width;
+  float thickness = .1;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);
@@ -48,9 +48,10 @@ void main() {
 
   vCounters = aCounters;
 
-  float len = thickness ;
-  // len *= smoothstep(vUV.x*2.,vUV.y*2.+2.,-uTime*2000.);;
-  // len *= smoothstep(vUV.x * 2., vUV.y * 2.+ 1., -uTime*2000.);
+  float len = thickness *  sin(width+uTime) * (1.-smoothstep(.9,1.,vUV.x*1.));
+  // float len = thickness *  sin(width+uTime) * (1.-smoothstep(.9,1.,vUV.x*1.));
+  len *= smoothstep(vUV.x * 2.,vUV.y * 2.+2.,-uTime*2000.);;
+
 
   float orientation = direction;
 

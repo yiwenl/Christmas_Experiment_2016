@@ -18,7 +18,6 @@ class ViewDear extends alfrid.View {
 		alert();
 		super(vs, fs);
 
-		console.log("-----------------", pos);
 		this.time = Math.random() * 0xFF;
 
     this.totalPts = [];

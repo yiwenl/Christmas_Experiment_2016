@@ -65,8 +65,8 @@ class LinesManager {
 
     // get one index, it will draw
     let idx = Math.floor(Math.random() * freeLines.length);
-    let indexToDraw = 10000; //idx;
-    // this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
+    let indexToDraw = freeLines[idx];
+    this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
 
     let indexPair1 = null; // some special behaviours for two lines
     let indexPair2 = null;
@@ -216,7 +216,7 @@ class LinesManager {
           line.transformTo(line.willDraw);
         }
         else {
-          line.stop();
+          line.wander();
         }
       }
     }

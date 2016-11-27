@@ -17,6 +17,9 @@ import CameraVive from './CameraVive';
 import SubsceneParticles from './SubsceneParticles';
 import SubsceneLines from './SubsceneLines';
 
+import GetReflectionMatrix from './utils/GetReflectionMatrix';
+import CameraStops from './CameraStops';
+
 import fsSoftLight from '../shaders/softlight.frag';
 
 const RAD = Math.PI / 180;
@@ -29,26 +32,72 @@ class SceneApp extends alfrid.Scene {
 
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
 		this.orbitalControl.radius.value = 7;
-		this.orbitalControl.rx.value = 0.3;
-		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		// this.orbitalControl.radius.limit(3, 30);
 
-		this._modelMatrix = mat4.create();
-		mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, -2, 0));
-		// let scale = 2.5;
-		// mat4.scale(this._modelMatrix, this._modelMatrix, vec3.fromValues(scale, scale, scale));
+		const rotSpeed = 0.002;
+		this.orbitalControl.rx = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
+		this.orbitalControl.ry = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
+
+
+		this.orbitalControl.rx.setTo(0.3);
+		this.orbitalControl.ry.setTo(0.0);
+		this.orbitalControl.center[1] = hasVR ? 0 : 2;
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
+
+		this.cameraYOffset = hasVR ? -2 : 0;
+
+		const TweenSpeed = 0.0035;
+		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+
+		// this.cameraOffsetX = new alfrid.EaseNumber(0);
+		// this.cameraOffsetY = new alfrid.EaseNumber(0);
+		// this.cameraOffsetZ = new alfrid.EaseNumber(0);
+
+		gui.add(this, 'cameraYOffset', -20, 0);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
 		this.cameraReflection.setPerspective(FOV, GL.aspectRatio, .1, 100);
 
 		this.cameraVive = new CameraVive();
 
+		this._pointTarget = [0, 2.5, 0];
+		this._stop = 0;
+
 		this.resize();
 
 		if(hasVR) {
 			this.toRender();
 		}
+
+		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
+		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+
+		window.addEventListener('keydown', (e)=> {
+			// console.log(e.keyCode);
+
+			if(e.keyCode === 39) {
+				this.nextStop();
+			}
+		});
+	}
+
+	_onCameraAngle(angles) {
+		this.orbitalControl.rx.value = angles.rx;
+		this.orbitalControl.ry.value = angles.ry;
+	}
+
+	_onCameraPosition(pos) {
+		console.log('On camera position :', pos);
+		this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
+		this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
+	}
+
+	_onTargetPosition(pos) {
+		// console.log('Target position', pos);
+		this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
 	}
 
 	_initTextures() {
@@ -65,13 +114,13 @@ class SceneApp extends alfrid.Scene {
 		this._textureNoise = new GLTexture(getAsset('noise'));
 		this._textureGradient = new GLTexture(getAsset('gradient'));
 
-		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
 	}
 
 	_initViews() {
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
+		this._bBall = new alfrid.BatchBall();
 
 
 		this._vTerrain = new ViewTerrain();
@@ -93,44 +142,45 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passFxaa);
 	}
 
-
 	_getReflectionMatrix() {
+		const camera = hasVR ? this.cameraVive : this.camera;
+		// mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(0, this.cameraYOffset, 0));
 
-		const mInvertView = mat4.create();
-		mat4.invert(mInvertView, this.camera.viewMatrix);
-		const camX = mInvertView[12];
-		const camY = mInvertView[13];
-		const camZ = mInvertView[14];
-
-		const Nx = 0;
-		const Ny = 1;
-		const Nz = 0;
-
-		const translation = vec3.create();
-		mat4.getTranslation(translation, this.camera.viewMatrix);
-
-		const D = camY - Params.seaLevel;
-
-
-		const mReflection = mat4.fromValues(
-			1 - 2 * Nx * Nx, -2 * Nx * Ny, -2 * Nx * Nz, -2 * Nx * D,
-			-2 * Nx * Ny, 1 - 2 * Ny * Ny, -2 * Ny * Nz, -2 * Ny * D,
-			-2 * Nx * Nz, -2 * Ny * Nz, 1 - 2 * Nz * Nz, -2 * Nz * D,
-			0, 0, 0, 1
-			);
-
-		// mat4.scale(this.cameraReflection.viewMatrix, this.camera.viewMatrix, vec3.fromValues(1, -1, 1));
-		// mat4.translate(this.cameraReflection.viewMatrix, this.cameraReflection.viewMatrix, vec3.fromValues(0, -D * 2, 0));
-
-		mat4.translate(this.cameraReflection.viewMatrix, this.camera.viewMatrix, vec3.fromValues(0, D * 2, 0));
-		mat4.scale(this.cameraReflection.viewMatrix, this.cameraReflection.viewMatrix, vec3.fromValues(1, -1, 1));
+		if(this.cameraOffsetX) {
+			mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));	
+		} else {
+			console.log(' not setted');
+		}
+		
+		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
-
 
 	render() {
 		if(!window.hasVR) {
 			this.toRender();
 		}
+	}
+
+	nextStop() {
+		let next = this._stop + 1;
+		if(next >= CameraStops.length) {
+			next = 0;
+		}
+
+		console.log(next, CameraStops.length);
+
+		this._gotoStop(next);
+		
+	}
+
+	_gotoStop(i) {
+		this._stop = i;
+		const dataStop = CameraStops[this._stop];
+
+		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
+		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
+		this.orbitalControl.rx.value = dataStop.rx;
+		this.orbitalControl.ry.value = dataStop.ry;
 	}
 
 
@@ -156,54 +206,134 @@ class SceneApp extends alfrid.Scene {
 
 
 		if(!window.hasVR) {
+			//	get reflection matrix
+			this._getReflectionMatrix();
+
 			GL.setMatrices(this.cameraReflection);
 			this._renderReflection();
-
-			if(Params.postEffect) {
-				this._fboRender.bind();
-				GL.clear(0, 0, 0, 0);
-			}
-
 			GL.setMatrices(this.camera);
 			this._renderScene(true);
 
-			if(Params.postEffect) {
-				this._fboRender.unbind();
-				this._composer.render(this._fboRender.getTexture());
-				this._bCopy.draw(this._composer.getTexture());
-			}
-
 			// GL.enableAdditiveBlending();
-			this._vFilmGrain.render();
+			// this._vFilmGrain.render();
 			// GL.enableAlphaBlending();
 		} else {
+
+			GL.enable(GL.SCISSOR_TEST);
+			const w2 = GL.width/2;
+
+
 			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
 
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
-			GL.enable(GL.SCISSOR_TEST);
-			const w2 = GL.width/2;
+
+
+			this.cameraVive.setEye('left');
+			this._getReflectionMatrix();
+
+			GL.setMatrices(this.cameraReflection);
+			this._fboReflection.bind();
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
+			GL.viewport(0, 0, w2, GL.height);
+			GL.scissor(0, 0, w2, GL.height);
+			GL.setMatrices(this.cameraVive);
+			this._renderScene(true);
+
+
+
+			this.cameraVive.setEye('right');
+			this._getReflectionMatrix();
+
+			GL.setMatrices(this.cameraReflection);
+			this._fboReflection.bind();
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
+			GL.viewport(w2, 0, w2, GL.height);
+			GL.scissor(w2, 0, w2, GL.height);
+			GL.setMatrices(this.cameraVive);
+			this._renderScene(true);
+
+			GL.disable(GL.SCISSOR_TEST);
+			
+			
+
+			/*
+			
 
 			//	left
 			GL.viewport(0, 0, w2, GL.height);
 			GL.scissor(0, 0, w2, GL.height);
 			this.cameraVive.setEye('left');
+
+			//	get reflection matrix
+			this._getReflectionMatrix();
+
+			//	render reflection
+			GL.setMatrices(this.cameraReflection);
+			GL.rotate(this._modelMatrix);
+			this._fboReflection.bind();
+			GL.viewport(0, 0, w2, GL.height);
+			GL.scissor(0, 0, w2, GL.height);
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
+			//	render full scene
+			GL.viewport(0, 0, w2, GL.height);
+			GL.scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			GL.rotate(this._modelMatrix);
 			this._renderScene(true);
+
+			GL.enableAdditiveBlending();
+			this._vFilmGrain.render();
+			GL.enableAlphaBlending();
+
+
 
 			//	right
 			GL.viewport(w2, 0, w2, GL.height);
 			GL.scissor(w2, 0, w2, GL.height);
 			this.cameraVive.setEye('right');
+
+			//	get reflection matrix
+			this._getReflectionMatrix();
+
+			//	render reflection
+			GL.setMatrices(this.cameraReflection);
+			GL.rotate(this._modelMatrix);
+
+			this._fboReflection.bind();
+			GL.viewport(w2, 0, w2, GL.height);
+			GL.scissor(w2, 0, w2, GL.height);
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
+			//	render full scene
+			GL.viewport(w2, 0, w2, GL.height);
+			GL.scissor(w2, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			GL.rotate(this._modelMatrix);
 			this._renderScene(true);
 
-			GL.disable(GL.SCISSOR_TEST);
+			GL.enableAdditiveBlending();
+			this._vFilmGrain.render();
+			GL.enableAlphaBlending();
+			*/
 
 			VIVEUtils.submitFrame();
 		}
+
+		const size = 256 * 2;
+
+		GL.viewport(window.innerWidth/2, 0, size, size/GL.aspectRatio * 2);
 		// this._bCopy.draw(this._fboReflection.getTexture());
 	}
 
@@ -225,6 +355,8 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
 
+		// console.log(this.cameraOffsetX.value);
+		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();
 		this._subLines.render();
@@ -240,16 +372,14 @@ class SceneApp extends alfrid.Scene {
 
 
 	resize() {
-		const scale = hasVR ? 3 : 1;
-		console.debug('Scale : ', scale);
+		const scale = hasVR ? 2 : 1;
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
-		this.camera.setAspectRatio(GL.aspectRatio);
-		this.cameraReflection.setAspectRatio(GL.aspectRatio);
-		this._fboRender = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		if(!hasVR) {
+			this.camera.setAspectRatio(GL.aspectRatio);
+			this.cameraReflection.setAspectRatio(GL.aspectRatio);	
+		}
+		
 		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
-		this._composer = new EffectComposer(GL.width, GL.height);
-		this._composer.addPass(this._passSoftLight);
-		this._composer.addPass(this._passFxaa);
 	}
 }
 

@@ -32,16 +32,24 @@ class SceneApp extends alfrid.Scene {
 
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
 		this.orbitalControl.radius.value = 7;
-		this.orbitalControl.rx.value = 0.3;
+
+		const rotSpeed = 0.002;
+		this.orbitalControl.rx = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
+		this.orbitalControl.ry = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
+
+
+		this.orbitalControl.rx.setTo(0.3);
+		this.orbitalControl.ry.setTo(0.0);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		this.orbitalControl.radius.limit(3, 30);
 
 		this.cameraYOffset = hasVR ? -2 : 0;
 
-		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
-		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
-		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
+		const TweenSpeed = 0.0035;
+		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 
 		// this.cameraOffsetX = new alfrid.EaseNumber(0);
 		// this.cameraOffsetY = new alfrid.EaseNumber(0);
@@ -347,6 +355,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
 
+		// console.log(this.cameraOffsetX.value);
 		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();

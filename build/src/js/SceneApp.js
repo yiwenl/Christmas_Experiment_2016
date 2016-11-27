@@ -23,6 +23,8 @@ import CameraStops from './CameraStops';
 import fsSoftLight from '../shaders/softlight.frag';
 
 const RAD = Math.PI / 180;
+const TweenSpeed = 0.0035;
+const rotSpeed = 0.002;
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
@@ -33,10 +35,8 @@ class SceneApp extends alfrid.Scene {
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
 		this.orbitalControl.radius.value = 7;
 
-		const rotSpeed = 0.002;
 		this.orbitalControl.rx = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
 		this.orbitalControl.ry = new alfrid.TweenNumber(0, 'expInOut', rotSpeed);
-
 
 		this.orbitalControl.rx.setTo(0.3);
 		this.orbitalControl.ry.setTo(0.0);
@@ -46,7 +46,7 @@ class SceneApp extends alfrid.Scene {
 
 		this.cameraYOffset = hasVR ? -2 : 0;
 
-		const TweenSpeed = 0.0035;
+		
 		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
@@ -67,14 +67,24 @@ class SceneApp extends alfrid.Scene {
 			this.toRender();
 		}
 
-		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
-		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
-		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+		// socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
+		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
 		window.addEventListener('keydown', (e)=> {
 			if(e.keyCode === 39) {
 				this.nextStop();
 			}
+		});
+
+
+		GL.canvas.addEventListener('mousedown', (e)=> {
+			const rx = this.orbitalControl.rx.value;
+			const ry = this.orbitalControl.ry.value;
+
+			this.orbitalControl.rx = new alfrid.EaseNumber(rx);
+			this.orbitalControl.ry = new alfrid.EaseNumber(ry);
+			this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		});
 	}
 
@@ -109,7 +119,8 @@ class SceneApp extends alfrid.Scene {
 		this._textureNoise = new GLTexture(getAsset('noise'));
 		this._textureGradient = new GLTexture(getAsset('gradient'));
 
-		this._fboReflection = new alfrid.FrameBuffer(hasVR ? GL.width / 2 : GL.width, GL.height);
+		const scale = hasVR ? 1 : 0.5;
+		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
 	}
 
 	_initViews() {
@@ -167,6 +178,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		const rx = this.orbitalControl.rx.value;
+		const ry = this.orbitalControl.ry.value;
+
+		this.orbitalControl.rx = new alfrid.TweenNumber(rx, 'expInOut', rotSpeed);
+		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+
 		this._stop = i;
 		const dataStop = CameraStops[this._stop];
 		console.log(dataStop.tx, dataStop.ty, dataStop.tz);

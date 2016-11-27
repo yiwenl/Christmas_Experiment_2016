@@ -30,6 +30,7 @@ class ViewLine extends alfrid.View {
 
 		this.isPaused = false;
 		this.app = app;
+		this._tick = 0;
 		this.tickLeaving = 0;
 		this.tickRender = 0;
 
@@ -53,7 +54,8 @@ class ViewLine extends alfrid.View {
 			this.points[index++] = [0,0,0];
 		}
 
-		this.line = new Line(this.getPoints(this.points));
+		let division = 4;
+		this.line = new Line(this.getPoints(this.points),(p)=>{ return p * division });
 		this.line.points = this.points;
 
 		// properties for wandering animation
@@ -82,7 +84,7 @@ class ViewLine extends alfrid.View {
 		this.motions = {
 			0: [Motions.circle.bind(Motions), Motions.snake.bind(Motions)],
 			2: [Motions.disappear1.bind(Motions)],
-			3: [Motions.travel1.bind(Motions), Motions.travel2.bind(Motions), Motions.travel3.bind(this)]
+			3: [Motions.travel1.bind(Motions), Motions.travel2.bind(Motions), Motions.travel3.bind(this), Motions.travelPair1.bind(this), Motions.travelPair2.bind(this)]
 		}
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
@@ -163,10 +165,11 @@ class ViewLine extends alfrid.View {
 	    pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4 * this.mainSpeed;
 	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed;
 
+			let speed = this.state === STATES.wandering ? .4 : .6
 			for (var i = 1; i < line.points.length; i++) {
-				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * .4 * this.mainSpeed;
-				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * .4 * this.mainSpeed;
-				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * .4 * this.mainSpeed;
+				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * speed * this.mainSpeed;
+				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * speed * this.mainSpeed;
+				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * speed * this.mainSpeed;
 			}
 
 			var pts = this.getPoints(line.points);
@@ -239,6 +242,7 @@ class ViewLine extends alfrid.View {
 	}
 
 	update() {
+
 		if(this.state === STATES.wandering){
 			this.delayBeforeNewMotion--;
 
@@ -276,7 +280,7 @@ class ViewLine extends alfrid.View {
 		// 	ease: Easings.instance.easeInCubic
 		// });
 
-		if(Math.random() > .6){
+		if(Math.random() > .4){
 		// if(false){
 			for (var i = 0; i < this.line.points.length; i++) {
 				this.points[this.points.length - 1- i] = this.line.vert[i*6];
@@ -534,8 +538,8 @@ class ViewLine extends alfrid.View {
 	}
 
 	render() {
-
-		let canUpdate = true;//(this.tickRender++ % 2 == 0);
+		this._tick+= .1;
+		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
 			if(Easings.instance.tweens.length){
@@ -548,20 +552,20 @@ class ViewLine extends alfrid.View {
 		this.shader.uniform("texture", "uniform1i", 0);
 		this.texture.bind(0);
 
+		this.shader.uniform("uTime", "float", this._tick);
 		this.shader.uniform("alpha", "float", this.alpha);
 		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
 		this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
 
-
-		if(this.isPaused){
-			GL.draw(this.line);
-
-			return;
-		}
+		// if(this.isPaused){
+		// 	GL.draw(this.line);
+		//
+		// 	return;
+		// }
 
 		if(this.state === STATES.wandering || this.state === STATES.travelling){
 			var pts = this.newPoints(this.line);
-			if(pts){
+			if(pts && !this.isPaused){
 				this.line.render(pts, this.needsUpdate);
 			}
 		}
@@ -619,6 +623,7 @@ class ViewLine extends alfrid.View {
 			}
 
 		}
+
 
 
 

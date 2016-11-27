@@ -20,14 +20,18 @@ class SubsceneLines {
 	_initViews() {
 		this._step = 0;
 		this._spots = [
-			[0, -3, -0],
-			[-15, -3, 15],
-			[15, -3, 15],
-			[15, -3, -15],
+			[0, -2, -0],
+			[-15, -2, 15],
+			[15, -2, 15],
+			[15, -2, -15],
 			// [0, -5, -0],
 			// [0, -5, -0],
 			// [0, -5, -0],
 		]
+
+		setTimeout(()=>{
+			this.pause()
+		}, 2000)
 
 		this.controller = new Controller(this);
 
@@ -46,7 +50,7 @@ class SubsceneLines {
 
 		this.linesManager = new LinesManager();
 
-		for (var i = 0; i < 6; i++) {
+		for (var i = 0; i < 7; i++) {
 			this.linesManager.addLine();
 		}
 
@@ -56,6 +60,7 @@ class SubsceneLines {
 	}
 
 	pause(){
+		this.linesManager.pause();
 		// this._vLine.pause();
 		// this.linesManager.moveTo([-5, -2, 5])
 	}

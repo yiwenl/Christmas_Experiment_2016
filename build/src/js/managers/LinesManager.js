@@ -102,7 +102,7 @@ class LinesManager {
         this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 
-      let duration = (5 + Math.random() * 3);
+      let duration = (4 + Math.random() * 3);
       if(i === indexToDraw){
         duration = 3
         l.willDraw = animal;
@@ -218,10 +218,16 @@ class LinesManager {
     }
   }
 
-  update(){
-    this.tick++;
+  pause(){
+    for (var i = 0; i < this.lines.length; i++) {
+      this.lines[i].pause();
+    }
+  }
 
-    if(this.tick %2===0){
+  update(){
+    // this.tick++;
+
+    // if(this.tick %2===0){
 
       for (var i = 0; i < this.lines.length; i++) {
 
@@ -231,7 +237,7 @@ class LinesManager {
         }
         this.lines[i].render();
       }
-    }
+    // }
   }
 
   easeInCubic(t, b, c, d) {

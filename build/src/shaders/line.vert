@@ -5,6 +5,7 @@ attribute vec2 aTextureCoord;
 attribute float direction;
 attribute vec3 aPrevious;
 attribute vec3 aNext;
+attribute float width;
 // attribute vec4 a_offsets;
 attribute float aCounters;
 attribute vec3 aNormal;
@@ -12,6 +13,7 @@ attribute vec3 aNormal;
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
+uniform float uTime;
 
 
 uniform float aspect;
@@ -46,7 +48,10 @@ void main() {
 
   vCounters = aCounters;
 
-  float len = thickness;
+  float len = thickness *  sin(width+uTime) * (1.-smoothstep(.9,1.,vUV.x*1.));
+  // len *= smoothstep(vUV.x*2.,vUV.y*2.+2.,-uTime*2000.);;
+  len *= smoothstep(vUV.x * 2., vUV.y * 2.+ 1., -uTime*2000.);
+
   float orientation = direction;
 
   //starting point uses (next - current)
@@ -81,8 +86,8 @@ void main() {
   }
   vec2 normal = vec2(-dir.y, dir.x);
   vColor = vec3(normal, 1.0);
-  normal *= len/2.0;
   normal.x /= aspect;
+  normal *= len/2.0;
 
   vec4 offset =  vec4(normal * orientation, 0.0, 0.0);
   // vColor = vec3(orientation);

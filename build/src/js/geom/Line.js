@@ -6,10 +6,11 @@ let tempArray1 = [];
 let tempArray2 = [];
 let tempArray3 = [];
 class Line extends alfrid.Mesh {
-  constructor(vertices, drawMode = GL.TRIANGLES){
+  constructor(vertices, c, drawMode = GL.TRIANGLES){
 
     gl = GL;
       super(drawMode)
+    this.widthCallback = c;
 
     // indices = [];
     let vert = [
@@ -26,6 +27,7 @@ class Line extends alfrid.Mesh {
     this.directions = [];
     this.indicesArray = [];
     this.counters = [];
+    this.width = [];
     this.uvs = [];
     this.previous = [];
   	this.next = [];
@@ -209,7 +211,18 @@ class Line extends alfrid.Mesh {
     if(needsUpdate){
       index = 0;
       this.uvs = [];
+      let w;
       for( var j = 0; j < l; j++ ) {
+
+        if( this.widthCallback ){
+          w = this.widthCallback( j / ( l -1 ) )
+        }
+        else {
+          w = .1;
+        }
+
+        this.width[index++] = w;
+        this.width[index++] = w;
         // this.uvs[index++] = j / ( l - 1 );
         // this.uvs[index++] = 0;
         //
@@ -250,6 +263,7 @@ class Line extends alfrid.Mesh {
       // console.log("counters", this.counters.length);
 
       this.bufferIndex(this.indicesArray, false);
+      this.bufferData(this.width, 'width', 1, false, true);
       this.bufferData(this.directions, 'direction', 1, false);
       this.bufferTexCoord(this.uvs, false);
       this.bufferData(this.counters, 'aCounters', 1, false);

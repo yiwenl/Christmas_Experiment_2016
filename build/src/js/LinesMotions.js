@@ -11,7 +11,7 @@ const Motions = {
 		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1;
 		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1;
 		options.targetPoint[0] +=  Math.cos(options.time/10 + Math.PI /4) * .08
-		// options.targetPoint[1] +=  Math.sin(options.time/10 + Math.PI /4) * .04
+		options.targetPoint[1] +=  Math.abs(Math.sin(options.time/10 + Math.PI /4) * .04)
 	},
 
 	travel3: (options)=>{

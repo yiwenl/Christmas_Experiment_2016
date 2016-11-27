@@ -14,7 +14,7 @@ void main() {
 
   vec4 color = vec4(alpha);
   // vec4 color = vec4(1.0);
-  vec4 colorEnd = color * texture2D( texture, vUV );
+  vec4 colorEnd = color;
 
   if(colorEnd.a < .01){
     discard;

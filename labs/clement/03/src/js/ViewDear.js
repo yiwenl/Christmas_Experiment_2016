@@ -44,7 +44,6 @@ class ViewDear extends alfrid.View {
 
 	}
 
-
 	_init() {
 		this.dear = new Dear(this.pos);
 

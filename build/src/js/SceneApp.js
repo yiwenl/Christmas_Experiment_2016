@@ -1,6 +1,7 @@
 // SceneApp.js
 
 import alfrid, { Scene, GL, GLTexture } from 'alfrid';
+import glmatrix from 'gl-matrix';
 import ViewTerrain from './ViewTerrain';
 import ViewWater from './ViewWater';
 
@@ -171,11 +172,12 @@ class SceneApp extends alfrid.Scene {
 	_gotoStop(i) {
 		this._stop = i;
 		const dataStop = CameraStops[this._stop];
-		console.log(dataStop.tx, dataStop.ty, dataStop.tz);
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-		console.log(this._pointTarget);
 
+		this._subLines.goTo(this._pointTarget);
+
+		
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
 		this.orbitalControl.rx.value = dataStop.rx;

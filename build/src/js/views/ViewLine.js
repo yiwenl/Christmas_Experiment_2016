@@ -60,6 +60,7 @@ class ViewLine extends alfrid.View {
 
 		// properties for wandering animation
 		this.willDraw = false; // sorry, will change that, used to know if the line is supposed to draw after travelling
+		this.posToDraw = null; // sorry, will change that, used to know if the line is supposed to draw after travelling
 
 		this.tick = Math.random() * Math.PI*2 * 100;
 
@@ -273,6 +274,7 @@ class ViewLine extends alfrid.View {
 	undraw(callback){
 		this.callback = callback;
 		this.willDraw = false;
+		this.posToDraw = false;
 
 		// Easings.instance.to(this, 4, {
 		// 	delay: 2,
@@ -415,6 +417,7 @@ class ViewLine extends alfrid.View {
 
 		this.willDraw = null;
 
+
 		this.arrayCorrespondance = []
 		this.currentPointToFollowIndex = 0;
 		this.mainSpeed = .3;
@@ -424,7 +427,9 @@ class ViewLine extends alfrid.View {
 
 		this.animal = animal;
 
-		let nbPointsTarget = this.animal.finalP.length/ 6 ;
+		var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
+		console.log(this.posToDraw);
+		let nbPointsTarget = ptsAnimal.length/ 6 ;
 
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
@@ -474,8 +479,8 @@ class ViewLine extends alfrid.View {
 		// pathLine.reverse();
 
 		let firstPointLine = this.line.points[0];
-		let firstPointTarget = this.animal.finalP[0];
-		let secondPointTarget = this.animal.finalP[1];
+		let firstPointTarget = ptsAnimal[0];
+		let secondPointTarget = ptsAnimal[1];
 
 		// path to target
 		let dist = glmatrix.vec3.distance(firstPointLine, firstPointTarget);
@@ -507,7 +512,7 @@ class ViewLine extends alfrid.View {
 
 		let pathToTarget = this.getPoints(ptsToTarget);
 		// let pathToTarget = this.getPoints([firstPointLine, firstPointTarget]);
-		let pathTarget = this.animal.finalP;
+		let pathTarget = ptsAnimal;
 
 		index = 0;
 		for (var i = pathLine.length-1; i > -1; i--) {
@@ -523,6 +528,7 @@ class ViewLine extends alfrid.View {
 		}
 
 		this.newPoints(this.line, true)
+		this.posToDraw = null;
 	}
 
 	getRandomPos(r, s, t){

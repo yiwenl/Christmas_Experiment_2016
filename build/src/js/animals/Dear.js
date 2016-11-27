@@ -65,7 +65,7 @@ class Dear {
 
 
 
-    this.position = pos || [0,-1, 2];
+    this.position = pos || [0,-1, 0];
     this.m = glmatrix.mat4.create();
 
 
@@ -77,7 +77,7 @@ class Dear {
   getPoints(){
     let v = this.vertices.slice();
 
-    glmatrix.mat4.translate(this.m, this.m,  this.position);
+    // glmatrix.mat4.translate(this.m, this.m,  this.position);
     glmatrix.mat4.scalar.rotateY(this.m, this.m, Math.PI)
 
     // glmatrix.mat4.multiply(m, this.m, this.mR);

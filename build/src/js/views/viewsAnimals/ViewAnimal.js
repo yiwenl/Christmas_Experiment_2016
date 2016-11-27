@@ -40,6 +40,16 @@ class ViewAnimal extends alfrid.View {
     this.line = new Line(this.finalP);
 	}
 
+  getPointsWithPos(pt){
+		var array = [];
+		let index= 0;
+		for (var i = 0; i < this.finalP.length; i++) {
+			array[index++] = [this.finalP[i][0] + pt[0], this.finalP[i][1] + pt[1], this.finalP[i][2] + pt[2]];
+		}
+
+		return array;
+	}
+
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;

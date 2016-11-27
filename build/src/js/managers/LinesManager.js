@@ -51,6 +51,7 @@ class LinesManager {
   }
 
   moveTo(pt, animal){
+    // ignore that
     let freeLines = [];
     for (var i = 0; i < this.lines.length; i++) {
       if(this.lines[i].state !== STATES_LINE.muting){
@@ -58,15 +59,16 @@ class LinesManager {
       }
     }
 
+
     this.state = STATES.travelling;
 
 
     // get one index, it will draw
     let idx = Math.floor(Math.random() * freeLines.length);
-    let indexToDraw = freeLines[idx];
-    this.splice(freeLines, idx);
+    let indexToDraw = 10000; //idx;
+    // this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
 
-    let indexPair1 = null;
+    let indexPair1 = null; // some special behaviours for two lines
     let indexPair2 = null;
     if(freeLines.length >= 2){
       indexPair1 = freeLines[0];
@@ -90,22 +92,23 @@ class LinesManager {
 
       if(i === indexPair1 || i === indexPair2){
         this.targetPoints[i][0] = pt[0]
-        this.targetPoints[i][1] = pt[1]
+        this.targetPoints[i][1] = -2
         this.targetPoints[i][2] = pt[2]
       }
       else {
         // this.targetPoints[i][0] = pt[0];
-        // this.targetPoints[i][1] = pt[1];
+        // this.targetPoints[i][1] = -2;
         // this.targetPoints[i][2] = pt[2];
         this.targetPoints[i][0] = pt[0] + Math.random() * 1 - 1/2;
-        this.targetPoints[i][1] = pt[1] - Math.random() * 2 ;
+        this.targetPoints[i][1] = -2 - Math.random() * 2 ;
         this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 
       let duration = (4 + Math.random() * 3);
-      if(i === indexToDraw){
+      if(i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         duration = 3
         l.willDraw = animal;
+        l.posToDraw = pt;
       }
 
       // set the easings
@@ -143,6 +146,7 @@ class LinesManager {
 
       }
       else {
+        // LOOK HERE
         let o = this._moveLineTo({
           line: l,
           pt: this.targetPoints[i],
@@ -212,7 +216,7 @@ class LinesManager {
           line.transformTo(line.willDraw);
         }
         else {
-          line.wander();
+          line.stop();
         }
       }
     }

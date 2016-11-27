@@ -2,6 +2,8 @@
 import Controller from './controller/controller'
 import ViewDear from './views/viewsAnimals/ViewDear'
 import LinesManager from './managers/LinesManager'
+import CameraStops from './CameraStops';
+import Params from './Params';
 
 
 class SubsceneLines {
@@ -20,13 +22,14 @@ class SubsceneLines {
 	_initViews() {
 		this._step = 0;
 		this._spots = [
-			[0, -2, -0],
-			[-15, -2, 15],
-			[15, -2, 15],
-			[15, -2, -15],
-			// [0, -5, -0],
-			// [0, -5, -0],
-			// [0, -5, -0],
+			// [0, -2, -0],
+			// [-15, -2, 15],
+			// [15, -2, 15],
+			// [15, -2, -15],
+			[0, -5, -0],
+			[0, -5, -0],
+			[0, -5, -0],
+			[0, -5, -0],
 		]
 
 		// setTimeout(()=>{
@@ -38,14 +41,17 @@ class SubsceneLines {
 		// just a dear
 		// this._viewDear = new ViewDear();
 		this.animals = [];
-		for (var i = 0; i < this._spots.length; i++) {
+
+		for (var i = 0; i < CameraStops.length; i++) {
+			// CameraStops[i]
 			let vDear = new ViewDear()
-			// vDear.reset(this._spots[3])
-			vDear.reset([this._spots[i][0], -1, this._spots[i][2]])
-			// vDear.reset([this._spots[3][0], -1, this._spots[3][2]])
+			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
+			vDear.reset([0,-1,0])
 
 			this.animals.push(vDear);
 		}
+		// for (var i = 0; i < this._spots.length; i++) {
+		// }
 
 
 		this.linesManager = new LinesManager();
@@ -57,6 +63,11 @@ class SubsceneLines {
 		// this._vLine = new ViewLine(this);
 		// this._vLine.alpha = .3 + Math.random() * .5
 
+	}
+
+	goTo(pt){
+		// say the lines to all move to pt ! Second paramater is the animal to draw
+		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length])
 	}
 
 	pause(){
@@ -77,7 +88,7 @@ class SubsceneLines {
 
 	transform(){
 		// this.linesManager.draw(this.animals[this._step % this.animals.length]);
-		this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
+		// this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
 		this._step++
 	}
 

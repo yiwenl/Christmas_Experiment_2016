@@ -60,7 +60,7 @@ class ViewLine extends alfrid.View {
 
 		// properties for wandering animation
 		this.willDraw = false; // sorry, will change that, used to know if the line is supposed to draw after travelling
-		this.posToDraw = null; // sorry, will change that, used to know if the line is supposed to draw after travelling
+		// this.posToDraw = null; // sorry, will change that, used to know if the line is supposed to draw after travelling
 
 		this.tick = Math.random() * Math.PI*2 * 100;
 
@@ -274,7 +274,6 @@ class ViewLine extends alfrid.View {
 	undraw(callback){
 		this.callback = callback;
 		this.willDraw = false;
-		this.posToDraw = false;
 
 		// Easings.instance.to(this, 4, {
 		// 	delay: 2,
@@ -305,7 +304,9 @@ class ViewLine extends alfrid.View {
 		var secondPoint = this.line.vert[this.line.vert.length-2];
 		this.path = []
 
-		let pathLine = this.animal.finalP;
+		var pathLine = this.animal.getPointsWithPos(this.posToDraw)
+
+		// let pathLine = this.animal.finalP;
 		for (var i = 0; i < pathLine.length; i++) {
 			this.path[this.path.length] = pathLine[i];
 		}
@@ -404,6 +405,7 @@ class ViewLine extends alfrid.View {
 		pathLeaving = false;
 		this.newPoints(this.line, true) // set the easings
 
+		this.posToDraw = null;
 		// console.log(this.line.vert.length);
 		// console.log(this.path.length);
 
@@ -428,7 +430,7 @@ class ViewLine extends alfrid.View {
 		this.animal = animal;
 
 		var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
-		console.log(this.posToDraw);
+		// console.log(this.posToDraw);
 		let nbPointsTarget = ptsAnimal.length/ 6 ;
 
 		// if the target has more point, we need to add some
@@ -528,7 +530,7 @@ class ViewLine extends alfrid.View {
 		}
 
 		this.newPoints(this.line, true)
-		this.posToDraw = null;
+		// this.posToDraw = null;
 	}
 
 	getRandomPos(r, s, t){

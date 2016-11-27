@@ -164,7 +164,7 @@ function _initSound() {
 }
 
 function _onSound(err, src, json) {
-	console.log('on Sound : ', src, json);
+	// console.log('on Sound : ', src, json);
 	const audio = new Audio();
 	audio.src = src;
 	audio.play();

@@ -18,6 +18,7 @@ import SubsceneParticles from './SubsceneParticles';
 import SubsceneLines from './SubsceneLines';
 
 import GetReflectionMatrix from './utils/GetReflectionMatrix';
+import CameraStops from './CameraStops';
 
 import fsSoftLight from '../shaders/softlight.frag';
 
@@ -38,9 +39,13 @@ class SceneApp extends alfrid.Scene {
 
 		this.cameraYOffset = hasVR ? -2 : 0;
 
-		this.cameraOffsetX = new alfrid.EaseNumber(0);
-		this.cameraOffsetY = new alfrid.EaseNumber(0);
-		this.cameraOffsetZ = new alfrid.EaseNumber(0);
+		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
+		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
+		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicIn', 0.001);
+
+		// this.cameraOffsetX = new alfrid.EaseNumber(0);
+		// this.cameraOffsetY = new alfrid.EaseNumber(0);
+		// this.cameraOffsetZ = new alfrid.EaseNumber(0);
 
 		gui.add(this, 'cameraYOffset', -20, 0);
 
@@ -50,6 +55,7 @@ class SceneApp extends alfrid.Scene {
 		this.cameraVive = new CameraVive();
 
 		this._pointTarget = [0, 2.5, 0];
+		this._stop = 0;
 
 		this.resize();
 
@@ -60,6 +66,14 @@ class SceneApp extends alfrid.Scene {
 		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
 		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
 		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+
+		window.addEventListener('keydown', (e)=> {
+			// console.log(e.keyCode);
+
+			if(e.keyCode === 39) {
+				this.nextStop();
+			}
+		});
 	}
 
 	_onCameraAngle(angles) {
@@ -68,11 +82,10 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_onCameraPosition(pos) {
-		// console.log('On camera position :', pos);
+		console.log('On camera position :', pos);
 		this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
 	}
-
 
 	_onTargetPosition(pos) {
 		// console.log('Target position', pos);
@@ -121,7 +134,6 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passFxaa);
 	}
 
-
 	_getReflectionMatrix() {
 		const camera = hasVR ? this.cameraVive : this.camera;
 		// mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(0, this.cameraYOffset, 0));
@@ -135,11 +147,32 @@ class SceneApp extends alfrid.Scene {
 		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
 
-
 	render() {
 		if(!window.hasVR) {
 			this.toRender();
 		}
+	}
+
+	nextStop() {
+		let next = this._stop + 1;
+		if(next >= CameraStops.length) {
+			next = 0;
+		}
+
+		console.log(next, CameraStops.length);
+
+		this._gotoStop(next);
+		
+	}
+
+	_gotoStop(i) {
+		this._stop = i;
+		const dataStop = CameraStops[this._stop];
+
+		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
+		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
+		this.orbitalControl.rx.value = dataStop.rx;
+		this.orbitalControl.ry.value = dataStop.ry;
 	}
 
 

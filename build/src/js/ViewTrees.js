@@ -138,12 +138,12 @@ class ViewTrees extends alfrid.View {
 		f.add(oUniforms, 'metallic', 0, 1);
 
 		this._treePositions = positionOffsets;
-		window.addEventListener('keydown', (e)=> {
-			// console.log(e.keyCode);
-			if(e.keyCode === 83) {
-				saveJson(this._treePositions);
-			}
-		});
+		// window.addEventListener('keydown', (e)=> {
+		// 	// console.log(e.keyCode);
+		// 	if(e.keyCode === 83) {
+		// 		saveJson(this._treePositions);
+		// 	}
+		// });
 	}
 
 

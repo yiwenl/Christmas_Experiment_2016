@@ -71,6 +71,9 @@ function _onImageLoaded() {
 
 	divContainer = document.body.querySelector('.points-container');
 	divTemplate = document.body.querySelector('.template-point');
+
+
+	updatePoints();
 }
 
 function getNumber(value, prec = 100) {
@@ -78,7 +81,22 @@ function getNumber(value, prec = 100) {
 }
 
 function _saveJson() {
-	saveJson(points);
+	// saveJson(points);
+
+	const toSave = points.map((data)=> {
+		const px = -(data.x * 2.0 - 1.0);
+		const pz = -(data.z * 2.0 - 1.0);
+
+		return {
+			x:px,
+			y:data.y,
+			z:pz,
+			rx:data.rx,
+			ry:data.ry
+		}
+	});
+
+	saveJson(toSave);
 }
 
 function _addPoint() {
@@ -103,6 +121,7 @@ function updatePoints() {
 
 	for(let i=0; i<points.length; i++) {
 		let p = points[i];
+		console.log(i, p);
 		const div = divTemplate.cloneNode(true);
 		const pTag = div.querySelector('p');
 		pTag.innerHTML = `x:${getNumber(p.x)}, y:${getNumber(p.y)}, rx:${getNumber(p.rx)}, ry:${getNumber(p.ry)}`;
@@ -121,7 +140,6 @@ function updatePoints() {
 	}
 }
 
-
 function select(index) {
 	console.log('Select', index);
 	const p = points[index];
@@ -134,6 +152,10 @@ function select(index) {
 	params.rx = p.rx;
 	params.ry = p.ry;
 	params.radius = p.radius;
+
+
+	_onPoint();
+	onChange();
 }
 
 function remove(index) {
@@ -176,7 +198,6 @@ function render() {
 	ctx.restore();
 }
 
-
 function renderPoints() {
 	for(let i=0; i<points.length; i++) {
 		_renderPoints(points[i]);
@@ -206,8 +227,11 @@ function _renderPoints(p) {
 
 function _onPoint(e) {
 	// console.log(e.clientX, e.clientY);
-	point.x = e.clientX / size;
-	point.y = e.clientY / size;
+	if(e) {
+		point.x = e.clientX / size;
+		point.y = e.clientY / size;	
+	}
+	
 
 	const px = -(point.x * 2.0 - 1.0);
 	const pz = -(point.y * 2.0 - 1.0);

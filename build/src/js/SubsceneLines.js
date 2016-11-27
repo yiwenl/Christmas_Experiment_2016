@@ -1,7 +1,7 @@
 // SubsceneLines.js
 import Controller from './controller/controller'
-import ViewDear from './views/ViewDear'
-import ViewLine from './views/ViewLine'
+import ViewDear from './views/viewsAnimals/ViewDear'
+import LinesManager from './managers/LinesManager'
 
 
 class SubsceneLines {
@@ -9,6 +9,8 @@ class SubsceneLines {
 		this._scene = mScene;
 		this._initTextures();
 		this._initViews();
+
+
 	}
 
 	_initTextures() {
@@ -16,29 +18,46 @@ class SubsceneLines {
 	}
 
 	_initViews() {
+		this._step = 0;
+		this._spots = [
+			[0, -3, -0],
+			[-15, -3, 15],
+			[15, -3, 15],
+			[15, -3, -15],
+			// [0, -5, -0],
+			// [0, -5, -0],
+			// [0, -5, -0],
+		]
 
 		this.controller = new Controller(this);
 
 		// just a dear
-		this._viewDear = new ViewDear();
+		// this._viewDear = new ViewDear();
+		this.animals = [];
+		for (var i = 0; i < this._spots.length; i++) {
+			let vDear = new ViewDear()
+			// vDear.reset(this._spots[3])
+			vDear.reset([this._spots[i][0], -1, this._spots[i][2]])
+			// vDear.reset([this._spots[3][0], -1, this._spots[3][2]])
 
-
-		this.lines = [];
-
-		for (var i = 0; i < 10; i++) {
-			var l = new ViewLine(this);
-			l.alpha = .3 + Math.random() * .5
-			this.lines.push(l);
+			this.animals.push(vDear);
 		}
 
-		this._vLine = new ViewLine(this);
-		this._vLine.alpha = .3 + Math.random() * .5
+
+		this.linesManager = new LinesManager();
+
+		for (var i = 0; i < 6; i++) {
+			this.linesManager.addLine();
+		}
+
+		// this._vLine = new ViewLine(this);
+		// this._vLine.alpha = .3 + Math.random() * .5
 
 	}
 
 	pause(){
-		this._vLine.pause();
-
+		// this._vLine.pause();
+		// this.linesManager.moveTo([-5, -2, 5])
 	}
 
 	onClick(pt){
@@ -46,11 +65,15 @@ class SubsceneLines {
 		// this._pointsManager.addPoint(pt)
   }
 
-	transform(){
-		this._scene.orbitalControl.rx.value = 0;
-		this._scene.orbitalControl.ry.value = 0;
+	undraw(){
+		// this.l.undraw();
+		this.linesManager.undraw();
+	}
 
-		this._vLine.transformTo(this._viewDear);
+	transform(){
+		// this.linesManager.draw(this.animals[this._step % this.animals.length]);
+		this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
+		this._step++
 	}
 
 	update() {
@@ -60,10 +83,9 @@ class SubsceneLines {
 	render() {
 		this.controller.update();
 
-		for (var i = 0; i < this.lines.length; i++) {
-			this.lines[i].render();
-		}
-		this._vLine.render();
+		this.linesManager.update();
+		// this._vLine.render();
+		// this._viewDear.render();
 	}
 }
 

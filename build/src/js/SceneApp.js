@@ -101,7 +101,7 @@ class SceneApp extends alfrid.Scene {
 		this._bSky = new alfrid.BatchSky(80);
 		this._bBall = new alfrid.BatchBall();
 
-		
+
 		this._vTerrain = new ViewTerrain();
 		this._vWater = new ViewWater();
 		this._vFilmGrain = new ViewFilmGrain();
@@ -111,10 +111,17 @@ class SceneApp extends alfrid.Scene {
 
 		//	Sub scenes
 		this._subParticles = new SubsceneParticles(this);
-		this._subLines = new SubsceneLines();
+		this._subLines = new SubsceneLines(this);
+
+		this._composer = new EffectComposer(GL.width, GL.height);
+		this._passSoftLight = new Pass(fsSoftLight)
+		this._passSoftLight.bindTexture('textureGradient', this._textureGradient);
+		this._passFxaa = new PassFXAA();
+		this._composer.addPass(this._passSoftLight);
+		this._composer.addPass(this._passFxaa);
 	}
 
-	
+
 	_getReflectionMatrix() {
 		const camera = hasVR ? this.cameraVive : this.camera;
 		// mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(0, this.cameraYOffset, 0));
@@ -140,6 +147,18 @@ class SceneApp extends alfrid.Scene {
 		//	update subscenes
 		this._subParticles.update();
 		this._subLines.update();
+
+		if(!hasVR) {
+			const { eye, center } = this.camera;
+			let distToWater       = eye[1] - Params.seaLevel;
+			const eyeRef          = [eye[0], eye[1] - distToWater * 2.0, eye[2]];
+			distToWater           = center[1] - Params.seaLevel;
+			const centerRef       = [center[0], center[1] - distToWater * 2.0, center[2]];
+			this.cameraReflection.lookAt(eyeRef, centerRef);
+
+			// this._getReflectionMatrix();
+		}
+
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
@@ -294,12 +313,12 @@ class SceneApp extends alfrid.Scene {
 		this._bSky.draw(this._textureStar);
 		this._vFg.render();
 		if(withWater) {
-			this._vWater.render(this._fboReflection.getTexture());	
+			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise);
-		this._bBall.draw(this._pointTarget, [0.5, 0.5, 0.5], [1, 0.8, 0.8]);
-		
+
+
 		this._subParticles.render();
 		this._subLines.render();
 	}

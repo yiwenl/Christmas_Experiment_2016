@@ -349,6 +349,9 @@ define(function (require, exports, module)
   		if (s == undefined) s = 1.70158;
   		  return c*(t/=d)*t*((s+1)*t - s) + b;
 	   };
+    Easings.prototype.easeInCirc= function (x, t, b, c, d) {
+      return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+    }
 
     Easings.prototype.easeInOutExpo = function (t, b, c, d) {
     	t /= d/2;

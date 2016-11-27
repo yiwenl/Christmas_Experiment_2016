@@ -82,15 +82,25 @@ function getNumber(value, prec = 100) {
 
 function _saveJson() {
 	// saveJson(points);
-
+	let i =0;
 	const toSave = points.map((data)=> {
 		const px = -(data.x * 2.0 - 1.0);
 		const pz = -(data.z * 2.0 - 1.0);
+		const angle = data.ry - Math.PI/2;
+		let tx = data.x * size + Math.cos(angle) * data.radius;
+		let tz = data.z * size + Math.sin(angle) * data.radius;
+
+		tx = tx / size * 2 - 1;
+		tz = tz / size * 2 - 1;
+
+		console.log(i, data, tx, tz);
 
 		return {
 			x:px,
-			y:data.y,
 			z:pz,
+			tx:tx,
+			ty:data.y,
+			tz:tz,
 			rx:data.rx,
 			ry:data.ry
 		}

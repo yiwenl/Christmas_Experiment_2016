@@ -52,10 +52,6 @@ class SceneApp extends alfrid.Scene {
 		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 
-		// this.cameraOffsetX = new alfrid.EaseNumber(0);
-		// this.cameraOffsetY = new alfrid.EaseNumber(0);
-		// this.cameraOffsetZ = new alfrid.EaseNumber(0);
-
 		gui.add(this, 'cameraYOffset', -20, 0);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
@@ -77,8 +73,6 @@ class SceneApp extends alfrid.Scene {
 		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
 		window.addEventListener('keydown', (e)=> {
-			// console.log(e.keyCode);
-
 			if(e.keyCode === 39) {
 				this.nextStop();
 			}
@@ -99,6 +93,7 @@ class SceneApp extends alfrid.Scene {
 	_onTargetPosition(pos) {
 		// console.log('Target position', pos);
 		this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
+		console.log('Point target:', this._pointTarget, pos);
 	}
 
 	_initTextures() {
@@ -169,8 +164,6 @@ class SceneApp extends alfrid.Scene {
 			next = 0;
 		}
 
-		console.log(next, CameraStops.length);
-
 		this._gotoStop(next);
 
 	}
@@ -178,6 +171,10 @@ class SceneApp extends alfrid.Scene {
 	_gotoStop(i) {
 		this._stop = i;
 		const dataStop = CameraStops[this._stop];
+		console.log(dataStop.tx, dataStop.ty, dataStop.tz);
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		console.log(this._pointTarget);
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;

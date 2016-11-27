@@ -8,11 +8,9 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-let TARGET_SERVER_IP = 'localhost';
-let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
-let isLocked = false;
-
-window.socket = socket;
+// let TARGET_SERVER_IP = 'localhost';
+// let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
+// window.socket = socket;
 
 let scene;
 const assets = [

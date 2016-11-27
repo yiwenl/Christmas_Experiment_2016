@@ -547,7 +547,8 @@ class ViewLine extends alfrid.View {
 	}
 
 	render() {
-		this._tick+= .1;
+		this._tick+= .1 * (window.hasVR ? .66 : 1);
+
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
@@ -600,7 +601,7 @@ class ViewLine extends alfrid.View {
 							this.line.vert[o.point][2] = this.path[indexFloor][2];
 						}
 
-						o.currentIteration += 1;// do something here
+						o.currentIteration += 1 * (window.hasVR ? .66 : 1);// do something here
 						if(o.currentIteration > o.duration){
 							o.delete = true;
 						}

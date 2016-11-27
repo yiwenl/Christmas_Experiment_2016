@@ -83,7 +83,6 @@ class ViewLineFinale extends alfrid.View {
 	}
 
 	reset(data){
-		console.log(data.points);
 		this.isReady = true;
 		this.data = data;
 		this.line = new Line(this.getPoints(data.points),(p)=>{
@@ -120,7 +119,7 @@ class ViewLineFinale extends alfrid.View {
 		if(!this.isReady) return;
 
 		// console.log(this.isPaused);
-		this._tick += this.data.deltaTime;
+		this._tick += this.data.deltaTime * (window.hasVR ? .66 : 1);
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){

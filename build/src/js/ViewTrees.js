@@ -106,8 +106,6 @@ class ViewTrees extends alfrid.View {
 			}
 		}
 
-
-
 		const NUM_TREES = 50;
 		const positionOffsets = treePositions;
 		const rotations = [];

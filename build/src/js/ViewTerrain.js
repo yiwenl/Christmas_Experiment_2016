@@ -6,6 +6,7 @@ import Params from './Params';
 
 import vs from '../shaders/terrain.vert';
 import fs from '../shaders/terrain.frag';
+import fsFallback from '../shaders/terrainFallback.frag';
 
 const grey = 0.25;
 const oUniforms = {
@@ -19,10 +20,14 @@ const oUniforms = {
 class ViewTerrain extends alfrid.View {
 	
 	constructor() {
+		const useFallback = !GL.getExtension('EXT_shader_texture_lod') || GL.isMobile;
+
+		console.log('useFallback :', useFallback);
 		const _vs = ShaderUtils.addUniforms(vs, oUniforms);
-		const _fs = ShaderUtils.addUniforms(fs, oUniforms);
+		const _fs = ShaderUtils.addUniforms(useFallback ? fsFallback : fs, oUniforms);
 
 		super(_vs, _fs);
+		this.useFallback = useFallback;
 	}
 
 
@@ -40,7 +45,7 @@ class ViewTerrain extends alfrid.View {
 	}
 
 
-	render(textureRad, textureIrr, textureNoise) {
+	render(textureRad, textureIrr, textureNoise, textureEnv) {
 		this.shader.bind();
 
 		this.shader.uniform("textureHeight", "uniform1i", 0);
@@ -52,16 +57,22 @@ class ViewTerrain extends alfrid.View {
 		this.shader.uniform("textureNoise", "uniform1i", 2);
 		textureNoise.bind(2);
 
-		this.shader.uniform('uRadianceMap', 'uniform1i', 3);
-		textureRad.bind(3);
+		if(this.useFallback) {
+			this.shader.uniform("textureEnv", "uniform1i", 3);
+			textureEnv.bind(3);
+		} else {
+			this.shader.uniform('uRadianceMap', 'uniform1i', 3);
+			textureRad.bind(3);
 
-		this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
-		textureIrr.bind(4);
+			this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
+			textureIrr.bind(4);	
+		}
 
 		ShaderUtils.bindUniforms(this.shader, oUniforms);
-
+		
 		this.shader.uniform('uExposure', 'float', Params.exposure);
 		this.shader.uniform('uGamma', 'float', Params.gamma);
+		
 		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
 		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 

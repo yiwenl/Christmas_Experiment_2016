@@ -29,8 +29,6 @@ class EffectComposer {
 		} else {
 			this._passes.push(pass);
 		}
-
-		console.log('pass :', pass, this._passes);
 	}
 
 

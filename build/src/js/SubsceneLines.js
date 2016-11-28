@@ -113,6 +113,10 @@ class SubsceneLines {
 
 	update(pos) {
 		this.lightSound.volume += (this.volume - this.lightSound.volume) * .1;
+
+		if(this.lightSound.volume > 1){
+			this.lightSound.volume = 1;
+		}
 	}
 
 	render(pos) {
@@ -124,10 +128,10 @@ class SubsceneLines {
 		let d = this.linesManager.dist;
 
 		if(d < 10) d= 10;
-		if(d > 200) d= 200;
-		let volume = this.map(d, 10, 200, 1, 0)
+		if(d > 100) d= 100;
+		let volume = this.map(d, 10, 100, 1, 0)
 		this.volume = volume;
-		this.volume = 0;
+		// this.volume = 0;
 		// if(this.volume < .02) this.volume = .02;
 
 		// console.log("dist", this.linesManager.dist);

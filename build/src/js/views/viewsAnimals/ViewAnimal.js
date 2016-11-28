@@ -39,7 +39,7 @@ class ViewAnimal extends alfrid.View {
 	}
 
 	reset(pos, rx = 0, ry = 0){
-		this.sub = 3;
+		this.sub = GL.isMobile ? 2 : 6;
 		this.pos = pos;
 
 		// this.shape.rotateX(rx);

@@ -174,8 +174,9 @@ class SceneApp extends alfrid.Scene {
 
 	nextStop() {
 
-		if(this.finishAnimating) return;
+		if(this.finishAnimating || this.timerBeforeNext > 0) return;
 
+		this.timerBeforeNext = 120;
 		if(!this.isFinished){
 			let next = this._stop + 1;
 			if(next >= CameraStops.length) {
@@ -248,6 +249,11 @@ class SceneApp extends alfrid.Scene {
 
 	toRender() {
 		//	update subscenes
+
+		if(this.timerBeforeNext > 0){
+			this.timerBeforeNext--;
+		}
+
 		this._subParticles.update();
 		this._subLines.update();
 
@@ -403,7 +409,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._bSky.draw(this._textureStar);
 		this._vFg.render();
-		
+
 
 		if(withWater && !hasVR) {
 			this._vWater.render(this._fboReflection.getTexture());

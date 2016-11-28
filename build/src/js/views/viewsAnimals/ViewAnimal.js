@@ -39,6 +39,7 @@ class ViewAnimal extends alfrid.View {
 	}
 
 	reset(pos, rx = 0, ry = 0){
+		this.sub = 3;
 		this.pos = pos;
 
 		// this.shape.rotateX(rx);
@@ -64,11 +65,11 @@ class ViewAnimal extends alfrid.View {
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;
-    let index, n_sub = 6;
+    let index;
 
     var array = []
-    for (let i = 0; i < pts.length * n_sub; i ++ ) {
-			index = i / ( pts.length * n_sub );
+    for (let i = 0; i < pts.length * this.sub; i ++ ) {
+			index = i / ( pts.length * this.sub );
       array.push(this.spline.getPoint( index ));
 		}
 

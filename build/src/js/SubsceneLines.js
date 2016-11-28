@@ -3,6 +3,8 @@ import Sono from 'sono';
 import Controller from './controller/controller'
 import ViewDear from './views/viewsAnimals/ViewDear'
 import ViewWolf from './views/viewsAnimals/ViewWolf'
+import ViewRabbit from './views/viewsAnimals/ViewRabbit'
+import ViewWeasel from './views/viewsAnimals/ViewWeasel'
 import LinesManager from './managers/LinesManager'
 import CameraStops from './CameraStops';
 import Params from './Params';
@@ -42,15 +44,27 @@ class SubsceneLines {
 		// this._viewDear = new ViewDear();
 		this.animals = [];
 
-		for (var i = 0; i < CameraStops.length; i++) {
+		for (var i = 0; i < CameraStops.length + 1; i++) {
 			// CameraStops[i]
-			let vDear = new ViewWolf()
-			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
-			// vDear.rotateX(CameraStops[i].rx);
-			// vDear.rotateY(CameraStops[i].ry);
-			vDear.reset([0,-1,0], CameraStops[i].rx, CameraStops[i].ry)
+			let view;
 
-			this.animals.push(vDear);
+			view = new ViewWeasel()
+			// if(i%2===0) {
+			// }
+			// else {
+			// 	view = new ViewDear()
+			// }
+			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
+			// view.rotateX(CameraStops[i].rx);
+			// view.rotateY(CameraStops[i].ry);
+			if(i === CameraStops.length){
+				view.reset([0,-1,0], CameraStops[0].rx, CameraStops[0].ry)
+				this.animals.push(view);
+			}
+			else {
+				view.reset([0,-1,0], CameraStops[i].rx, CameraStops[i].ry)
+				this.animals.push(view);
+			}
 		}
 		// }
 

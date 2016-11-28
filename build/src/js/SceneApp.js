@@ -132,6 +132,7 @@ class SceneApp extends alfrid.Scene {
 
 	_initViews() {
 		this.isFinished = false;
+		this.finishAnimating = false;
 
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
@@ -172,18 +173,56 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	nextStop() {
-		let next = this._stop + 1;
-		if(next >= CameraStops.length) {
-			next = 0;
-			this._subFinale.isReady = true;
-			this.isFinished = true;
+
+		if(this.finishAnimating) return;
+
+		if(!this.isFinished){
+			let next = this._stop + 1;
+			if(next >= CameraStops.length) {
+				next = 0;
+				this._subFinale.isReady = true;
+				this.isFinished = true;
+				// this._finish();
+			}
+			else {
+			}
+			this._gotoStop(next);
+		}
+		else {
+			this._finish()
+			this.finishAnimating = true;
 		}
 
-		this._gotoStop(next);
+
 
 	}
 
+	_finish() {
+		this._hasTouchControl = false;
+		const rx = this.orbitalControl.rx.value;
+		const ry = this.orbitalControl.ry.value;
+
+		this.orbitalControl.rx = new alfrid.TweenNumber(rx, 'expInOut', rotSpeed);
+		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+
+		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
+
+
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		this._subLines.goTo([0, -1, 0], true);
+		// this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
+
+
+		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
+		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
+		this.orbitalControl.rx.value = dataStop.rx;
+		this.orbitalControl.ry.value = dataStop.ry;
+	}
+
 	_gotoStop(i) {
+		console.log("gotostop");
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -197,7 +236,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 
-		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
+		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
 
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -389,9 +428,9 @@ class SceneApp extends alfrid.Scene {
 
 		// console.log(this.orbitalControl);
 		this._subLines.render(this.orbitalControl.position);
+		this._subFinale.render();
 
 		// if(this.isFinished){
-			this._subFinale.render();
 		// }
 	}
 

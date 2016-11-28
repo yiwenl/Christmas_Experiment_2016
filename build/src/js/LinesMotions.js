@@ -58,6 +58,7 @@ const Motions = {
 		options.targetPoint[1] += Math.sin(Math.tan(Math.cos(options.time/80 +options.startAngle) * 1.2)) * .01;
 	},
 
+
 	snake: (options)=>{
 		options.targetPoint[0] = options.position[0] + Math.cos(options.time/40 + options.startAngle) * options.radius;
 		options.targetPoint[2] = options.position[2] + Math.sin(options.time/50 + options.startAngle) * options.radius * 1.2 ;
@@ -65,6 +66,13 @@ const Motions = {
 		options.targetPoint[1] = options.position[1] - Math.abs(Math.sin(options.time / 100) * 4) - 2;
 		options.targetPoint[0] += Math.cos(Math.pow(8, Math.sin(options.time/40 + options.startAngle))) * .5;
 		options.targetPoint[1] += Math.sin(Math.pow(8, Math.sin(options.time/20 + options.startAngle))) * 1;
+	},
+
+	end1: (options)=>{
+		options.targetPoint[0] = options.position[0] + Math.cos(options.time/20 + options.startAngle) * options.radius;
+		options.targetPoint[2] = options.position[2] + Math.sin(options.time/20 + options.startAngle) * options.radius;
+		options.targetPoint[1] = -1 - Math.abs(Math.sin(options.time / 100) * .5);
+		// options.targetPoint[1] = -1 - Math.abs(Math.sin(options.time / 100) * 2) - 1;
 	},
 
 	disappear1: (options, rand)=>{

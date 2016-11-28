@@ -13,6 +13,7 @@ const STATES_LINE = {
 	leaving: 2,
 	travelling: 3,
 	dying: 4,
+  finish: 5,
 }
 
 class LinesManager {
@@ -25,6 +26,10 @@ class LinesManager {
 
     this.targetPoints = [];
     this.dist = 1000;
+  }
+
+  reset(){
+    this.isFinished = false;
   }
 
   addLine(){
@@ -53,6 +58,7 @@ class LinesManager {
 
   moveTo(pt, animal, isFinished){
     // ignore that
+    this.isFinished = isFinished;
     let freeLines = [];
     for (var i = 0; i < this.lines.length; i++) {
       if(this.lines[i].state !== STATES_LINE.muting){
@@ -66,7 +72,7 @@ class LinesManager {
 
     // get one index, it will draw
     let indexToDraw, idx
-    if(!isFinished){
+    if(!this.isFinished){
       idx = Math.floor(Math.random() * freeLines.length);
       indexToDraw = freeLines[idx];
       this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
@@ -109,7 +115,7 @@ class LinesManager {
       }
 
       let duration = (4 + Math.random() * 3);
-      if(!isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
+      if(!this.isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         duration = 3
         l.willDraw = animal;
         l.posToDraw = pt;
@@ -220,7 +226,12 @@ class LinesManager {
           line.transformTo(line.willDraw);
         }
         else {
-          line.wander();
+          if(this.isFinished){
+            line.finish();
+          }
+          else {
+            line.wander();
+          }
         }
       }
     }

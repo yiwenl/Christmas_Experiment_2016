@@ -4,7 +4,7 @@ import alfrid, { GL } from 'alfrid';
 import Params from '../Params';
 import vs from '../../shaders/trunk.vert';
 import fs from '../../shaders/trunk.frag';
-import fsFallback from '../../shaders/trunk.frag';
+import fsFallback from '../../shaders/trunkFallback.frag';
 
 import ShaderUtils from '../ShaderUtils';
 

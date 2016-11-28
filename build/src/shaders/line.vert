@@ -49,7 +49,7 @@ void main() {
 
   vCounters = aCounters;
 
-  float len = thickness ;
+  float len = thickness *width ;
   // len *= smoothstep(vUV.x*2.,vUV.y*2.+2.,-uTime*2000.);;
   // len *= smoothstep(vUV.x * 2., vUV.y * 2.+ 1., -uTime*2000.);
 

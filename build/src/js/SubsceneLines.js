@@ -60,6 +60,15 @@ class SubsceneLines {
 			ViewRabbit,
 			ViewWeasel
 		];
+
+		let pos = [
+			[0,0,0],
+			[0,0,0],
+			[0,0,0],
+			[0,0,0],
+			[0,0,0],
+			[0,0,0],
+		]
 		for (var i = 0; i < CameraStops.length + 1; i++) {
 			// CameraStops[i]
 			let view;
@@ -73,12 +82,13 @@ class SubsceneLines {
 			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
 			// view.rotateX(CameraStops[i].rx);
 			// view.rotateY(CameraStops[i].ry);
+
 			if(i === CameraStops.length){
-				view.reset([0,-1,0], CameraStops[0].rx, CameraStops[0].ry)
+				view.reset([0,0,0], CameraStops[0].rx, CameraStops[0].ry)
 				this.animals.push(view);
 			}
 			else {
-				view.reset([0,-1,0], CameraStops[i].rx, CameraStops[i].ry)
+				view.reset([0,0,0], CameraStops[i].rx, CameraStops[i].ry)
 				this.animals.push(view);
 			}
 		}

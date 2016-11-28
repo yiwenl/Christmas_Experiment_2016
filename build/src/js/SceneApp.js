@@ -419,7 +419,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrunk.render(this._textureRad, this._textureIrr, this._textureStar);
-		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
+		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subLines.render(this.orbitalControl.position);
 		this._subFinale.render();

@@ -183,7 +183,6 @@ class SubsceneFinale {
 				}
 			}
 
-			console.log(this.ratio);
 			for (var i = 0; i < this.lines.length; i++) {
 				this.lines[i].ratio = this.ratio;
 				this.lines[i].alpha = this.alpha;

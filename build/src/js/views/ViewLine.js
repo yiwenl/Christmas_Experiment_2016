@@ -47,6 +47,7 @@ class ViewLine extends alfrid.View {
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
 		this.points = []
+		this.sub = 3;
 		this.thickness = Math.random() * .05 + .02;
 		const max = 20;
 
@@ -98,7 +99,7 @@ class ViewLine extends alfrid.View {
 	travel(index){
 		if(this.state === STATES.muting){
 			for (var i = 0; i < this.line.points.length; i++) {
-				this.points[this.points.length - 1- i] = this.line.vert[i*6];
+				this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 			}
 
 			this._cutExtraPoints(20);
@@ -227,7 +228,7 @@ class ViewLine extends alfrid.View {
 
   getPoints(pts){
 		this.spline.points = pts;
-		let indexArray, n_sub = 6;
+		let indexArray, n_sub = this.sub;
 
 		tempArray = [];
 		let index = 0;
@@ -285,7 +286,7 @@ class ViewLine extends alfrid.View {
 		if(Math.random() > .4){
 		// if(false){
 			for (var i = 0; i < this.line.points.length; i++) {
-				this.points[this.points.length - 1- i] = this.line.vert[i*6];
+				this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 			}
 
 			if(this.callback){
@@ -432,7 +433,7 @@ class ViewLine extends alfrid.View {
 
 		var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
 		// console.log(this.posToDraw);
-		let nbPointsTarget = ptsAnimal.length/ 6 ;
+		let nbPointsTarget = ptsAnimal.length/ this.sub ;
 
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
@@ -617,7 +618,7 @@ class ViewLine extends alfrid.View {
 				}
 				else if(this.state === STATES.leaving){
 					for (var i = 0; i < this.line.points.length; i++) {
-						this.points[this.points.length - 1- i] = this.line.vert[i*6];
+						this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 					}
 
 					this._cutExtraPoints(20);

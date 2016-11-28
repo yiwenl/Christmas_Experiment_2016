@@ -24,6 +24,7 @@ class LinesManager {
     this.tick = 0;
 
     this.targetPoints = [];
+    this.dist = 1000;
   }
 
   addLine(){
@@ -231,19 +232,28 @@ class LinesManager {
     }
   }
 
-  update(){
+  update(cameraPos){
     // this.tick++;
 
+    // console.log(cameraPos);
     // if(this.tick %2===0){
+    this.dist =10000
+    let d = 0;
+    for (var i = 0; i < this.lines.length; i++) {
+      let pt = this.lines[i].line.points[0];
 
-      for (var i = 0; i < this.lines.length; i++) {
-
-        // console.log(i,this.lines[i].line.points.length);
-        if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
-          this.moveTargetPoints(i);
+      if(cameraPos){
+        d = (pt[0] - cameraPos[0]) * (pt[0] - cameraPos[0]) + (pt[1] - cameraPos[1]) * (pt[1] - cameraPos[1]) + (pt[2] - cameraPos[2]) * (pt[2] - cameraPos[2]);
+        if(d < this.dist){
+          this.dist = d;
         }
-        this.lines[i].render();
       }
+      // console.log(i,this.lines[i].line.points.length);
+      if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
+        this.moveTargetPoints(i);
+      }
+      this.lines[i].render();
+    }
     // }
   }
 

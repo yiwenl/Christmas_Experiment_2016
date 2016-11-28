@@ -45,6 +45,7 @@ class ViewDear extends alfrid.View {
 	}
 
 	_init() {
+		this.sub = 3;
 		this.dear = new Dear(this.pos);
 
 		this.points = []
@@ -65,7 +66,7 @@ class ViewDear extends alfrid.View {
   getPoints(pts){
     this.spline.points = pts;
     tempArray.length = 0;
-    let index, n_sub = 6;
+    let index, n_sub = this.sub;
 
     var array = []
     for (let i = 0; i < pts.length * n_sub; i ++ ) {

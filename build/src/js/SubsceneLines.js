@@ -1,6 +1,8 @@
 // SubsceneLines.js
+import Sono from 'sono';
 import Controller from './controller/controller'
 import ViewDear from './views/viewsAnimals/ViewDear'
+import ViewWolf from './views/viewsAnimals/ViewWolf'
 import LinesManager from './managers/LinesManager'
 import CameraStops from './CameraStops';
 import Params from './Params';
@@ -21,17 +23,15 @@ class SubsceneLines {
 
 	_initViews() {
 		this._step = 0;
-		this._spots = [
-			// [0, -2, -0],
-			// [-15, -2, 15],
-			// [15, -2, 15],
-			// [15, -2, -15],
-			[0, -5, -0],
-			[0, -5, -0],
-			[0, -5, -0],
-			[0, -5, -0],
-		]
+		this.cameraPos = [0,0,0];
+		this._tick = 0;
+		this.lightSound = Sono.createSound({
+        src: ["./assets/sounds/light.mp3"],
+        volume: 0,
+				loop: true
+    });
 
+		this.lightSound.play();
 		// setTimeout(()=>{
 			// this.pause()
 		// }, 2000)
@@ -44,13 +44,14 @@ class SubsceneLines {
 
 		for (var i = 0; i < CameraStops.length; i++) {
 			// CameraStops[i]
-			let vDear = new ViewDear()
+			let vDear = new ViewWolf()
 			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
-			vDear.reset([0,-1,0])
+			// vDear.rotateX(CameraStops[i].rx);
+			// vDear.rotateY(CameraStops[i].ry);
+			vDear.reset([0,-1,0], CameraStops[i].rx, CameraStops[i].ry)
 
 			this.animals.push(vDear);
 		}
-		// for (var i = 0; i < this._spots.length; i++) {
 		// }
 
 
@@ -68,6 +69,7 @@ class SubsceneLines {
 	goTo(pt, isFinished){
 		// say the lines to all move to pt ! Second paramater is the animal to draw
 		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished)
+		this._step++;
 	}
 
 	pause(){
@@ -87,22 +89,34 @@ class SubsceneLines {
 	}
 
 	transform(){
-		// this.linesManager.draw(this.animals[this._step % this.animals.length]);
-		// this.linesManager.moveTo(this._spots[this._step % this._spots.length], this.animals[this._step % this.animals.length])
-		this._step++
 	}
 
-	update() {
-
+	update(pos) {
+		this.lightSound.volume += (this.volume - this.lightSound.volume) * .1;
 	}
 
-	render() {
+	render(pos) {
+
 		this.controller.update();
 
-		this.linesManager.update();
+		this.linesManager.update(pos);
+
+		let d = this.linesManager.dist;
+
+		if(d < 10) d= 10;
+		if(d > 40) d= 40;
+		let volume = this.map(d, 10, 40, 1, 0)
+		this.volume = volume;
+		if(this.volume < .02) this.volume = .02;
+
+		// console.log("dist", this.linesManager.dist);
 		// this._vLine.render();
 		// this._viewDear.render();
 	}
+
+	map(val, inputMin, inputMax, outputMin, outputMax){
+        return ((outputMax - outputMin) * ((val - inputMin)/(inputMax - inputMin))) + outputMin;
+    }
 }
 
 export default SubsceneLines;

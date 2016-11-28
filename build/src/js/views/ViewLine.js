@@ -48,9 +48,10 @@ class ViewLine extends alfrid.View {
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
 		this.points = []
-		this.sub = 3;
+		this.sub = 3//GL.isMobile ? 3 : 5;
 		this.thickness = Math.random() * .05 + .02;
-		const max = 20;
+		this.isMobile = GL.isMobile;
+		const max = (this.isMobile ? 12:20);
 
 		let index = 0;
 		for (var i = 0; i < max; i++) {
@@ -104,7 +105,7 @@ class ViewLine extends alfrid.View {
 				this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 			}
 
-			this._cutExtraPoints(20);
+			this._cutExtraPoints(this.isMobile? 12:20);
 		}
 
 		this.state = STATES.travelling;
@@ -125,7 +126,7 @@ class ViewLine extends alfrid.View {
 	}
 
 	finish(){
-		this._cutExtraPoints(20);
+		this._cutExtraPoints(this.isMobile? 12:20);
 
 		this.state = STATES.finishing;
 
@@ -656,7 +657,7 @@ class ViewLine extends alfrid.View {
 						this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 					}
 
-					this._cutExtraPoints(20);
+					this._cutExtraPoints(this.isMobile? 12:20);
 
 					this.line.render(this.line.points, this.needsUpdate)
 					if(this.callback){

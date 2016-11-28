@@ -1,7 +1,13 @@
 // SubsceneLines.js
+import alfrid, { GL } from 'alfrid';
+
 import Sono from 'sono';
 import Controller from './controller/controller'
 import ViewDear from './views/viewsAnimals/ViewDear'
+import ViewBoar from './views/viewsAnimals/ViewBoar'
+import ViewFox from './views/viewsAnimals/ViewFox'
+import ViewBat from './views/viewsAnimals/ViewBat'
+import ViewBear from './views/viewsAnimals/ViewBear'
 import ViewWolf from './views/viewsAnimals/ViewWolf'
 import ViewRabbit from './views/viewsAnimals/ViewRabbit'
 import ViewWeasel from './views/viewsAnimals/ViewWeasel'
@@ -45,6 +51,10 @@ class SubsceneLines {
 		this.animals = [];
 
 		let shapes = [
+			ViewBoar,
+			ViewBat,
+			ViewFox,
+			ViewBear,
 			ViewDear,
 			ViewWolf,
 			ViewRabbit,
@@ -77,7 +87,7 @@ class SubsceneLines {
 
 		this.linesManager = new LinesManager();
 
-		for (var i = 0; i < 7; i++) {
+		for (var i = 0; i < (GL.isMobile ? 3:7); i++) {
 			this.linesManager.addLine();
 		}
 

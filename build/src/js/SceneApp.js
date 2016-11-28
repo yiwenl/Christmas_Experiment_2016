@@ -43,11 +43,11 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		this.orbitalControl.radius.limit(3, 30);
 
-		this.cameraYOffset = hasVR ? -2 : 0;
+		this.cameraYOffset = hasVR ? -3 : 0;
 
 
 		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
-		this.cameraOffsetY = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetY = new alfrid.TweenNumber(this.cameraYOffset, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
@@ -287,6 +287,7 @@ class SceneApp extends alfrid.Scene {
 
 			GL.enable(GL.SCISSOR_TEST);
 			const w2 = GL.width/2;
+			Params.clipDir = -1;
 
 
 			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
@@ -298,12 +299,6 @@ class SceneApp extends alfrid.Scene {
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
-			GL.setMatrices(this.cameraReflection);
-			this._fboReflection.bind();
-			GL.clear(0, 0, 0, 0);
-			this._renderScene();
-			this._fboReflection.unbind();
-
 			GL.viewport(0, 0, w2, GL.height);
 			GL.scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
@@ -313,12 +308,6 @@ class SceneApp extends alfrid.Scene {
 
 			this.cameraVive.setEye('right');
 			this._getReflectionMatrix();
-
-			GL.setMatrices(this.cameraReflection);
-			this._fboReflection.bind();
-			GL.clear(0, 0, 0, 0);
-			this._renderScene();
-			this._fboReflection.unbind();
 
 			GL.viewport(w2, 0, w2, GL.height);
 			GL.scissor(w2, 0, w2, GL.height);
@@ -412,17 +401,17 @@ class SceneApp extends alfrid.Scene {
 			Params.clipDir = -1;
 		}
 
-
-
 		this._bSky.draw(this._textureStar);
 		this._vFg.render();
-		if(withWater) {
+		
+
+		if(withWater && !hasVR) {
 			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 
-		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
+		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();
 

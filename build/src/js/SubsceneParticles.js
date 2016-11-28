@@ -84,10 +84,10 @@ class SubsceneParticles {
 
 		let p = this._count / Params.skipCount;
 		GL.enableAdditiveBlending();
-		if(hasVR || 1) {	GL.disable(GL.DEPTH_TEST);		}
+		// if(hasVR) {	GL.disable(GL.DEPTH_TEST);		}
 		this._vRender.render(this._fboTarget.getTexture(0), this._fboCurrent.getTexture(0), p, this._fboCurrent.getTexture(2));
 		GL.enableAlphaBlending();
-		if(hasVR || 1) {	GL.enable(GL.DEPTH_TEST); 	}
+		// if(hasVR || 1) {	GL.enable(GL.DEPTH_TEST); 	}
 	}
 }
 

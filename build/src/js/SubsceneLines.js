@@ -107,6 +107,7 @@ class SubsceneLines {
 		if(d > 200) d= 200;
 		let volume = this.map(d, 10, 200, 1, 0)
 		this.volume = volume;
+		this.volume = 0;
 		// if(this.volume < .02) this.volume = .02;
 
 		// console.log("dist", this.linesManager.dist);

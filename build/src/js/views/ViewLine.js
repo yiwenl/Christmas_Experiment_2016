@@ -608,7 +608,7 @@ class ViewLine extends alfrid.View {
 						}
 					}
 					else {
-						this.spliceOne(this.objectsToTween, i);
+						this.splice(this.objectsToTween, i);
 						i--;
 					}
 				}
@@ -648,16 +648,28 @@ class ViewLine extends alfrid.View {
 
 	_cutExtraPoints(max) {
 
+		console.log("this.points.length", this.points.length);
 		if(this.points.length > max){
-			this.points = this.line.points.slice(0, max);
+			let nbPtsToSlice = this.points.length - max;
+
+			let offset = Math.ceil(this.points.length / max);
+
+			let arr = [];
+			let index = 0;
+			for (var i = 0; i < this.points.length; i+=offset) {
+				arr[index++] = this.points[i]
+			}
+
+			this.points = arr;//this.line.points.slice(0, max);
 			this.line.points = this.points;
+			console.log(this.points.length);
 			this.needsUpdate = true;
 		}
 
 		// debbugger;
 	}
 
-	spliceOne(arr, index) {
+	splice(arr, index) {
      var len=arr.length;
      if (!len) { return }
      while (index<len) {

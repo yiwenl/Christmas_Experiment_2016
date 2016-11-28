@@ -71,7 +71,7 @@ const Motions = {
 	end1: (options)=>{
 		options.targetPoint[0] = options.position[0] + Math.cos(options.time/20 + options.startAngle) * options.radius;
 		options.targetPoint[2] = options.position[2] + Math.sin(options.time/20 + options.startAngle) * options.radius;
-		options.targetPoint[1] = -1 - Math.abs(Math.sin(options.time / 100) * .5);
+		options.targetPoint[1] = -1.5 - Math.abs(Math.sin(options.time / 100) * 1);
 		// options.targetPoint[1] = -1 - Math.abs(Math.sin(options.time / 100) * 2) - 1;
 	},
 

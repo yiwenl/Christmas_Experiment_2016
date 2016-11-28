@@ -44,11 +44,17 @@ class SubsceneLines {
 		// this._viewDear = new ViewDear();
 		this.animals = [];
 
+		let shapes = [
+			ViewDear,
+			ViewWolf,
+			ViewRabbit,
+			ViewWeasel
+		];
 		for (var i = 0; i < CameraStops.length + 1; i++) {
 			// CameraStops[i]
 			let view;
 
-			view = new ViewWeasel()
+			view = new shapes[i % shapes.length]
 			// if(i%2===0) {
 			// }
 			// else {

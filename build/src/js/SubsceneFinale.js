@@ -17,6 +17,7 @@ class SubsceneFinale {
 
 	_initViews() {
 
+		this.isReady = false;
 		this.ratio = 0;
 		this.alpha = 0;
 		this.tickSpace = 0;
@@ -136,9 +137,10 @@ class SubsceneFinale {
 	render() {
 		this.controller.update();
 
-		if(!this.didFinalDrawing){
+		if(!this.didFinalDrawing && this.isReady){
 
 			if(this.controller.spacePressed){
+
 				this.isIncreasing = true;
 				// console.log(this.isIncreasing);
 				this.tickSpace++;
@@ -161,7 +163,7 @@ class SubsceneFinale {
 			}
 			else {
 				this.isIncreasing = false;
-				if(this.tickSpace > 0){
+				if(this.tickSpace > 1){
 					this.tickSpace-=2;
 				}
 
@@ -181,6 +183,7 @@ class SubsceneFinale {
 				}
 			}
 
+			console.log(this.ratio);
 			for (var i = 0; i < this.lines.length; i++) {
 				this.lines[i].ratio = this.ratio;
 				this.lines[i].alpha = this.alpha;

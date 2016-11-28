@@ -65,9 +65,9 @@ class SubsceneLines {
 
 	}
 
-	goTo(pt){
+	goTo(pt, isFinished){
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length])
+		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished)
 	}
 
 	pause(){

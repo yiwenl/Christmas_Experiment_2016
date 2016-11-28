@@ -50,7 +50,7 @@ class LinesManager {
     this.linesDrawing.push(l);
   }
 
-  moveTo(pt, animal){
+  moveTo(pt, animal, isFinished){
     // ignore that
     let freeLines = [];
     for (var i = 0; i < this.lines.length; i++) {
@@ -64,9 +64,12 @@ class LinesManager {
 
 
     // get one index, it will draw
-    let idx = Math.floor(Math.random() * freeLines.length);
-    let indexToDraw = freeLines[idx];
-    this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
+    let indexToDraw, idx
+    if(!isFinished){
+      idx = Math.floor(Math.random() * freeLines.length);
+      indexToDraw = freeLines[idx];
+      this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
+    }
 
     let indexPair1 = null; // some special behaviours for two lines
     let indexPair2 = null;
@@ -105,7 +108,7 @@ class LinesManager {
       }
 
       let duration = (4 + Math.random() * 3);
-      if(i === indexToDraw){ // for now will never go into that condition to focus on the displacement
+      if(!isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         duration = 3
         l.willDraw = animal;
         l.posToDraw = pt;

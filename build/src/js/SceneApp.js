@@ -131,6 +131,8 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initViews() {
+		this.isFinished = false;
+
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
 		this._bBall = new alfrid.BatchBall();
@@ -173,6 +175,8 @@ class SceneApp extends alfrid.Scene {
 		let next = this._stop + 1;
 		if(next >= CameraStops.length) {
 			next = 0;
+			this._subFinale.isReady = true;
+			this.isFinished = true;
 		}
 
 		this._gotoStop(next);
@@ -193,7 +197,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 
-		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]]);
+		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
 
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -207,7 +211,10 @@ class SceneApp extends alfrid.Scene {
 		//	update subscenes
 		this._subParticles.update();
 		this._subLines.update();
-		this._subFinale.update();
+
+		// if(this.isFinished){
+			this._subFinale.update();
+		// }
 
 		if(!hasVR) {
 			const { eye, center } = this.camera;
@@ -379,8 +386,11 @@ class SceneApp extends alfrid.Scene {
 		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();
-		// this._subLines.render();
-		this._subFinale.render();
+		this._subLines.render();
+
+		// if(this.isFinished){
+			this._subFinale.render();
+		// }
 	}
 
 

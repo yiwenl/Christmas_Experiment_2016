@@ -49,7 +49,7 @@ class ViewLine extends alfrid.View {
 		this.spline = new Spline([]);
 		this.points = []
 		this.sub = 3//GL.isMobile ? 3 : 5;
-		this.thickness = Math.random() * .05 + .02;
+		this.thickness = Math.random() * .4 + .1;
 		this.isMobile = GL.isMobile;
 		const max = (this.isMobile ? 12:20);
 

@@ -104,10 +104,10 @@ class SubsceneLines {
 		let d = this.linesManager.dist;
 
 		if(d < 10) d= 10;
-		if(d > 40) d= 40;
-		let volume = this.map(d, 10, 40, 1, 0)
+		if(d > 200) d= 200;
+		let volume = this.map(d, 10, 200, 1, 0)
 		this.volume = volume;
-		if(this.volume < .02) this.volume = .02;
+		// if(this.volume < .02) this.volume = .02;
 
 		// console.log("dist", this.linesManager.dist);
 		// this._vLine.render();

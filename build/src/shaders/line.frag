@@ -12,7 +12,7 @@ varying vec2 vUV;
 
 void main() {
 
-  vec4 color = vec4(alpha);
+  vec4 color = vec4(1.0);
   // vec4 color = vec4(1.0);
   vec4 colorEnd = color * texture2D( texture, vUV );
 

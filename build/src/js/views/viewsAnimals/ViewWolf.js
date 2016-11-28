@@ -1,19 +1,19 @@
-// ViewDear.js
+// ViewWolf.js
 
 import ViewAnimal from './ViewAnimal'
-import Dear from '../../animals/Dear'
+import Wolf from '../../animals/Wolf'
 
 import vs from '../../../shaders/line.vert';
 import fs from '../../../shaders/line.frag';
 
-class ViewDear extends ViewAnimal {
+class ViewWolf extends ViewAnimal {
 
 	constructor(pos) {
 		super(vs, fs, pos);
 	}
 
 	reset(pos, rx, ry){
-		this.shape = new Dear(pos);
+		this.shape = new Wolf(pos);
 		super.reset(pos, rx, ry);
 	}
 	// _init(){
@@ -21,4 +21,4 @@ class ViewDear extends ViewAnimal {
 	// }
 }
 
-export default ViewDear;
+export default ViewWolf;

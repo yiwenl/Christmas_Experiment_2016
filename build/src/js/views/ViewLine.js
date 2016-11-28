@@ -47,6 +47,8 @@ class ViewLine extends alfrid.View {
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
 		this.points = []
+		this.sub = 3;
+		this.thickness = Math.random() * .05 + .02;
 		const max = 20;
 
 		let index = 0;
@@ -97,7 +99,7 @@ class ViewLine extends alfrid.View {
 	travel(index){
 		if(this.state === STATES.muting){
 			for (var i = 0; i < this.line.points.length; i++) {
-				this.points[this.points.length - 1- i] = this.line.vert[i*6];
+				this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 			}
 
 			this._cutExtraPoints(20);
@@ -226,7 +228,7 @@ class ViewLine extends alfrid.View {
 
   getPoints(pts){
 		this.spline.points = pts;
-		let indexArray, n_sub = 6;
+		let indexArray, n_sub = this.sub;
 
 		tempArray = [];
 		let index = 0;
@@ -284,7 +286,7 @@ class ViewLine extends alfrid.View {
 		if(Math.random() > .4){
 		// if(false){
 			for (var i = 0; i < this.line.points.length; i++) {
-				this.points[this.points.length - 1- i] = this.line.vert[i*6];
+				this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 			}
 
 			if(this.callback){
@@ -431,7 +433,7 @@ class ViewLine extends alfrid.View {
 
 		var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
 		// console.log(this.posToDraw);
-		let nbPointsTarget = ptsAnimal.length/ 6 ;
+		let nbPointsTarget = ptsAnimal.length/ this.sub ;
 
 		// if the target has more point, we need to add some
 		if(this.line.points.length < nbPointsTarget){
@@ -546,7 +548,8 @@ class ViewLine extends alfrid.View {
 	}
 
 	render() {
-		this._tick+= .1;
+		this._tick+= .1 * (window.hasVR ? .66 : 1);
+
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
@@ -560,6 +563,7 @@ class ViewLine extends alfrid.View {
 		this.shader.uniform("texture", "uniform1i", 0);
 		this.texture.bind(0);
 
+		this.shader.uniform("thickness", "float", this.thickness);
 		this.shader.uniform("uTime", "float", this._tick);
 		this.shader.uniform("alpha", "float", this.alpha);
 		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
@@ -598,13 +602,13 @@ class ViewLine extends alfrid.View {
 							this.line.vert[o.point][2] = this.path[indexFloor][2];
 						}
 
-						o.currentIteration += 1;// do something here
+						o.currentIteration += 1 * (window.hasVR ? .66 : 1);// do something here
 						if(o.currentIteration > o.duration){
 							o.delete = true;
 						}
 					}
 					else {
-						this.spliceOne(this.objectsToTween, i);
+						this.splice(this.objectsToTween, i);
 						i--;
 					}
 				}
@@ -614,7 +618,7 @@ class ViewLine extends alfrid.View {
 				}
 				else if(this.state === STATES.leaving){
 					for (var i = 0; i < this.line.points.length; i++) {
-						this.points[this.points.length - 1- i] = this.line.vert[i*6];
+						this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 					}
 
 					this._cutExtraPoints(20);
@@ -644,16 +648,28 @@ class ViewLine extends alfrid.View {
 
 	_cutExtraPoints(max) {
 
+		console.log("this.points.length", this.points.length);
 		if(this.points.length > max){
-			this.points = this.line.points.slice(0, max);
+			let nbPtsToSlice = this.points.length - max;
+
+			let offset = Math.ceil(this.points.length / max);
+
+			let arr = [];
+			let index = 0;
+			for (var i = 0; i < this.points.length; i+=offset) {
+				arr[index++] = this.points[i]
+			}
+
+			this.points = arr;//this.line.points.slice(0, max);
 			this.line.points = this.points;
+			console.log(this.points.length);
 			this.needsUpdate = true;
 		}
 
 		// debbugger;
 	}
 
-	spliceOne(arr, index) {
+	splice(arr, index) {
      var len=arr.length;
      if (!len) { return }
      while (index<len) {

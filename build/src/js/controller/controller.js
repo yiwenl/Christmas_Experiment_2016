@@ -28,11 +28,11 @@ class Controller {
   }
 
   transformPress(e){
-    this.owner.transform();
+    // this.owner.transform();
   }
 
   onClick(e){
-    this.owner.onClick({x:e.clientX, y:e.clientY});
+    // this.owner.onClick({x:e.clientX, y:e.clientY});
   }
 
   update(){

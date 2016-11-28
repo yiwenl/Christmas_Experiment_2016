@@ -30,8 +30,19 @@ class ViewAnimal extends alfrid.View {
 
 	}
 
-	reset(pos){
+	rotateX(rx){
+		this.shape.rotateX(rx);
+	}
+
+	rotateY(ry){
+		this.shape.rotateX(ry);
+	}
+
+	reset(pos, rx = 0, ry = 0){
 		this.pos = pos;
+
+		// this.shape.rotateX(rx);
+		this.shape.rotateY(ry);
 
 		this.points = []
     this.spline = new Spline([]);

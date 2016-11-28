@@ -10,11 +10,11 @@ const serverIp          = ip.address();
 function getOutput() {
 
   if(prod) {
-    return path.resolve(__dirname, "dist/assets/" )  
+    return path.resolve(__dirname, "dist/assets/" )
   } else {
-    return path.resolve(__dirname, "dist/assets/" )  
+    return path.resolve(__dirname, "dist/assets/" )
   }
-  
+
 }
 
 module.exports = {
@@ -61,7 +61,7 @@ module.exports = {
         test: /\.scss$/,
         loader: prod ?
           ExtractTextPlugin.extract("style-loader", `css-loader!autoprefixer-loader?browsers=last 3 version!sass-loader?includePaths[]=dist`) :
-          `style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=dist` 
+          `style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=dist`
       },
       { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
       { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
@@ -71,7 +71,8 @@ module.exports = {
     root:__dirname + "/js",
     fallback: path.join(__dirname, "node_modules"),
     alias: {
-      'alfrid'    : __dirname + "/src/js/libs/alfrid.js"
+      'alfrid'    : __dirname + "/src/js/libs/alfrid.js",
+      'sono'    : __dirname + "/src/js/libs/sono.js"
     }
   },
   plugins: prod ? [

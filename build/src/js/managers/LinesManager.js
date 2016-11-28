@@ -24,6 +24,7 @@ class LinesManager {
     this.tick = 0;
 
     this.targetPoints = [];
+    this.dist = 1000;
   }
 
   addLine(){
@@ -50,7 +51,7 @@ class LinesManager {
     this.linesDrawing.push(l);
   }
 
-  moveTo(pt, animal){
+  moveTo(pt, animal, isFinished){
     // ignore that
     let freeLines = [];
     for (var i = 0; i < this.lines.length; i++) {
@@ -64,9 +65,12 @@ class LinesManager {
 
 
     // get one index, it will draw
-    let idx = Math.floor(Math.random() * freeLines.length);
-    let indexToDraw = freeLines[idx];
-    this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
+    let indexToDraw, idx
+    if(!isFinished){
+      idx = Math.floor(Math.random() * freeLines.length);
+      indexToDraw = freeLines[idx];
+      this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
+    }
 
     let indexPair1 = null; // some special behaviours for two lines
     let indexPair2 = null;
@@ -105,7 +109,7 @@ class LinesManager {
       }
 
       let duration = (4 + Math.random() * 3);
-      if(i === indexToDraw){ // for now will never go into that condition to focus on the displacement
+      if(!isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         duration = 3
         l.willDraw = animal;
         l.posToDraw = pt;
@@ -228,19 +232,28 @@ class LinesManager {
     }
   }
 
-  update(){
+  update(cameraPos){
     // this.tick++;
 
+    // console.log(cameraPos);
     // if(this.tick %2===0){
+    this.dist =10000
+    let d = 0;
+    for (var i = 0; i < this.lines.length; i++) {
+      let pt = this.lines[i].line.points[0];
 
-      for (var i = 0; i < this.lines.length; i++) {
-
-        // console.log(i,this.lines[i].line.points.length);
-        if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
-          this.moveTargetPoints(i);
+      if(cameraPos){
+        d = (pt[0] - cameraPos[0]) * (pt[0] - cameraPos[0]) + (pt[1] - cameraPos[1]) * (pt[1] - cameraPos[1]) + (pt[2] - cameraPos[2]) * (pt[2] - cameraPos[2]);
+        if(d < this.dist){
+          this.dist = d;
         }
-        this.lines[i].render();
       }
+      // console.log(i,this.lines[i].line.points.length);
+      if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
+        this.moveTargetPoints(i);
+      }
+      this.lines[i].render();
+    }
     // }
   }
 

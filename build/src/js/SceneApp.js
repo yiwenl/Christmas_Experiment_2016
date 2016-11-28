@@ -9,6 +9,7 @@ import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
 import ViewTrunk from './views/ViewTrunk';
+import ViewEyeParticle from './views/ViewEyeParticle';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -45,8 +46,22 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.setTo(dataStop.rx);
 		this.orbitalControl.ry.setTo(dataStop.ry);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		this.orbitalControl.radius.limit(3, 30);
+		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		// this.orbitalControl.radius.limit(3, 30);
+
+		this.eyeX = 0;
+		this.eyeY = 0;
+		this.eyeZ = 0;
+
+
+		const trace = () => {
+			console.log(this.eyeX, this.eyeY, this.eyeZ);
+		}
+
+		const range = 5;
+		gui.add(this, 'eyeX', -range, range).onChange(trace);
+		gui.add(this, 'eyeY', -range, range).onChange(trace);
+		gui.add(this, 'eyeZ', -range, range).onChange(trace);
 
 		this.cameraYOffset = hasVR ? -3 : 0;
 		this.time = Math.random() * 0xFF;
@@ -151,6 +166,8 @@ class SceneApp extends alfrid.Scene {
 		this._vTrees = new ViewTrees();
 		this._vFg = new ViewFarground();
 		this._vTrunk = new ViewTrunk();
+		this._vEyeLeft = new ViewEyeParticle();
+		this._vEyeRight = new ViewEyeParticle();
 
 
 		//	Sub scenes
@@ -438,8 +455,11 @@ class SceneApp extends alfrid.Scene {
 		// if(this.isFinished){
 		// }
 
-
+		GL.enableAdditiveBlending();
+		this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 		this._subParticles.render();
+		
 	}
 
 

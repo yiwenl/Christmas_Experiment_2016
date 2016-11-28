@@ -130,7 +130,7 @@ function _init3D() {
 	}
 
 	//	INIT DAT-GUI
-	// window.gui = new dat.GUI({ width:300 });
+	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();

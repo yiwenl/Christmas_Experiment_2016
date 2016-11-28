@@ -173,5 +173,5 @@ function _onSound(err, src, json) {
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.0;
+	audio.volume = 1.0;
 }

@@ -129,22 +129,28 @@ class SubsceneFinale {
   }
 
 	update() {
+
+
+	}
+
+	render() {
 		this.controller.update();
 
 		if(!this.didFinalDrawing){
 
 			if(this.controller.spacePressed){
 				this.isIncreasing = true;
+				// console.log(this.isIncreasing);
 				this.tickSpace++;
 
 
-				if(this.tickSpace <= 200){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 200);
+				if(this.tickSpace <= 400){
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 400);
 
 					// console.log(this.tickSpace);
-					if(this.tickSpace <= 200){
+					if(this.tickSpace <= 400){
 						// console.log("changealpha");
-						this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 200);
+						this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 400);
 					}
 				}
 				else {
@@ -166,8 +172,8 @@ class SubsceneFinale {
 					this.tickSpace = 0;
 				}
 
-				if(this.tickSpace <= 200){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 200);
+				if(this.tickSpace <= 400){
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 400);
 
 					if(this.tickSpace <= 100){
 						// this.alpha = this.easeInCirc(this.tickSpace, 0, 1, 100);
@@ -184,9 +190,6 @@ class SubsceneFinale {
 			// console.log(this.alpha);
 		}
 
-	}
-
-	render() {
     for (var i = 0; i < this.lines.length; i++) {
     	this.lines[i].render();
     }

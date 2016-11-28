@@ -1,14 +1,28 @@
 // ViewTrunk.js
 
 import alfrid, { GL } from 'alfrid';
-
+import Params from '../Params';
 import vs from '../../shaders/trunk.vert';
 import fs from '../../shaders/trunk.frag';
+import fsFallback from '../../shaders/trunk.frag';
+
+import ShaderUtils from '../ShaderUtils';
+
+const grey = 0.5;
+const oUniforms = {
+	roughness:1,
+	specular:.25,
+	metallic:0,
+	baseColor:[grey, grey, grey]
+}
 
 class ViewTrunk extends alfrid.View {
 	
 	constructor() {
-		super(vs, fs);
+		const useFallback = !GL.getExtension('EXT_shader_texture_lod') || GL.isMobile;
+		const _fs = ShaderUtils.addUniforms(useFallback ? fsFallback : fs, oUniforms);
+
+		super(vs, _fs);
 	}
 
 
@@ -18,13 +32,44 @@ class ViewTrunk extends alfrid.View {
 		this.position = [0, 0.5, 0];
 		const s = 0.35;
 		this.scale = [s, s, s];
+
+		this._textureAO = new alfrid.GLTexture(getAsset('ao'));
 	}
 
 
-	render() {
+	render(textureRad, textureIrr, textureEnv) {
 		this.shader.bind();
-		this.shader.uniform("uScale", "vec3", this.scale);
+
+		this.shader.uniform("textureAO", "uniform1i", 1);
+		this._textureAO.bind(1);
+
+		// this.shader.uniform("textureNoise", "uniform1i", 2);
+		// textureNoise.bind(2);
+
+		if(this.useFallback) {
+			this.shader.uniform("textureEnv", "uniform1i", 3);
+			textureEnv.bind(3);
+		} else {
+			this.shader.uniform('uRadianceMap', 'uniform1i', 3);
+			textureRad.bind(3);
+
+			this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
+			textureIrr.bind(4);	
+		}
+
+		this.shader.uniform('uExposure', 'float', Params.exposure);
+		this.shader.uniform('uGamma', 'float', Params.gamma);
+		
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
+
 		this.shader.uniform("uPosition", "vec3", this.position);
+		this.shader.uniform("uScale", "vec3", this.scale);
+
+		ShaderUtils.bindUniforms(this.shader, oUniforms);
+
+		this.shader.uniform("uClipY", "float", Params.clipY);
+		this.shader.uniform("uDir", "float", Params.clipDir);
 		GL.draw(this.mesh);
 	}
 

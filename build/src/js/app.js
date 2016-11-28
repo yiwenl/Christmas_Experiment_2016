@@ -15,6 +15,7 @@ window.socket = socket;
 let scene;
 const assets = [
 	{ id:'objTrunk', url:'assets/obj/trunk.obj', type:'text' },
+	{ id:'ao', url:'assets/img/ao-trunk.jpg' },
 	{ id:'height', url:'assets/img/height.jpg' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },

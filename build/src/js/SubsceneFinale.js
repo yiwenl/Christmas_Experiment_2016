@@ -156,11 +156,14 @@ class SubsceneFinale {
 			else {
 				this.isIncreasing = false;
 				if(this.tickSpace > 0){
-					this.tickSpace--;
+					this.tickSpace-=2;
 				}
 
 				if(this.alpha > 0.01){
 					this.alpha *= .98;
+				}
+				else {
+					this.tickSpace = 0;
 				}
 
 				if(this.tickSpace <= 200){

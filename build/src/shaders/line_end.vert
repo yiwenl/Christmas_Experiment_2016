@@ -20,6 +20,7 @@ uniform float thickness;
 uniform float aspect;
 
 varying vec2 vUV;
+varying vec3 vPosition;
 varying vec3 vColor;
 varying vec3 vNormal;
 varying float vCounters;
@@ -40,6 +41,7 @@ void main() {
   // vec4 currentProjected = projViewModel * vec4(aVertexPosition, 1.0);
   // vec4 nextProjected = projViewModel * vec4(aNext, 1.0);
 
+  vPosition = currentProjected.xyz;
   vNormal = aNormal;
   vUV = aTextureCoord;
   //get 2D screen space with W divide and aspect correction

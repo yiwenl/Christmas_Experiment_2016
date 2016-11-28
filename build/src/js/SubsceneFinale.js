@@ -1,5 +1,6 @@
 // SubsceneFinale.js
 import ViewLineFinale from './views/ViewLineFinale'
+import Controller from './controller/controller'
 
 class SubsceneFinale {
 	constructor(mScene) {
@@ -16,6 +17,10 @@ class SubsceneFinale {
 
 	_initViews() {
 
+		this.ratio = 0;
+		this.tickSpace = 0;
+		this.controller = new Controller(this);
+
 		let methods = [this.firstLine.bind(this), this.secondLine.bind(this)]
 		this.lines = [];
 		let index = 0;
@@ -29,11 +34,25 @@ class SubsceneFinale {
 			this.lines[index++] = l;
 		}
 
-    // setTimeout(()=>{
-    //   this._vLineF.pause();
-    // }, .01)
-		// this._vLine.alpha = .3 + Math.random() * .5
+		// setTimeout(()=>{
+		// 	this.appear();
+		//
+		// 	setTimeout(()=>{
+		// 		this.hide();
+		// 	}, 4000);
+		// }, 2000);
+	}
 
+	appear(){
+		for (var i = 0; i < this.lines.length; i++) {
+			this.lines[i].appear(i * .05)
+		}
+	}
+
+	hide(){
+		for (var i = 0; i < this.lines.length; i++) {
+			this.lines[i].hide(i * .05)
+		}
 	}
 
 	firstLine(){
@@ -109,6 +128,34 @@ class SubsceneFinale {
   }
 
 	update() {
+		this.controller.update();
+
+		if(!this.didFinalDrawing){
+
+			if(this.controller.spacePressed){
+				this.tickSpace++;
+
+
+				if(this.tickSpace <= 200){
+					this.ratio = this.easeInCirc(this.tickSpace, 0, 1, 200);
+				}
+				else {
+					this.didFinalDrawing = true;
+				}
+			}
+			else if(this.tickSpace > 0 || this.ratio > 0){
+				if(this.tickSpace > 0){
+					this.tickSpace--;
+				}
+				this.ratio *= .98;
+			}
+
+			for (var i = 0; i < this.lines.length; i++) {
+				this.lines[i].ratio = this.ratio;
+			}
+
+			console.log(this.ratio);
+		}
 
 	}
 
@@ -117,6 +164,24 @@ class SubsceneFinale {
     	this.lines[i].render();
     }
 	}
+
+	easeInSine (t, b, c, d) {
+		return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+	}
+
+	easeInCirc (t, b, c, d) {
+		return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+	}
+
+	easeOutCubic(t, b, c, d) {
+		t /= d;
+		t--;
+		return c*(t*t*t + 1) + b;
+	}
+
+	easeOutCirc(t, b, c, d) {
+    return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+  }
 }
 
 export default SubsceneFinale;

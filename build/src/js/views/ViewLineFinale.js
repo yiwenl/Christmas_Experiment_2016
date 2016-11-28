@@ -27,7 +27,9 @@ class ViewLineFinale extends alfrid.View {
 	constructor(app) {
 		super(vs, fs);
 
-		this.alpha = 1;
+		this.alpha = 0;
+		this.ratio = 0;
+		this.deltaTime = 0;
 
 		// this.isPaused = false;
 		this.app = app;
@@ -83,12 +85,43 @@ class ViewLineFinale extends alfrid.View {
 	}
 
 	reset(data){
+		this.deltaTime = 0;
 		this.isReady = true;
 		this.data = data;
 		this.line = new Line(this.getPoints(data.points),(p)=>{
 			return p * data.division });
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
+	}
+
+	appear(delay=0){
+		this.deltaTime = 0;
+
+		Easings.instance.to(this, 4, {
+			alpha: 1,
+			// ease: Easings.instance.easeInOutCirc,
+			delay: delay
+		});
+
+		// Easings.instance.to(this, 4, {
+		// 	delay: delay,
+		// 	deltaTime: this.data.deltaTime,
+		// 	ease: Easings.instance.easeInOutCirc
+		// })
+	}
+
+	hide(delay = 0){
+		Easings.instance.to(this, 4, {
+			delay: delay,
+			ease: Easings.instance.easeOutSine,
+			alpha: 0
+		});
+
+		// Easings.instance.to(this, 4, {
+		// 	delay: delay,
+		// 	deltaTime: -this.data.deltaTime,
+		// 	ease: Easings.instance.easeOutCirc
+		// })
 	}
 
   getPoints(pts){
@@ -120,6 +153,7 @@ class ViewLineFinale extends alfrid.View {
 
 		// console.log(this.isPaused);
 		this._tick += this.data.deltaTime * (window.hasVR ? .66 : 1);
+		// this._tick += this.deltaTime * (window.hasVR ? .66 : 1);
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
@@ -136,7 +170,7 @@ class ViewLineFinale extends alfrid.View {
 		this.texture.bind(0);
 
 		this.shader.uniform("uTime", "float", this._tick);
-		this.shader.uniform("alpha", "float", this.data.alpha);
+		this.shader.uniform("alpha", "float", this.ratio);
 		this.shader.uniform("thickness", "float", this.data.thickness);
 		this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
 		this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);

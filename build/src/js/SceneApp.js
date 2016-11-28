@@ -379,8 +379,8 @@ class SceneApp extends alfrid.Scene {
 		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subParticles.render();
-		this._subLines.render();
-		// this._subFinale.render();
+		// this._subLines.render();
+		this._subFinale.render();
 	}
 
 

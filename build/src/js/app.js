@@ -8,12 +8,13 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-// let TARGET_SERVER_IP = 'localhost';
-// let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
-// window.socket = socket;
+let TARGET_SERVER_IP = 'localhost';
+let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
+window.socket = socket;
 
 let scene;
 const assets = [
+	{ id:'objTrunk', url:'assets/obj/trunk.obj', type:'text' },
 	{ id:'height', url:'assets/img/height.jpg' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },

@@ -8,6 +8,7 @@ import ViewWater from './ViewWater';
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
+import ViewTrunk from './views/ViewTrunk';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -40,8 +41,8 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.setTo(0.3);
 		this.orbitalControl.ry.setTo(0.0);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		this.orbitalControl.radius.limit(3, 30);
+		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		// this.orbitalControl.radius.limit(3, 30);
 
 		this.cameraYOffset = hasVR ? -3 : 0;
 
@@ -65,9 +66,9 @@ class SceneApp extends alfrid.Scene {
 			this.toRender();
 		}
 
-		// socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
-		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
-		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
+		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
 		const btnNext = document.body.querySelector('.button-next');
 		btnNext.addEventListener('touchstart', (e)=> {
@@ -144,6 +145,7 @@ class SceneApp extends alfrid.Scene {
 		this._vFilmGrain = new ViewFilmGrain();
 		this._vTrees = new ViewTrees();
 		this._vFg = new ViewFarground();
+		this._vTrunk = new ViewTrunk();
 
 
 		//	Sub scenes
@@ -286,9 +288,9 @@ class SceneApp extends alfrid.Scene {
 			GL.setMatrices(this.camera);
 			this._renderScene(true);
 
-			// GL.enableAdditiveBlending();
-			// this._vFilmGrain.render();
-			// GL.enableAlphaBlending();
+			GL.enableAdditiveBlending();
+			this._vFilmGrain.render();
+			GL.enableAlphaBlending();
 		} else {
 
 			GL.enable(GL.SCISSOR_TEST);
@@ -416,17 +418,17 @@ class SceneApp extends alfrid.Scene {
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
+		this._vTrunk.render();
+		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
-		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
-
-		this._subParticles.render();
-
-		// console.log(this.orbitalControl);
-		this._subLines.render(this.orbitalControl.position);
+		// this._subLines.render(this.orbitalControl.position);
 		this._subFinale.render();
 
 		// if(this.isFinished){
 		// }
+
+
+		this._subParticles.render();
 	}
 
 

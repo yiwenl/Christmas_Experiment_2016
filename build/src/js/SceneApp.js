@@ -36,27 +36,32 @@ class SceneApp extends alfrid.Scene {
 		const FOV = 45 * RAD;
 
 		this.camera.setPerspective(Math.PI/4, GL.aspectRatio, .1, 200);
+		this.orbitalControl.radius.setTo(10);
+		this.orbitalControl.radius.easing = 0.02;
 		this.orbitalControl.radius.value = 7;
 
-		this.orbitalControl.rx.setTo(0.3);
-		this.orbitalControl.ry.setTo(0.0);
+		const dataStop = CameraStops[0];
+
+		this.orbitalControl.rx.setTo(dataStop.rx);
+		this.orbitalControl.ry.setTo(dataStop.ry);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		// this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
 
 		this.cameraYOffset = hasVR ? -3 : 0;
+		this.time = Math.random() * 0xFF;
 
 
-		this.cameraOffsetX = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetX = new alfrid.TweenNumber(dataStop.x * Params.terrainSize/2, 'cubicInOut', TweenSpeed);
 		this.cameraOffsetY = new alfrid.TweenNumber(this.cameraYOffset, 'cubicInOut', TweenSpeed);
-		this.cameraOffsetZ = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
+		this.cameraOffsetZ = new alfrid.TweenNumber(dataStop.z * Params.terrainSize/2, 'cubicInOut', TweenSpeed);
 
 		this.cameraReflection = new alfrid.CameraPerspective();
 		this.cameraReflection.setPerspective(FOV, GL.aspectRatio, .1, 100);
 
 		this.cameraVive = new CameraVive();
 
-		this._pointTarget = [0, 2.5, 0];
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._stop = 0;
 		this._hasTouchControl = true;
 
@@ -66,9 +71,9 @@ class SceneApp extends alfrid.Scene {
 			this.toRender();
 		}
 
-		socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
-		socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
-		socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
+		// socket.on('cameraAngleChange', (angles)=> this._onCameraAngle(angles));
+		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
+		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
 		const btnNext = document.body.querySelector('.button-next');
 		btnNext.addEventListener('touchstart', (e)=> {
@@ -163,12 +168,24 @@ class SceneApp extends alfrid.Scene {
 
 	_getReflectionMatrix() {
 		const camera = hasVR ? this.cameraVive : this.camera;
-		mat4.translate(camera.viewMatrix, camera.viewMatrix, vec3.fromValues(this.cameraOffsetX.value, this.cameraOffsetY.value, this.cameraOffsetZ.value));
+
+		const range = .15;
+		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
+		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
+		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
+		mat4.translate(	camera.viewMatrix, 
+						camera.viewMatrix, 
+						vec3.fromValues(
+							this.cameraOffsetX.value + offsetX * range, 
+							this.cameraOffsetY.value + offsetY * range, 
+							this.cameraOffsetZ.value + offsetZ * range
+						));
 
 		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
 
 	render() {
+		this.time += 0.01;
 		if(!window.hasVR) {
 			this.toRender();
 		}
@@ -182,7 +199,7 @@ class SceneApp extends alfrid.Scene {
 		if(!this.isFinished){
 			let next = this._stop + 1;
 			if(next >= CameraStops.length) {
-				next = 0;
+				next = 1;
 				this._subFinale.isReady = true;
 				this.isFinished = true;
 				// this._finish();
@@ -195,9 +212,6 @@ class SceneApp extends alfrid.Scene {
 			this._finish()
 			this.finishAnimating = true;
 		}
-
-
-
 	}
 
 	_finish() {
@@ -210,8 +224,6 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
 		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
-
-
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._subLines.goTo([0, -1, 0], true);
@@ -359,7 +371,6 @@ class SceneApp extends alfrid.Scene {
 			GL.enableAlphaBlending();
 
 
-
 			//	right
 			GL.viewport(w2, 0, w2, GL.height);
 			GL.scissor(w2, 0, w2, GL.height);
@@ -419,9 +430,9 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrunk.render(this._textureRad, this._textureIrr, this._textureStar);
-		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
+		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
-		// this._subLines.render(this.orbitalControl.position);
+		this._subLines.render(this.orbitalControl.position);
 		this._subFinale.render();
 
 		// if(this.isFinished){

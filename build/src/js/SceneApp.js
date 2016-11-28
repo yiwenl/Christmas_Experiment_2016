@@ -421,7 +421,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTrunk.render();
 		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
-		// this._subLines.render(this.orbitalControl.position);
+		this._subLines.render(this.orbitalControl.position);
 		this._subFinale.render();
 
 		// if(this.isFinished){

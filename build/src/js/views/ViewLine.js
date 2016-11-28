@@ -50,6 +50,7 @@ class ViewLine extends alfrid.View {
 		this.points = []
 		this.sub = 3//GL.isMobile ? 3 : 5;
 		this.thickness = Math.random() * .4 + .1;
+		this.defaultThickness = this.thickness;
 		this.isMobile = GL.isMobile;
 		const max = (this.isMobile ? 12:20);
 
@@ -319,6 +320,11 @@ class ViewLine extends alfrid.View {
 		// 	ease: Easings.instance.easeInCubic
 		// });
 
+		Easings.instance.to(this, .5, {
+			thickness: this.defaultThickness,
+			ease: Easings.instance.easeOutCubic
+		});
+
 		if(Math.random() > .4){
 		// if(false){
 			for (var i = 0; i < this.line.points.length; i++) {
@@ -452,6 +458,11 @@ class ViewLine extends alfrid.View {
 	transformTo(animal){
 		Easings.instance.to(this, 4, {
 			alpha: .9,
+			ease: Easings.instance.easeOutCubic
+		});
+
+		Easings.instance.to(this, .5, {
+			thickness: .5,
 			ease: Easings.instance.easeOutCubic
 		});
 

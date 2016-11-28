@@ -2,6 +2,7 @@ precision highp float;
 
 
 uniform float alpha;
+uniform float ratio;
 uniform float uTime;
 // uniform float hide;
 // uniform sampler2D texture;
@@ -14,7 +15,7 @@ varying float vCounters;
 
 void main() {
 
-  vec4 color = vec4(1.0);
+  vec4 color = vec4(alpha);
 
   // color *= smoothstep(vPosition.y,vPosition.y * 1.0, 1.);
 	// color *= smoothstep(hide,hide+0.15,1.-vT);
@@ -29,6 +30,6 @@ void main() {
   // color *= texture2D( texture, vUV );
 
   gl_FragColor = color;
-  gl_FragColor.a *= step(vCounters, alpha);
+  gl_FragColor.a *= step(vCounters, ratio);
 
 }

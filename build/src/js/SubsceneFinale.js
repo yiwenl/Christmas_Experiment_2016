@@ -18,6 +18,7 @@ class SubsceneFinale {
 	_initViews() {
 
 		this.ratio = 0;
+		this.alpha = 0;
 		this.tickSpace = 0;
 		this.controller = new Controller(this);
 
@@ -133,28 +134,51 @@ class SubsceneFinale {
 		if(!this.didFinalDrawing){
 
 			if(this.controller.spacePressed){
+				this.isIncreasing = true;
 				this.tickSpace++;
 
 
 				if(this.tickSpace <= 200){
-					this.ratio = this.easeInCirc(this.tickSpace, 0, 1, 200);
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 200);
+
+					// console.log(this.tickSpace);
+					if(this.tickSpace <= 200){
+						// console.log("changealpha");
+						this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 200);
+					}
 				}
 				else {
+					// this.alpha = 1;
+					// this.ratio = 1;
 					this.didFinalDrawing = true;
 				}
 			}
-			else if(this.tickSpace > 0 || this.ratio > 0){
+			else {
+				this.isIncreasing = false;
 				if(this.tickSpace > 0){
 					this.tickSpace--;
 				}
-				this.ratio *= .98;
+
+				if(this.alpha > 0.01){
+					this.alpha *= .98;
+				}
+
+				if(this.tickSpace <= 200){
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 200);
+
+					if(this.tickSpace <= 100){
+						// this.alpha = this.easeInCirc(this.tickSpace, 0, 1, 100);
+					}
+				}
 			}
 
 			for (var i = 0; i < this.lines.length; i++) {
 				this.lines[i].ratio = this.ratio;
+				this.lines[i].alpha = this.alpha;
+				this.lines[i].hide = !this.isIncreasing;
 			}
 
-			console.log(this.ratio);
+			// console.log(this.alpha);
 		}
 
 	}
@@ -179,9 +203,15 @@ class SubsceneFinale {
 		return c*(t*t*t + 1) + b;
 	}
 
+	easeInExpo (t, b, c, d) {
+		return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
+	};
+
 	easeOutCirc(t, b, c, d) {
     return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
   }
+
+
 }
 
 export default SubsceneFinale;

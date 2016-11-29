@@ -101,6 +101,8 @@ class SceneApp extends alfrid.Scene {
 			}
 		});
 
+		this._gotoStop(8);
+
 
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
@@ -336,15 +338,26 @@ class SceneApp extends alfrid.Scene {
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
+			GL.setMatrices(this.cameraReflection);
+			this._fboReflection.bind();
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
 			GL.viewport(0, 0, w2, GL.height);
 			GL.scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
 
 
-
 			this.cameraVive.setEye('right');
 			this._getReflectionMatrix();
+
+			GL.setMatrices(this.cameraReflection);
+			this._fboReflection.bind();
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
 
 			GL.viewport(w2, 0, w2, GL.height);
 			GL.scissor(w2, 0, w2, GL.height);
@@ -441,7 +454,7 @@ class SceneApp extends alfrid.Scene {
 		this._vFg.render();
 
 
-		if(withWater && !hasVR) {
+		if(withWater) {
 			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);

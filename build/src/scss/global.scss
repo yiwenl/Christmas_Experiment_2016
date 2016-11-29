@@ -27,7 +27,7 @@ html {
 h1,h2,h3,h4,text,p {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-webkit-font-smoothing: antialiased;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
 }
 
 .Main-Canvas {
@@ -55,6 +55,7 @@ h1,h2,h3,h4,text,p {
 	text-align: center;
 	letter-spacing: 11px;
 	color:white;
+	font-family: 'Open Sans';
 
 	opacity: 0;
 	transition:opacity .5s ease-out, letter-spacing .5s ease-out;
@@ -86,10 +87,8 @@ h1,h2,h3,h4,text,p {
 #enterVr {
 	position: absolute;
 	margin-bottom:40px;
-	width: 80px;
+	width: 100%;
 	bottom:0px;
-	left: 50%;
-	margin-left:-40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -111,7 +110,7 @@ h1,h2,h3,h4,text,p {
     p {
     	margin:0;
     	padding-top:5px;
-    	font-size:14px;
+    	font-size:12px;
     	letter-spacing: 2px;
     	width: 100%;
     	text-align: center;
@@ -122,8 +121,12 @@ h1,h2,h3,h4,text,p {
 .icon-vr {
 	position: relative;
 	left:50%;
-	margin-left:-40px;
-	width: 80px;
+	margin-left:-37.5px;
+	width: 75px;
+	height: 36px;
+
+	background: url(../../dist/assets/img/logo_vr.png);
+	background-size: cover;
 }
 
 .button-next {

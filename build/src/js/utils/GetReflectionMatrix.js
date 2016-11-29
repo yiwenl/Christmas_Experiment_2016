@@ -38,6 +38,7 @@ const func1 = function(mCamera, mSeaLevel, mTarget) {
 	posTargetRefl[1] -= distToWater * 2.0;
 
 	mTarget.lookAt(posCamRefl, posTargetRefl);
+	mat4.copy(mTarget.projection, mCamera.projection);
 }
 
 

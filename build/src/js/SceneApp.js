@@ -89,6 +89,8 @@ class SceneApp extends alfrid.Scene {
 
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
+
+		// this._gotoStop(8)
 	}
 
 	_enableCameraTouchControl() {
@@ -173,11 +175,11 @@ class SceneApp extends alfrid.Scene {
 		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
 		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
 		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
-		mat4.translate(	camera.viewMatrix, 
-						camera.viewMatrix, 
+		mat4.translate(	camera.viewMatrix,
+						camera.viewMatrix,
 						vec3.fromValues(
-							this.cameraOffsetX.value + offsetX * range, 
-							this.cameraOffsetY.value + offsetY * range, 
+							this.cameraOffsetX.value + offsetX * range,
+							this.cameraOffsetY.value + offsetY * range,
 							this.cameraOffsetZ.value + offsetZ * range
 						));
 
@@ -430,7 +432,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrunk.render(this._textureRad, this._textureIrr, this._textureStar);
-		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
+		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1], .25);
 
 		this._subLines.render(this.orbitalControl.position);
 		this._subFinale.render();

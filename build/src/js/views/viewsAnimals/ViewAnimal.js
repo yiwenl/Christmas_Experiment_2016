@@ -27,7 +27,17 @@ class ViewAnimal extends alfrid.View {
 
 
 	_init() {
+		this.rotation = 0;
 
+    gui.add(this, 'rotation', -Math.PI, Math.PI).onChange(()=> {
+			// this.reset(this.pos, 0, this.rotation);
+			this.needsUpdate = true;
+
+			this.shape.rotateY(this.rotation);
+			this.finalP = this.getPoints(this.shape.getPoints());
+			// console.log(this.finalP);
+			// console.log('Rotation change');
+		});
 	}
 
 	rotateX(rx){
@@ -35,7 +45,7 @@ class ViewAnimal extends alfrid.View {
 	}
 
 	rotateY(ry){
-		this.shape.rotateX(ry);
+		this.shape.rotateY(ry);
 	}
 
 	reset(pos, rx = 0, ry = 0){
@@ -82,15 +92,24 @@ class ViewAnimal extends alfrid.View {
 	}
 
 	render() {
-    if(!this.ready) return;
+    // if(!this.ready) return;
 
 		this.time += 0.01;
 
 		this.shader.bind();
 
     this.shader.uniform("alpha", "float", .6);
+    this.shader.uniform("thickness", "float", .5);
     this.shader.uniform("aspect", "float", window.innerWidth / window.innerHeight);
     this.shader.uniform("resolutions", "vec2", [window.innerWidth, window.innerHeight]);
+
+
+		if(this.needsUpdate){
+			this.needsUpdate = false;
+			// console.log(this.finalP);
+			this.line.render(this.finalP, true);
+		}
+
 		GL.draw(this.line);
 	}
 

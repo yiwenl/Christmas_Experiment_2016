@@ -8,9 +8,9 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-let TARGET_SERVER_IP = 'localhost';
-let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
-window.socket = socket;
+// let TARGET_SERVER_IP = 'localhost';
+// let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
+// window.socket = socket;
 
 let scene;
 const assets = [
@@ -41,7 +41,7 @@ window.getAsset = function(id) {	return window.assets.find( (a) => a.id === id).
 if(document.body) {
 	_init();
 } else {
-	window.addEventListener('DOMContentLoaded', _init);	
+	window.addEventListener('DOMContentLoaded', _init);
 }
 
 
@@ -60,7 +60,7 @@ function _init() {
 			let loader = document.body.querySelector('.Loading-Bar');
 			if(loader) loader.style.width = (p * 100).toFixed(2) + '%';
 		}).on('complete', _onImageLoaded)
-		.start();	
+		.start();
 	} else {
 		_init3D();
 	}
@@ -130,7 +130,7 @@ function _init3D() {
 	}
 
 	//	INIT DAT-GUI
-	// window.gui = new dat.GUI({ width:300 });
+	window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();
@@ -139,10 +139,10 @@ function _init3D() {
 	if(!GL.isMobile) {
 		const stats = new Stats();
 		document.body.appendChild(stats.domElement);
-		alfrid.Scheduler.addEF(()=>stats.update());	
+		alfrid.Scheduler.addEF(()=>stats.update());
 	}
-	
-	
+
+
 	// gui.add(Params, 'gamma', 1, 5);
 	// gui.add(Params, 'exposure', 1, 25);
 	// gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
@@ -161,7 +161,7 @@ function _initSound() {
 	]
 
 	let song = songs[Math.floor(Math.random() * songs.length)];
-	console.log('Song :', song); 
+	console.log('Song :', song);
 
 	SoundCloudBadge({
 		client_id: 'e8b7a335a5321247b38da4ccc07b07a2',

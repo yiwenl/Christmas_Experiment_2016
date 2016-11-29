@@ -7,7 +7,7 @@ class Bat extends Animal {
     ]
 
     pos = pos || [0, 0, 0]
-    pos[1] -= 2;
+    // pos[1] -= 2;
 
     super(v, pos)
 

@@ -10,6 +10,8 @@ class Animal {
     this.mRX = glmatrix.mat4.create();
     this.mRY = glmatrix.mat4.create();
     this.mT = glmatrix.mat4.create();
+    this.mTB = glmatrix.mat4.create();
+    this.mTAnchor = glmatrix.mat4.create();
 
     this.remapVertices();
   }
@@ -69,11 +71,46 @@ class Animal {
     this.height = yMax - yMin;
     this.depth = zMax - zMin;
 
+    this.centerX = (xMax + xMin) /2;
+    this.centerY = (yMax + yMin) /2;
+    this.centerZ = (zMax + zMin) /2;
+
+    // var translation = [
+    //   this.position[0] - (this.width/2) - xMin,
+    //   this.position[1] - (this.height/2) - yMin,
+    //   this.position[2] - this.depth / 2 - zMin
+    // ]
+
+
     var translation = [
-      this.position[0] - (this.width/2) - xMin,
-      this.position[1] - (this.height/2) - yMin,
-      this.position[2] - this.depth / 2 - zMin
+      this.position[0] ,
+      this.position[1] ,
+      this.position[2]
     ]
+
+    console.log(translation);
+
+
+    // var translation = [
+    //   this.position[0],
+    //   this.position[1] - 1,
+    //   this.position[2]
+    // ]
+    this.translationAnchor = [
+      -this.centerX/2,
+      -(this.height),
+      -this.centerZ/2
+    ]
+
+    this.translationBack = [
+      this.centerX/2,
+      0,
+      this.centerZ/2
+    ]
+
+
+    glmatrix.mat4.translate(this.mTB, this.mTB, this.translationBack);
+    glmatrix.mat4.translate(this.mTAnchor, this.mTAnchor, this.translationAnchor);
     glmatrix.mat4.translate(this.mT, this.mT, translation);
 
   }
@@ -84,22 +121,47 @@ class Animal {
 	}
 
 	rotateY(ry){
-    glmatrix.mat4.fromYRotation(this.mRY, ry + Math.PI/2);
+    console.log('rotate Y ');
+    glmatrix.mat4.identity(this.mRY);
+    glmatrix.mat4.fromYRotation(this.mRY, ry);
 		// glmatrix.mat4.rotateY(this.mRY, this.mRY, ry - Math.PI/2)
 	}
 
   getPoints(){
     let v = this.vertices.slice();
 
-    glmatrix.mat4.multiply(this.m, this.mRX, this.mRY);
+    // console.log(v);
+    glmatrix.mat4.identity(this.m);
+
     glmatrix.mat4.multiply(this.m, this.m, this.mT);
+    glmatrix.mat4.translate(this.m, this.m, this.mTAnchor);
+    glmatrix.mat4.multiply(this.m, this.m, this.mRY);
+
+
+
+    glmatrix.mat4.translate(this.m, this.m, this.mTB);
+
+    let verts = [];
 
     for (var i = 0; i < v.length; i++) {
-      glmatrix.vec3.transformMat4(v[i], v[i], this.m);
+      let vect = [];
+      let vect2 = [];
+      vect[0] = v[i][0];
+      vect[1] = v[i][1];
+      vect[2] = v[i][2];
+
+      if(i === 0){
+        console.log(v[i]);
+      }
+      glmatrix.vec3.transformMat4(vect2, vect, this.m);
+
+      verts.push(vect2);
     }
 
 
-    return v;
+
+
+    return verts;
   }
 }
 

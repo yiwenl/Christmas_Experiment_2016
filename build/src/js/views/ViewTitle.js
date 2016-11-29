@@ -22,7 +22,7 @@ class ViewTitle extends alfrid.View {
 		this.mesh = alfrid.Geom.plane(size * ratio, size, 1);
 
 		this._texture = new alfrid.GLTexture(getAsset('title'));
-		this.position = [0, 0, 0];
+		this.position = [0, -1.5, 0];
 		this.finalPosition = vec3.create();
 	}
 

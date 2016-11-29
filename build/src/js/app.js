@@ -189,11 +189,21 @@ function _initSound() {
 	}, _onSound);
 }
 
+
+let soundOn = true;
+
 function _onSound(err, src, json) {
 	// console.log('on Sound : ', src, json);
 	const audio = new Audio();
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.0;
+	audio.volume = 1.0;
+
+	const btnSound = document.body.querySelector('.button-sound');
+	btnSound.addEventListener('click', ()=> {
+		soundOn = !soundOn;
+		btnSound.innerHTML = soundOn ? 'SOUND OFF' : 'SOUND ON';
+		audio.volume = soundOn ? 1 : 0;
+	});
 }

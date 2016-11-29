@@ -458,8 +458,11 @@ class SceneApp extends alfrid.Scene {
 
 		if(!GL.isMobile) {
 			GL.enableAdditiveBlending();
+			GL.disable(GL.DEPTH_TEST);
 			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+			GL.enableAlphaBlending();
+			GL.enable(GL.DEPTH_TEST);
 		}
 
 		this._subParticles.render();

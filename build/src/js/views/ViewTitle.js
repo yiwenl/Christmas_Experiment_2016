@@ -28,15 +28,19 @@ class ViewTitle extends alfrid.View {
 
 	close() {
 		this.opacity.value = 0;
+		this.opacity.easing = 'expInOut';
+	}
+
+	setPosition(pos) {
+		vec3.add(this.finalPosition, pos, this.position);
 	}
 
 
-	render(pos) {
+	render() {
 		if(this.opacity.value < 0.01) {
 			return;
 		}
 		GL.disable(GL.DEPTH_TEST);
-		vec3.add(this.finalPosition, pos, this.position);
 		this.shader.bind();
 		this.shader.uniform("uPosition", "vec3", this.finalPosition);
 		this.shader.uniform("texture", "uniform1i", 0);

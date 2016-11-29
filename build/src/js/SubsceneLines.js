@@ -33,13 +33,13 @@ class SubsceneLines {
 		this._step = 0;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
-		this.lightSound = Sono.createSound({
-        src: ["./assets/sounds/light.mp3"],
-        volume: 0,
-				loop: true
-    });
+		// this.lightSound = Sono.createSound({
+	 //        src: ["./assets/sounds/light.mp3"],
+	 //        volume: 0,
+		// 			loop: true
+	 //    });
 
-		this.lightSound.play();
+		// this.lightSound.play();
 		// setTimeout(()=>{
 			// this.pause()
 		// }, 2000)
@@ -122,11 +122,11 @@ class SubsceneLines {
 	}
 
 	update(pos) {
-		this.lightSound.volume += (this.volume - this.lightSound.volume) * .1;
+		// this.lightSound.volume += (this.volume - this.lightSound.volume) * .1;
 
-		if(this.lightSound.volume > 1){
-			this.lightSound.volume = 1;
-		}
+		// if(this.lightSound.volume > 1){
+		// 	this.lightSound.volume = 1;
+		// }
 	}
 
 	render(pos) {

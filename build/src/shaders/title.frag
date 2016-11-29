@@ -9,5 +9,5 @@ uniform float uOpacity;
 
 void main(void) {
     gl_FragColor = texture2D(texture, vTextureCoord);
-    gl_FragColor *= uOpacity;
+    gl_FragColor.a *= uOpacity;
 }

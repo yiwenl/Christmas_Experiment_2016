@@ -54,8 +54,9 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.setTo(dataStop.rx);
 		this.orbitalControl.ry.setTo(dataStop.ry);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		// this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.lock();
 
 		this.eyeX = 0;
 		this.eyeY = 0;
@@ -129,6 +130,11 @@ class SceneApp extends alfrid.Scene {
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
 
 		// this._gotoStop(8);
+		this._vTitle.setPosition(this._pointTarget);
+
+		alfrid.Scheduler.delay(()=> {
+			document.body.classList.add('opened');
+		}, null, 4500);
 	}
 
 	_enableCameraTouchControl() {
@@ -236,7 +242,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	nextStop() {
-
 		if(this.finishAnimating || this.timerBeforeNext > 0) return;
 
 		this.timerBeforeNext = 120;
@@ -287,6 +292,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this.orbitalControl.lock(false);
 		this._vTitle.close();
 		let className = `stop-${this._stop}`;
 		document.body.classList.remove(className);
@@ -341,23 +347,13 @@ class SceneApp extends alfrid.Scene {
 			this._subFinale.update();
 		// }
 
-		if(!hasVR) {
-			const { eye, center } = this.camera;
-			let distToWater       = eye[1] - Params.seaLevel;
-			const eyeRef          = [eye[0], eye[1] - distToWater * 2.0, eye[2]];
-			distToWater           = center[1] - Params.seaLevel;
-			const centerRef       = [center[0], center[1] - distToWater * 2.0, center[2]];
-			this.cameraReflection.lookAt(eyeRef, centerRef);
-
-			// this._getReflectionMatrix();
-		}
 
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
 
 
-		if(!window.hasVR) {
+		if(!hasVR) {
 			//	get reflection matrix
 			this._getReflectionMatrix();
 
@@ -451,12 +447,17 @@ class SceneApp extends alfrid.Scene {
 		// if(this.isFinished){
 		// }
 
-		GL.enableAdditiveBlending();
-		this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
-		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		
+
+		if(!GL.isMobile) {
+			GL.enableAdditiveBlending();
+			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		}
+		
 		this._subParticles.render();
 		
-		this._vTitle.render(this._pointTarget);
+		this._vTitle.render();
 		this._vNothing.render();
 	}	
 
@@ -483,7 +484,7 @@ class SceneApp extends alfrid.Scene {
 
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
-		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
+		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
 		// console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
 	}
 }

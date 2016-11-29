@@ -133,7 +133,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTitle.setPosition(this._pointTarget);
 
 		alfrid.Scheduler.delay(()=> {
-			document.body.classList.add('opened');
+			document.body.classList.add('stop-0');
 		}, null, 4500);
 	}
 

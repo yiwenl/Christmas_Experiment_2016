@@ -256,6 +256,10 @@ a {
 	display:block;
 	outline: none;
 	cursor: pointer;
+	pointer-events:none;
+
+	transition: opacity .5s ease-out;
+	opacity: 0;
 
 	div {
 		width:100%;
@@ -270,12 +274,20 @@ a {
 			margin-top:6px;
 		}
 	}
+
+
 }
 
 .button-start {
 	width:72px;
 	margin-left:-36px;
+
+	.stop-0 & {
+		opacity: 1;
+		pointer-events:auto;
+	}
 }
+
 
 
 .button-continue {
@@ -283,4 +295,18 @@ a {
 	bottom:10%;
 	width:108px;
 	margin-left:-54px;
+
+	.stop-1 &,
+	.stop-2 &,
+	.stop-3 &,
+	.stop-4 &,
+	.stop-5 &,
+	.stop-6 &,
+	.stop-7 &,
+	.stop-8 &,
+	.complete & {
+		transition: opacity .5s ease-out 3.0s;
+		opacity: 1;
+		pointer-events:auto;
+	}
 }

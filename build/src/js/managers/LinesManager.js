@@ -17,7 +17,8 @@ const STATES_LINE = {
 }
 
 class LinesManager {
-  constructor(){
+  constructor(app){
+    this.app = app;
     this.state = STATES.wandering;
     this.linesDrawing = [];
     this.linesAvailableForDrawing = [];
@@ -33,7 +34,7 @@ class LinesManager {
   }
 
   addLine(){
-    let line = new ViewLine(this);
+    let line = new ViewLine(this.app);
     line.alpha = .3 + Math.random() * .5
 
     this.lines[this.lines.length] = line;

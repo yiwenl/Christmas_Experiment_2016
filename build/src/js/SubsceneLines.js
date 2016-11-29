@@ -30,7 +30,7 @@ class SubsceneLines {
 	}
 
 	_initViews() {
-		this._step = 0;
+		this._step = 1;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
 		// this.lightSound = Sono.createSound({
@@ -49,17 +49,52 @@ class SubsceneLines {
 		// this._viewDear = new ViewDear();
 		this.animals = [];
 
+		// let shapes = [
+		// 	ViewBoar,
+		// 	ViewBat,
+		// 	ViewFox,
+		// 	ViewBear,
+		// 	ViewDear,
+		// 	ViewWolf,
+		// 	ViewRabbit,
+		// 	ViewWeasel
+		// ];
+
 		let shapes = [
+			ViewWeasel,
 			ViewBoar,
-			ViewBat,
-			ViewFox,
-			ViewBear,
-			ViewDear,
-			ViewWolf,
 			ViewRabbit,
-			ViewWeasel
+			ViewWolf,
+			ViewDear,
+			ViewBear,
+			ViewFox,
+			ViewBat,
 		];
 
+		let data = [
+			{ pos:[0,0,0], rx: -10 * Math.PI/180, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+		]
+
+
+		let eyes = [
+			[[0,0,0], [0,0,0]],
+
+			[0.25564561210530967, 2.5, 7.689787053823033]
+
+
+			[[0.4371179766905522, 0.08633617174277397, -0.0013592794941699182], [0.4371179766905522, 0.08633617174277397, -0.0890547307311147]],
+			[0.28450194001197815, 2.6161389350891113, 7.575733184814453]
+			// [[0.4371179766905522 0.08633617174277397 -0.0013592794941699182], [0.4371179766905522 0.08633617174277397 -0.0890547307311147],
+		]
 
 
 		for (var i = 0; i < CameraStops.length + 1; i++) {
@@ -70,25 +105,22 @@ class SubsceneLines {
 
 			if(i === CameraStops.length){
 				let dataStop = CameraStops[0];
-				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-				this._pt = _pT;
-				// view.reset([0,0,0], CameraStops[0].rx, CameraStops[0].ry)
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx, CameraStops[0].ry)
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)
 				this.animals.push(view);
 			}
 			else {
 				let dataStop = CameraStops[i];
-				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-				this._pt = _pT;
-				// view.reset([0,0,0], CameraStops[i].rx, CameraStops[i].ry)
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx, CameraStops[i].ry)
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
+
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
 				this.animals.push(view);
 			}
 		}
 		// }
 
 
-		this.linesManager = new LinesManager();
+		this.linesManager = new LinesManager(this._scene);
 
 		for (var i = 0; i < (GL.isMobile ? 3:7); i++) {
 			this.linesManager.addLine();

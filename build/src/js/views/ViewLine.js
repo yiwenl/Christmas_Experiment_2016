@@ -479,6 +479,29 @@ class ViewLine extends alfrid.View {
 		this.animal = animal;
 
 		var ptsAnimal = this.animal.finalP;
+
+		// let eyes = this.animal.shape.getEyes();
+
+		let eyes = this.animal.shape.positionedEyes
+
+		console.log("eyes[0]", eyes);
+		if(eyes[0]){
+			this.app._vEyeLeft._finalPosition[0] = eyes[0][0];
+			this.app._vEyeLeft._finalPosition[1] = -eyes[0][1];
+			this.app._vEyeLeft._finalPosition[2] = -eyes[0][2];
+		}
+		else {
+			this.app._vEyeLeft.hide()
+		}
+
+		if(eyes[1]){
+			this.app._vEyeRight._finalPosition[0] = eyes[1][0];
+			this.app._vEyeRight._finalPosition[1] = -eyes[1][1];
+			this.app._vEyeRight._finalPosition[2] = -eyes[1][2];
+		}
+		else {
+			this.app._vEyeRight.hide()
+		}
 		// var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
 
 		// console.log(ptsAnimal);

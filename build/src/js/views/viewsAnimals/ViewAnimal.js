@@ -28,16 +28,6 @@ class ViewAnimal extends alfrid.View {
 
 	_init() {
 		this.rotation = 0;
-
-    gui.add(this, 'rotation', -Math.PI, Math.PI).onChange(()=> {
-			// this.reset(this.pos, 0, this.rotation);
-			this.needsUpdate = true;
-
-			this.shape.rotateY(this.rotation);
-			this.finalP = this.getPoints(this.shape.getPoints());
-			// console.log(this.finalP);
-			// console.log('Rotation change');
-		});
 	}
 
 	rotateX(rx){

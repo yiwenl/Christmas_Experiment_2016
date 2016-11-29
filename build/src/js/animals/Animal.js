@@ -1,7 +1,10 @@
 import glmatrix from 'gl-matrix';
 
 class Animal {
-  constructor(vertices, pos){
+  constructor(vertices, pos, eyes, offsetEyes){
+
+    this.eyes = eyes || [];
+
     this.vertices = vertices || []
 
     this.position = pos || [0, 0, 0];
@@ -10,6 +13,10 @@ class Animal {
     this.mRY = glmatrix.mat4.create();
     this.mT = glmatrix.mat4.create();
     this.mTAnchor = glmatrix.mat4.create();
+
+    this.offsetEyes = offsetEyes || [0, 0, 0];
+
+    this.positionedEyes = []
 
     this.remapVertices();
   }
@@ -42,6 +49,15 @@ class Animal {
     let yMax = null;
     let zMin = null;
     let zMax = null;
+
+    for (var i = 0; i < this.eyes.length; i++) {
+      this.eyes[i][0] /= (w/2);
+			this.eyes[i][1] /= (w/2);
+			this.eyes[i][2] = this.offsetEyes[2];
+
+      // console.log(this.eyes[i]);
+    }
+
     for (var i = 0; i < this.vertices.length; i++) {
 
 			this.tick++;
@@ -97,6 +113,33 @@ class Animal {
 		// glmatrix.mat4.rotateY(this.mRY, this.mRY, ry - Math.PI/2)
 	}
 
+  // getEyes(){
+  //   let v = this.eyes.slice();
+  //
+  //   // console.log(v);
+  //   mat4.identity(this.m);
+  //
+  //   mat4.multiply(this.m, this.m, this.mT);
+  //   mat4.multiply(this.m, this.m, this.mRY);
+  //   mat4.multiply(this.m, this.m, this.mTAnchor);
+  //
+  //
+  //   let eyes = [];
+  //
+  //   for (var i = 0; i < v.length; i++) {
+  //     let vect = [];
+  //     let vect2 = [];
+  //     vect[0] = v[i][0];
+  //     vect[1] = v[i][1];
+  //     vect[2] = v[i][2];
+  //
+  //     vec3.transformMat4(vect2, vect, this.m);
+  //     eyes.push(vect2);
+  //   }
+  //
+  //   return eyes;
+  // }
+
   getPoints(){
     let v = this.vertices.slice();
 
@@ -119,12 +162,20 @@ class Animal {
       vect[1] = v[i][1];
       vect[2] = v[i][2];
 
-      if(i === 0){
-        console.log(v[i]);
-      }
       vec3.transformMat4(vect2, vect, this.m);
-
       verts.push(vect2);
+    }
+
+    this.positionedEyes = []
+    for (var i = 0; i < this.eyes.length; i++) {
+      let vect = [];
+      let vect2 = [];
+      vect[0] = this.eyes[i][0];
+      vect[1] = this.eyes[i][1];
+      vect[2] = this.eyes[i][2];
+
+      vec3.transformMat4(vect2, vect, this.m);
+      this.positionedEyes.push(vect2);
     }
 
     return verts;

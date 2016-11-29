@@ -60,6 +60,19 @@ class SubsceneLines {
 			ViewWeasel
 		];
 
+		let data = [
+			{ pos:[0,-.6,1.8], rx: -10 * Math.PI/180, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,0,0], rx:0, ry: 0},
+		]
+
 
 
 		for (var i = 0; i < CameraStops.length + 1; i++) {
@@ -70,18 +83,15 @@ class SubsceneLines {
 
 			if(i === CameraStops.length){
 				let dataStop = CameraStops[0];
-				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-				this._pt = _pT;
-				// view.reset([0,0,0], CameraStops[0].rx, CameraStops[0].ry)
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx, CameraStops[0].ry)
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)
 				this.animals.push(view);
 			}
 			else {
 				let dataStop = CameraStops[i];
-				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-				this._pt = _pT;
-				// view.reset([0,0,0], CameraStops[i].rx, CameraStops[i].ry)
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx, CameraStops[i].ry)
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
+
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
 				this.animals.push(view);
 			}
 		}

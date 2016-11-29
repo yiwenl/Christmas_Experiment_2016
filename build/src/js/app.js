@@ -8,17 +8,19 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-let TARGET_SERVER_IP = 'localhost';
-let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
-window.socket = socket;
+// let TARGET_SERVER_IP = 'localhost';
+// let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
+// window.socket = socket;
 
 let scene;
 const assets = [
 	{ id:'objTrunk', url:'assets/obj/trunk.obj', type:'text' },
 	{ id:'ao', url:'assets/img/ao-trunk.jpg' },
 	{ id:'height', url:'assets/img/height.jpg' },
+	{ id:'nothing', url:'assets/img/nothing.png' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
+	{ id:'title', url:'assets/img/title.png' },
 	{ id:'fg', url:'assets/img/fg.png' },
 	{ id:'fgMobile', url:'assets/img/fgMobile.png' },
 	{ id:'gradient', url:'assets/img/gradient.jpg' },
@@ -175,5 +177,5 @@ function _onSound(err, src, json) {
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 1.0;
+	audio.volume = 0.0;
 }

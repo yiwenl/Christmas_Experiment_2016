@@ -4,12 +4,14 @@ import alfrid, { Scene, GL, GLTexture } from 'alfrid';
 import glmatrix from 'gl-matrix';
 import ViewTerrain from './ViewTerrain';
 import ViewWater from './ViewWater';
+import ViewNothing from './views/ViewNothing';
 
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
 import ViewTrunk from './views/ViewTrunk';
 import ViewEyeParticle from './views/ViewEyeParticle';
+import ViewTitle from './views/ViewTitle';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -59,6 +61,8 @@ class SceneApp extends alfrid.Scene {
 		this.eyeY = 0;
 		this.eyeZ = 0;
 
+		this._hasFormFinalShape = false;
+
 
 		const trace = () => {
 			console.log(this.eyeX, this.eyeY, this.eyeZ);
@@ -104,16 +108,27 @@ class SceneApp extends alfrid.Scene {
 		window.addEventListener('keydown', (e)=> {
 			if(e.keyCode === 39) {
 				this.nextStop();
+			} else if(e.keyCode === 32) {
+				if(this._stop == CameraStops.length-1) {
+					
+					if(this._hasFormFinalShape) {
+						console.debug(' RESTART ');
+						this.nextStop();
+					} else {
+						console.debug('Press and hold');	
+					}
+
+				} else {
+					this.nextStop();
+				}
 			}
 		});
-
-		this._gotoStop(8);
 
 
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
 
-		this._gotoStop(8);
+		// this._gotoStop(8);
 	}
 
 	_enableCameraTouchControl() {
@@ -126,7 +141,7 @@ class SceneApp extends alfrid.Scene {
 
 		this.orbitalControl.rx = new alfrid.EaseNumber(rx);
 		this.orbitalControl.ry = new alfrid.EaseNumber(ry);
-		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		this._hasTouchControl = true;
 	}
 
@@ -178,6 +193,8 @@ class SceneApp extends alfrid.Scene {
 		this._vTrunk = new ViewTrunk();
 		this._vEyeLeft = new ViewEyeParticle();
 		this._vEyeRight = new ViewEyeParticle();
+		this._vNothing = new ViewNothing();
+		this._vTitle = new ViewTitle();
 
 
 		//	Sub scenes
@@ -263,8 +280,19 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry.value = dataStop.ry;
 	}
 
+	finishFinalShape() {
+		this._hasFormFinalShape = true;	
+		document.body.classList.remove('stop-8');
+		document.body.classList.add('complete');
+	}
+
 	_gotoStop(i) {
-		console.log("gotostop");
+		this._vTitle.close();
+		let className = `stop-${this._stop}`;
+		document.body.classList.remove(className);
+		document.body.classList.remove('complete');
+
+		console.log("goto stop", i);
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -285,6 +313,17 @@ class SceneApp extends alfrid.Scene {
 		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
 		this.orbitalControl.rx.value = dataStop.rx;
 		this.orbitalControl.ry.value = dataStop.ry;
+
+		className = `stop-${this._stop}`;
+		document.body.classList.add(className);
+
+		if(i === 8) {
+			console.debug('Finishing');
+
+			alfrid.Scheduler.delay(()=> {
+				this.finishFinalShape();
+			}, null, 1000);
+		}
 	}
 
 
@@ -386,8 +425,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 
-
-
 	_renderScene(withWater=false) {
 		if(withWater) {
 			Params.clipY = 999;
@@ -419,7 +456,9 @@ class SceneApp extends alfrid.Scene {
 		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 		this._subParticles.render();
 		
-	}
+		this._vTitle.render(this._pointTarget);
+		this._vNothing.render();
+	}	
 
 
 	_renderReflection() {

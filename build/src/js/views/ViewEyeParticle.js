@@ -5,7 +5,7 @@ import vs from '../../shaders/eye.vert';
 import fs from '../../shaders/eye.frag';
 
 class ViewEyeParticle extends alfrid.View {
-	
+
 	constructor() {
 		super(vs, fs);
 		this.opacity = new alfrid.TweenNumber(1.0, 'cubicIn');
@@ -30,9 +30,11 @@ class ViewEyeParticle extends alfrid.View {
 
 
 	render(pos, pointTarget) {
-		vec3.add(this._finalPosition, pos, pointTarget);
+		// vec3.add(this._finalPosition, pos, pointTarget);
 		this.shader.bind();
+		// this.shader.uniform("float", "uOpacity", 1);
 		this.shader.uniform("float", "uOpacity", this.opacity.value);
+		// this.shader.uniform("uPosition", "vec3", [0,-2,0]);
 		this.shader.uniform("uPosition", "vec3", this._finalPosition);
 		GL.draw(this.mesh);
 	}

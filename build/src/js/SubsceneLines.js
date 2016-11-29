@@ -30,7 +30,7 @@ class SubsceneLines {
 	}
 
 	_initViews() {
-		this._step = 0;
+		this._step = 1;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
 		// this.lightSound = Sono.createSound({
@@ -49,19 +49,30 @@ class SubsceneLines {
 		// this._viewDear = new ViewDear();
 		this.animals = [];
 
+		// let shapes = [
+		// 	ViewBoar,
+		// 	ViewBat,
+		// 	ViewFox,
+		// 	ViewBear,
+		// 	ViewDear,
+		// 	ViewWolf,
+		// 	ViewRabbit,
+		// 	ViewWeasel
+		// ];
+
 		let shapes = [
+			ViewWeasel,
 			ViewBoar,
-			ViewBat,
-			ViewFox,
-			ViewBear,
-			ViewDear,
-			ViewWolf,
 			ViewRabbit,
-			ViewWeasel
+			ViewWolf,
+			ViewDear,
+			ViewBear,
+			ViewFox,
+			ViewBat,
 		];
 
 		let data = [
-			{ pos:[0,-.6,1.8], rx: -10 * Math.PI/180, ry: 0},
+			{ pos:[0,0,0], rx: -10 * Math.PI/180, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
@@ -73,6 +84,17 @@ class SubsceneLines {
 			{ pos:[0,0,0], rx:0, ry: 0},
 		]
 
+
+		let eyes = [
+			[[0,0,0], [0,0,0]],
+
+			[0.25564561210530967, 2.5, 7.689787053823033]
+
+
+			[[0.4371179766905522, 0.08633617174277397, -0.0013592794941699182], [0.4371179766905522, 0.08633617174277397, -0.0890547307311147]],
+			[0.28450194001197815, 2.6161389350891113, 7.575733184814453]
+			// [[0.4371179766905522 0.08633617174277397 -0.0013592794941699182], [0.4371179766905522 0.08633617174277397 -0.0890547307311147],
+		]
 
 
 		for (var i = 0; i < CameraStops.length + 1; i++) {
@@ -98,7 +120,7 @@ class SubsceneLines {
 		// }
 
 
-		this.linesManager = new LinesManager();
+		this.linesManager = new LinesManager(this._scene);
 
 		for (var i = 0; i < (GL.isMobile ? 3:7); i++) {
 			this.linesManager.addLine();

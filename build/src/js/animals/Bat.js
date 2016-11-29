@@ -9,7 +9,9 @@ class Bat extends Animal {
     pos = pos || [0, 0, 0]
     // pos[1] -= 2;
 
-    super(v, pos)
+    let eyes = [[614, 282, 0],[602, 279, 0]]
+    let offsetEyes = [0,0, -.4]
+    super(v, pos, eyes, offsetEyes)
 
 
   }

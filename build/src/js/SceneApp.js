@@ -70,9 +70,9 @@ class SceneApp extends alfrid.Scene {
 		}
 
 		const range = 5;
-		gui.add(this, 'eyeX', -range, range).onChange(trace);
-		gui.add(this, 'eyeY', -range, range).onChange(trace);
-		gui.add(this, 'eyeZ', -range, range).onChange(trace);
+		// gui.add(this, 'eyeX', -range, range).onChange(trace);
+		// gui.add(this, 'eyeY', -range, range).onChange(trace);
+		// gui.add(this, 'eyeZ', -range, range).onChange(trace);
 
 		this.cameraYOffset = hasVR ? -3 : 0;
 		this.time = Math.random() * 0xFF;
@@ -215,12 +215,6 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
 
-		alfrid.Scheduler.delay(()=> {
-			const dataStop = CameraStops[this._stop];
-			this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-
-			this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false, 8);
-		}, null, 1500);
 	}
 
 	_getReflectionMatrix() {
@@ -458,6 +452,7 @@ class SceneApp extends alfrid.Scene {
 
 		if(!GL.isMobile) {
 			GL.enableAdditiveBlending();
+			console.log(this._pointTarget);
 			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 		}

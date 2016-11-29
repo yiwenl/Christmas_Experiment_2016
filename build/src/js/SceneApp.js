@@ -30,6 +30,12 @@ const RAD = Math.PI / 180;
 const TweenSpeed = GL.isMobile ? 0.007 : 0.0035;
 const rotSpeed = GL.isMobile ? 0.004 : 0.002;
 
+const scissor = function(x, y, w, h) {
+	GL.scissor(x, y, w, h);
+	GL.viewport(x, y, w, h);
+	
+}
+
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
@@ -326,111 +332,47 @@ class SceneApp extends alfrid.Scene {
 
 			GL.enable(GL.SCISSOR_TEST);
 			const w2 = GL.width/2;
-			Params.clipDir = -1;
 
-
+			//	VR enter frame
 			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
 
+			//	get VR data
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
 
-
+			//	left eye			
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
+			scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraReflection);
 			this._fboReflection.bind();
 			GL.clear(0, 0, 0, 0);
 			this._renderScene();
 			this._fboReflection.unbind();
 
-			GL.viewport(0, 0, w2, GL.height);
-			GL.scissor(0, 0, w2, GL.height);
+			scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
 
 
+			//	right eye
 			this.cameraVive.setEye('right');
 			this._getReflectionMatrix();
 
+			scissor(w2, 0, w2, GL.height);
 			GL.setMatrices(this.cameraReflection);
 			this._fboReflection.bind();
 			GL.clear(0, 0, 0, 0);
 			this._renderScene();
 			this._fboReflection.unbind();
 
-			GL.viewport(w2, 0, w2, GL.height);
-			GL.scissor(w2, 0, w2, GL.height);
+			scissor(w2, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
+
 
 			GL.disable(GL.SCISSOR_TEST);
-
-
-
-			/*
-
-
-			//	left
-			GL.viewport(0, 0, w2, GL.height);
-			GL.scissor(0, 0, w2, GL.height);
-			this.cameraVive.setEye('left');
-
-			//	get reflection matrix
-			this._getReflectionMatrix();
-
-			//	render reflection
-			GL.setMatrices(this.cameraReflection);
-			GL.rotate(this._modelMatrix);
-			this._fboReflection.bind();
-			GL.viewport(0, 0, w2, GL.height);
-			GL.scissor(0, 0, w2, GL.height);
-			GL.clear(0, 0, 0, 0);
-			this._renderScene();
-			this._fboReflection.unbind();
-
-			//	render full scene
-			GL.viewport(0, 0, w2, GL.height);
-			GL.scissor(0, 0, w2, GL.height);
-			GL.setMatrices(this.cameraVive);
-			GL.rotate(this._modelMatrix);
-			this._renderScene(true);
-
-			GL.enableAdditiveBlending();
-			this._vFilmGrain.render();
-			GL.enableAlphaBlending();
-
-
-			//	right
-			GL.viewport(w2, 0, w2, GL.height);
-			GL.scissor(w2, 0, w2, GL.height);
-			this.cameraVive.setEye('right');
-
-			//	get reflection matrix
-			this._getReflectionMatrix();
-
-			//	render reflection
-			GL.setMatrices(this.cameraReflection);
-			GL.rotate(this._modelMatrix);
-
-			this._fboReflection.bind();
-			GL.viewport(w2, 0, w2, GL.height);
-			GL.scissor(w2, 0, w2, GL.height);
-			GL.clear(0, 0, 0, 0);
-			this._renderScene();
-			this._fboReflection.unbind();
-
-			//	render full scene
-			GL.viewport(w2, 0, w2, GL.height);
-			GL.scissor(w2, 0, w2, GL.height);
-			GL.setMatrices(this.cameraVive);
-			GL.rotate(this._modelMatrix);
-			this._renderScene(true);
-
-			GL.enableAdditiveBlending();
-			this._vFilmGrain.render();
-			GL.enableAlphaBlending();
-			*/
 
 			VIVEUtils.submitFrame();
 		}
@@ -440,6 +382,8 @@ class SceneApp extends alfrid.Scene {
 		GL.viewport(window.innerWidth/2, 0, size, size/GL.aspectRatio * 2);
 		// this._bCopy.draw(this._fboReflection.getTexture());
 	}
+
+
 
 
 	_renderScene(withWater=false) {

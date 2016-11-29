@@ -28,6 +28,13 @@ h1,h2,h3,h4,text,p {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-webkit-font-smoothing: antialiased;
 	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
+	padding:0;
+	margin:0;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
 }
 
 .Main-Canvas {
@@ -92,6 +99,7 @@ h1,h2,h3,h4,text,p {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 
     transition: opacity .5s ease-out;
     display:none;
@@ -232,4 +240,47 @@ h1,h2,h3,h4,text,p {
 	.opened & {
 		opacity: 1;
 	}
+}
+
+.button {
+	background: transparent;
+	position: absolute;
+	margin:0;
+	padding:0;
+	z-index: 9999;
+	top:65%;
+	left:50%;
+	border:0;
+	color:white;
+	font-size:24px;
+	display:block;
+	outline: none;
+	cursor: pointer;
+
+	div {
+		width:100%;
+		height:30px;
+		margin-top:5px;
+		background: url(../../dist/assets/img/btn_block.png);
+		background-size: 100% 100%;
+	}
+
+	&:hover {
+		div {
+			margin-top:6px;
+		}
+	}
+}
+
+.button-start {
+	width:72px;
+	margin-left:-36px;
+}
+
+
+.button-continue {
+	top:auto;
+	bottom:10%;
+	width:108px;
+	margin-left:-54px;
 }

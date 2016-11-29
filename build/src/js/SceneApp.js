@@ -35,7 +35,7 @@ const rotSpeed = GL.isMobile ? 0.004 : 0.002;
 const scissor = function(x, y, w, h) {
 	GL.scissor(x, y, w, h);
 	GL.viewport(x, y, w, h);
-
+	
 }
 
 class SceneApp extends alfrid.Scene {
@@ -54,8 +54,9 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.setTo(dataStop.rx);
 		this.orbitalControl.ry.setTo(dataStop.ry);
 		this.orbitalControl.center[1] = hasVR ? 0 : 2;
-		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
-		// this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
+		this.orbitalControl.lock();
 
 		this.eyeX = 0;
 		this.eyeY = 0;
@@ -110,12 +111,12 @@ class SceneApp extends alfrid.Scene {
 				this.nextStop();
 			} else if(e.keyCode === 32) {
 				if(this._stop == CameraStops.length-1) {
-
+					
 					if(this._hasFormFinalShape) {
 						console.debug(' RESTART ');
 						this.nextStop();
 					} else {
-						console.debug('Press and hold');
+						console.debug('Press and hold');	
 					}
 
 				} else {
@@ -128,6 +129,12 @@ class SceneApp extends alfrid.Scene {
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
 
+		// this._gotoStop(8);
+		this._vTitle.setPosition(this._pointTarget);
+
+		alfrid.Scheduler.delay(()=> {
+			document.body.classList.add('opened');
+		}, null, 4500);
 	}
 
 	_enableCameraTouchControl() {
@@ -207,14 +214,6 @@ class SceneApp extends alfrid.Scene {
 		this._passFxaa = new PassFXAA();
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
-
-
-		alfrid.Scheduler.delay(()=> {
-			const dataStop = CameraStops[this._stop];
-			this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-
-			this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false, 8);
-		}, null, 1500);
 	}
 
 	_getReflectionMatrix() {
@@ -224,11 +223,11 @@ class SceneApp extends alfrid.Scene {
 		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
 		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
 		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
-		mat4.translate(	camera.viewMatrix,
-						camera.viewMatrix,
+		mat4.translate(	camera.viewMatrix, 
+						camera.viewMatrix, 
 						vec3.fromValues(
-							this.cameraOffsetX.value + offsetX * range,
-							this.cameraOffsetY.value + offsetY * range,
+							this.cameraOffsetX.value + offsetX * range, 
+							this.cameraOffsetY.value + offsetY * range, 
 							this.cameraOffsetZ.value + offsetZ * range
 						));
 
@@ -243,7 +242,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	nextStop() {
-
 		if(this.finishAnimating || this.timerBeforeNext > 0) return;
 
 		this.timerBeforeNext = 120;
@@ -288,12 +286,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	finishFinalShape() {
-		this._hasFormFinalShape = true;
+		this._hasFormFinalShape = true;	
 		document.body.classList.remove('stop-8');
 		document.body.classList.add('complete');
 	}
 
 	_gotoStop(i) {
+		this.orbitalControl.lock(false);
 		this._vTitle.close();
 		let className = `stop-${this._stop}`;
 		document.body.classList.remove(className);
@@ -348,23 +347,13 @@ class SceneApp extends alfrid.Scene {
 			this._subFinale.update();
 		// }
 
-		if(!hasVR) {
-			const { eye, center } = this.camera;
-			let distToWater       = eye[1] - Params.seaLevel;
-			const eyeRef          = [eye[0], eye[1] - distToWater * 2.0, eye[2]];
-			distToWater           = center[1] - Params.seaLevel;
-			const centerRef       = [center[0], center[1] - distToWater * 2.0, center[2]];
-			this.cameraReflection.lookAt(eyeRef, centerRef);
-
-			// this._getReflectionMatrix();
-		}
 
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
 
 
-		if(!window.hasVR) {
+		if(!hasVR) {
 			//	get reflection matrix
 			this._getReflectionMatrix();
 
@@ -388,7 +377,7 @@ class SceneApp extends alfrid.Scene {
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
 
-			//	left eye
+			//	left eye			
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
@@ -450,7 +439,7 @@ class SceneApp extends alfrid.Scene {
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrees.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
 		this._vTrunk.render(this._textureRad, this._textureIrr, this._textureStar);
-		this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1], .25);
+		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subLines.render(this.orbitalControl.position);
 		// this._subFinale.render();
@@ -458,14 +447,19 @@ class SceneApp extends alfrid.Scene {
 		// if(this.isFinished){
 		// }
 
-		GL.enableAdditiveBlending();
-		this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
-		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
-		this._subParticles.render();
+		
 
-		this._vTitle.render(this._pointTarget);
+		if(!GL.isMobile) {
+			GL.enableAdditiveBlending();
+			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		}
+		
+		this._subParticles.render();
+		
+		this._vTitle.render();
 		this._vNothing.render();
-	}
+	}	
 
 
 	_renderReflection() {
@@ -490,7 +484,7 @@ class SceneApp extends alfrid.Scene {
 
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
-		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
+		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
 		// console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
 	}
 }

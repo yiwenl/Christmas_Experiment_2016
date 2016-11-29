@@ -86,6 +86,7 @@ function _onImageLoaded(o) {
 
 
 window.hasVR = false;
+window.vrPresenting = false;
 
 function _initVR() {
 	VIVEUtils.init( (vrDisplay) => _onVR(vrDisplay));
@@ -100,7 +101,8 @@ function _onVR(vrDisplay) {
 		let btnVR = document.body.querySelector('#enterVr');
 		btnVR.addEventListener('click', ()=> {
 			VIVEUtils.present(GL.canvas, ()=> {
-				console.log('Scene :', scene);
+				console.log('Scene :', scene, 'present VR now ');
+				window.vrPresenting = true;
 				scene.resize();
 			});
 		});

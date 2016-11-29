@@ -1,0 +1,12 @@
+/*font.css*/
+
+@font-face {
+	font-family: 'BRUX-Regular';
+	src: 	url('../font/BRUX-Regular.eot?#iefix') format('embedded-opentype'),  
+			url('../font/BRUX-Regular.otf')  format('opentype'),
+	     	url('../font/BRUX-Regular.woff') format('woff'), 
+	     	url('../font/BRUX-Regular.ttf')  format('truetype'), 
+	     	url('../font/BRUX-Regular.svg#BRUX-Regular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}

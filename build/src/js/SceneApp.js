@@ -238,7 +238,8 @@ class SceneApp extends alfrid.Scene {
 			// this._vFilmGrain.render();
 			// GL.enableAlphaBlending();
 		} else {
-			const w2 = GL.width;
+			GL.enable(GL.SCISSOR_TEST);
+			const w2 = GL.width/2;
 
 			//	VR enter frame
 			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
@@ -251,6 +252,8 @@ class SceneApp extends alfrid.Scene {
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
+			GL.viewport(0, 0, w2, GL.height);
+			GL.scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraReflection);
 			this._fboReflection.bind();
 			GL.clear(0, 0, 0, 0);
@@ -258,9 +261,29 @@ class SceneApp extends alfrid.Scene {
 			this._fboReflection.unbind();
 
 			GL.viewport(0, 0, w2, GL.height);
-			// GL.scissor(0, 0, w2, GL.height);
+			GL.scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
+
+			this.cameraVive.setEye('right');
+			this._getReflectionMatrix();
+
+			GL.viewport(w2, 0, w2, GL.height);
+			GL.scissor(w2, 0, w2, GL.height);
+			GL.setMatrices(this.cameraReflection);
+			this._fboReflection.bind();
+			GL.clear(0, 0, 0, 0);
+			this._renderScene();
+			this._fboReflection.unbind();
+
+			
+			GL.scissor(w2, 0, w2, GL.height);
+			GL.viewport(w2, 0, w2, GL.height);
+			GL.setMatrices(this.cameraVive);
+			this._renderScene(true);
+
+
+			GL.disable(GL.SCISSOR_TEST);
 
 
 /*
@@ -392,19 +415,19 @@ class SceneApp extends alfrid.Scene {
 
 
 	resize() {
-		// const scale = hasVR ? 2 : 1;
-		// GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
-		// if(!hasVR) {
-		// 	this.camera.setAspectRatio(GL.aspectRatio);
-		// 	this.cameraReflection.setAspectRatio(GL.aspectRatio);
-		// }
-
-
-		GL.setSize(window.innerWidth/2, window.innerHeight);
+		const scale = hasVR ? 2 : 1;
+		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
 		if(!hasVR) {
 			this.camera.setAspectRatio(GL.aspectRatio);
 			this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		}
+
+
+		// GL.setSize(window.innerWidth, window.innerHeight);
+		// if(!hasVR) {
+		// 	this.camera.setAspectRatio(GL.aspectRatio);
+		// 	this.cameraReflection.setAspectRatio(GL.aspectRatio);
+		// }
 
 
 		this._resetFrameBuffer();
@@ -413,7 +436,7 @@ class SceneApp extends alfrid.Scene {
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
 		// this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale);
-		this._fboReflection = new alfrid.FrameBuffer(GL.width, GL.height);
+		this._fboReflection = new alfrid.FrameBuffer(GL.width/2, GL.height);
 	}
 }
 

@@ -64,32 +64,14 @@ class SubsceneLines {
 			ViewWeasel
 		];
 
-		let pos = [
-			[0,0,0],
-			[0,0,0],
-			[0,0,0],
-			[0,0,0],
-			[0,0,0],
-			[0,0,0],
-		]
 
 
 		for (var i = 0; i < CameraStops.length + 1; i++) {
 			// CameraStops[i]
 
 
-			let view;
-
-			view = new shapes[i % shapes.length]
-			// if(i%2===0) {
-			// }
-			// else {
-			// 	view = new ViewDear()
-			// }
-			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
-			// view.rotateX(CameraStops[i].rx);
-			// view.rotateY(CameraStops[i].ry);
-
+			let view = new shapes[i % shapes.length];
+			
 			if(i === CameraStops.length){
 				let dataStop = CameraStops[0];
 				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];

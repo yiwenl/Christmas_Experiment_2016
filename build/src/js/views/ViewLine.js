@@ -478,7 +478,10 @@ class ViewLine extends alfrid.View {
 
 		this.animal = animal;
 
-		var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
+		var ptsAnimal = this.animal.finalP;
+		// var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
+
+		// console.log(ptsAnimal);
 		// console.log(this.posToDraw);
 		let nbPointsTarget = ptsAnimal.length/ this.sub ;
 

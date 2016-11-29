@@ -92,7 +92,7 @@ class ViewAnimal extends alfrid.View {
 	}
 
 	render() {
-    // if(!this.ready) return;
+     return;
 
 		this.time += 0.01;
 

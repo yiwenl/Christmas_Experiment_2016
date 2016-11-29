@@ -207,6 +207,14 @@ class SceneApp extends alfrid.Scene {
 		this._passFxaa = new PassFXAA();
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
+
+
+		alfrid.Scheduler.delay(()=> {
+			const dataStop = CameraStops[this._stop];
+			this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+
+			this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false, 8);
+		}, null, 1500);
 	}
 
 	_getReflectionMatrix() {

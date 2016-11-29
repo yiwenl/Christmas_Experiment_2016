@@ -71,7 +71,7 @@ class SubsceneLines {
 
 
 			let view = new shapes[i % shapes.length];
-			
+
 			if(i === CameraStops.length){
 				let dataStop = CameraStops[0];
 				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
@@ -103,9 +103,9 @@ class SubsceneLines {
 
 	}
 
-	goTo(pt, isFinished){
+	goTo(pt, isFinished, duration){
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished)
+		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, duration)
 		this._step++;
 	}
 

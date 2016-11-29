@@ -56,7 +56,10 @@ class LinesManager {
     this.linesDrawing.push(l);
   }
 
-  moveTo(pt, animal, isFinished){
+  moveTo(pt, animal, isFinished, duration){
+
+    duration = duration || 3;
+    console.log(duration);
     // ignore that
     this.isFinished = isFinished;
     let freeLines = [];
@@ -114,9 +117,11 @@ class LinesManager {
         this.targetPoints[i][2] = pt[2] + Math.random() * 1 - 1/2;
       }
 
-      let duration = (4 + Math.random() * 3);
+      let durationNormal = (duration + 1 + Math.random() * 3);
+
+
       if(!this.isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
-        duration = 3
+        // duration = duration
         l.willDraw = animal;
         l.posToDraw = pt;
       }
@@ -160,7 +165,7 @@ class LinesManager {
         let o = this._moveLineTo({
           line: l,
           pt: this.targetPoints[i],
-          duration: duration,
+          duration: l.willDraw ? duration : durationNormal,
           ease: this.easeOutCirc.bind(this)
         });
 

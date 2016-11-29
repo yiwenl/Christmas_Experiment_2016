@@ -152,3 +152,65 @@ h1,h2,h3,h4,text,p {
 		pointer-events: auto;
 	}
 }
+
+.instruction {
+	position: absolute;
+	z-index: 99999;
+	color:white;
+	pointer-events:none;
+	width:100%;
+	bottom:50px;
+	text-align: center;
+	letter-spacing: 1px;
+
+	transition:opacity .5s ease-out;
+
+	opacity: 0;
+}
+
+
+.instruction-next {
+	opacity: 1;
+	transition:opacity .5s ease-out .5s;
+
+	.is-mobile & {
+		display: none;
+	}
+
+	.stop-8 &,
+	.complete & {
+		transition:opacity .5s ease-out;
+		opacity: 0;
+	}
+
+}
+
+.instruction-hold {
+	.stop-8 & {
+		transition:opacity .5s ease-out .5s;
+		opacity: 1;
+	}
+
+
+	.complete & {
+		transition:opacity .5s ease-out;
+		opacity: 0;	
+	}
+}
+
+
+.instruction-restart {
+	.complete & {
+		opacity: 1;
+	}
+}
+
+
+.instruction-next_mobile {
+	opacity: 1;
+	display: none;
+
+	.is-mobile & {
+		display: block;
+	}
+}

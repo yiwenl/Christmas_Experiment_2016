@@ -101,12 +101,13 @@ class SceneApp extends alfrid.Scene {
 		// socket.on('cameraPositionChange', (pos)=> this._onCameraPosition(pos));
 		// socket.on('targetPositionChange', (pos)=> this._onTargetPosition(pos));
 
-		const btnNext = document.body.querySelector('.button-next');
-		btnNext.addEventListener('touchstart', (e)=> {
-			this.nextStop();
-		});
+		// const btnNext = document.body.querySelector('.button-next');
+		// btnNext.addEventListener('touchstart', (e)=> {
+		// 	this.nextStop();
+		// });
 
 		window.addEventListener('keydown', (e)=> {
+			if(!this._hasOpened) {	return; }
 			if(e.keyCode === 39) {
 				this.nextStop();
 			} else if(e.keyCode === 32) {
@@ -132,8 +133,10 @@ class SceneApp extends alfrid.Scene {
 		// this._gotoStop(8);
 		this._vTitle.setPosition(this._pointTarget);
 
+		this._hasOpened = false;
 		alfrid.Scheduler.delay(()=> {
-			document.body.classList.add('opened');
+			this._hasOpened = true;
+			document.body.classList.add('stop-0');
 		}, null, 4500);
 	}
 

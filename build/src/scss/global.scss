@@ -28,6 +28,13 @@ h1,h2,h3,h4,text,p {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-webkit-font-smoothing: antialiased;
 	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
+	padding:0;
+	margin:0;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
 }
 
 .Main-Canvas {
@@ -92,6 +99,7 @@ h1,h2,h3,h4,text,p {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 
     transition: opacity .5s ease-out;
     display:none;
@@ -233,3 +241,117 @@ h1,h2,h3,h4,text,p {
 		opacity: 1;
 	}
 }
+
+.button {
+	background: transparent;
+	position: absolute;
+	margin:0;
+	padding:0;
+	z-index: 9999;
+	top:65%;
+	left:50%;
+	border:0;
+	color:white;
+	font-size:24px;
+	display:block;
+	outline: none;
+	cursor: pointer;
+	pointer-events:none;
+
+	transition: opacity .5s ease-out;
+	opacity: 0;
+
+	div {
+		width:100%;
+		height:30px;
+		margin-top:5px;
+		background: url(../../dist/assets/img/btn_block.png);
+		background-size: 100% 100%;
+	}
+
+	&:hover {
+		div {
+			margin-top:6px;
+		}
+	}
+
+
+}
+
+.button-start {
+	width:72px;
+	margin-left:-36px;
+
+	.stop-0 & {
+		opacity: 1;
+		pointer-events:auto;
+	}
+}
+
+
+
+.button-continue {
+	top:auto;
+	bottom:10%;
+	width:108px;
+	margin-left:-54px;
+
+	.stop-1 &,
+	.stop-2 &,
+	.stop-3 &,
+	.stop-4 &,
+	.stop-5 &,
+	.stop-6 &,
+	.stop-7 &,
+	.stop-8 &,
+	.complete & {
+		transition: opacity .5s ease-out 3.0s;
+		opacity: 1;
+		pointer-events:auto;
+	}
+}
+
+.message-xmas {
+	position: absolute;
+	margin:0;
+	padding:0;
+	z-index: 9998;
+	width:100%;
+	height:24%;
+	bottom:0;
+	pointer-events:none;
+
+	opacity: 0;
+	transition: opacity .5s ease-out;
+
+	.merry-xmas {
+		color:white;
+		width:100%;
+		text-align: center;
+		font-size:42px;
+	}
+}
+
+.button-restart {
+	opacity: 1;
+	width:98px;
+	margin-left:-49px;
+	bottom:auto;
+	top: 40%;
+}
+
+
+.button-sound {
+	color:white;
+	outline: none;
+	position: absolute;
+	cursor: pointer;
+	z-index: 9999;
+	right: 50px;
+	bottom: 30px;
+	background: transparent;
+	border: 0;
+	font-size: 12px;
+	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
+}
+

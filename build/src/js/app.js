@@ -113,7 +113,7 @@ function _onVR(vrDisplay) {
 	Params.numParticles = hasVR ? 256 : 128;
 	Params.postEffect = hasVR;
 
-	document.body.classList.add('hasVR');
+	// document.body.classList.add('hasVR');
 	// hasVR = true;
 	console.debug('Has VR ? ', hasVR, Params);
 	_init3D();
@@ -158,6 +158,21 @@ function _init3D() {
 	// const fFog = gui.addFolder('Fog');
 	// fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
 	// fFog.open();
+
+	_initControls();
+}
+
+
+function _initControls() {
+	const btnStart = document.body.querySelector('.button-start');
+	btnStart.addEventListener('click', ()=> {
+		scene.nextStop();
+	});
+
+	const btnContinue = document.body.querySelector('.button-continue');
+	btnContinue.addEventListener('click', ()=> {
+		scene.nextStop();
+	});
 }
 
 function _initSound() {
@@ -174,11 +189,21 @@ function _initSound() {
 	}, _onSound);
 }
 
+
+let soundOn = true;
+
 function _onSound(err, src, json) {
 	// console.log('on Sound : ', src, json);
 	const audio = new Audio();
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.0;
+	audio.volume = 1.0;
+
+	const btnSound = document.body.querySelector('.button-sound');
+	btnSound.addEventListener('click', ()=> {
+		soundOn = !soundOn;
+		btnSound.innerHTML = soundOn ? 'SOUND OFF' : 'SOUND ON';
+		audio.volume = soundOn ? 1 : 0;
+	});
 }

@@ -30,7 +30,6 @@ class ViewEyeParticle extends alfrid.View {
 
 
 	render(pos, pointTarget) {
-		// console.log(pos, pointTarget);
 		vec3.add(this._finalPosition, pos, pointTarget);
 		this.shader.bind();
 		this.shader.uniform("float", "uOpacity", this.opacity.value);

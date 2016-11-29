@@ -35,7 +35,7 @@ const rotSpeed = GL.isMobile ? 0.004 : 0.002;
 const scissor = function(x, y, w, h) {
 	GL.scissor(x, y, w, h);
 	GL.viewport(x, y, w, h);
-	
+
 }
 
 class SceneApp extends alfrid.Scene {
@@ -111,12 +111,12 @@ class SceneApp extends alfrid.Scene {
 				this.nextStop();
 			} else if(e.keyCode === 32) {
 				if(this._stop == CameraStops.length-1) {
-					
+
 					if(this._hasFormFinalShape) {
 						console.debug(' RESTART ');
 						this.nextStop();
 					} else {
-						console.debug('Press and hold');	
+						console.debug('Press and hold');
 					}
 
 				} else {
@@ -214,6 +214,13 @@ class SceneApp extends alfrid.Scene {
 		this._passFxaa = new PassFXAA();
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
+
+		alfrid.Scheduler.delay(()=> {
+			const dataStop = CameraStops[this._stop];
+			this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+
+			this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false, 8);
+		}, null, 1500);
 	}
 
 	_getReflectionMatrix() {
@@ -223,11 +230,11 @@ class SceneApp extends alfrid.Scene {
 		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
 		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
 		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
-		mat4.translate(	camera.viewMatrix, 
-						camera.viewMatrix, 
+		mat4.translate(	camera.viewMatrix,
+						camera.viewMatrix,
 						vec3.fromValues(
-							this.cameraOffsetX.value + offsetX * range, 
-							this.cameraOffsetY.value + offsetY * range, 
+							this.cameraOffsetX.value + offsetX * range,
+							this.cameraOffsetY.value + offsetY * range,
 							this.cameraOffsetZ.value + offsetZ * range
 						));
 
@@ -286,7 +293,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	finishFinalShape() {
-		this._hasFormFinalShape = true;	
+		this._hasFormFinalShape = true;
 		document.body.classList.remove('stop-8');
 		document.body.classList.add('complete');
 	}
@@ -377,7 +384,7 @@ class SceneApp extends alfrid.Scene {
 			const frameData = VIVEUtils.getFrameData();
 			this.cameraVive.updateCamera(frameData);
 
-			//	left eye			
+			//	left eye
 			this.cameraVive.setEye('left');
 			this._getReflectionMatrix();
 
@@ -447,19 +454,19 @@ class SceneApp extends alfrid.Scene {
 		// if(this.isFinished){
 		// }
 
-		
+
 
 		if(!GL.isMobile) {
 			GL.enableAdditiveBlending();
 			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 		}
-		
+
 		this._subParticles.render();
-		
+
 		this._vTitle.render();
 		this._vNothing.render();
-	}	
+	}
 
 
 	_renderReflection() {

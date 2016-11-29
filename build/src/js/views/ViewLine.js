@@ -178,7 +178,7 @@ class ViewLine extends alfrid.View {
 					var endIndex =  (this.path.length - 1) - i;
 
 					var obj = { startIndex: startIndex, endIndex: endIndex, currentIndex: startIndex}
-					var o = Easings.instance.returnVariable(obj, 1 + .1, { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
+					var o = Easings.instance.returnVariable(obj, (this.firstTime ? 4 : 1 + .1), { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
 					o.point = startIndex;
 					this.objectsToTween[index++] = o;
 				}

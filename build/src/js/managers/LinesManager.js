@@ -56,10 +56,10 @@ class LinesManager {
     this.linesDrawing.push(l);
   }
 
-  moveTo(pt, animal, isFinished, duration){
+  moveTo(pt, animal, isFinished, firstTime){
 
-    duration = duration || 3;
-    console.log(duration);
+    let duration = firstTime ? 8 : 3;
+    // console.log(duration);
     // ignore that
     this.isFinished = isFinished;
     let freeLines = [];
@@ -119,11 +119,15 @@ class LinesManager {
 
       let durationNormal = (duration + 1 + Math.random() * 3);
 
-
+      l.firstTime = false;
       if(!this.isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         // duration = duration
         l.willDraw = animal;
         l.posToDraw = pt;
+
+        if(firstTime){
+          l.firstTime = true;
+        }
       }
 
       // set the easings

@@ -39,7 +39,6 @@ class SubsceneLines {
 		// 			loop: true
 	 //    });
 
-		// this.lightSound.play();
 		// setTimeout(()=>{
 			// this.pause()
 		// }, 2000)
@@ -60,25 +59,29 @@ class SubsceneLines {
 			ViewRabbit,
 			ViewWeasel
 		];
+
+
+
 		for (var i = 0; i < CameraStops.length + 1; i++) {
 			// CameraStops[i]
-			let view;
 
-			view = new shapes[i % shapes.length]
-			// if(i%2===0) {
-			// }
-			// else {
-			// 	view = new ViewDear()
-			// }
-			// console.log([CameraStops[i].x * Params.terrainSize/2, -1, CameraStops[i].z * Params.terrainSize/2]);
-			// view.rotateX(CameraStops[i].rx);
-			// view.rotateY(CameraStops[i].ry);
+
+			let view = new shapes[i % shapes.length];
+
 			if(i === CameraStops.length){
-				view.reset([0,-1,0], CameraStops[0].rx, CameraStops[0].ry)
+				let dataStop = CameraStops[0];
+				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+				this._pt = _pT;
+				// view.reset([0,0,0], CameraStops[0].rx, CameraStops[0].ry)
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx, CameraStops[0].ry)
 				this.animals.push(view);
 			}
 			else {
-				view.reset([0,-1,0], CameraStops[i].rx, CameraStops[i].ry)
+				let dataStop = CameraStops[i];
+				let _pT = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+				this._pt = _pT;
+				// view.reset([0,0,0], CameraStops[i].rx, CameraStops[i].ry)
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx, CameraStops[i].ry)
 				this.animals.push(view);
 			}
 		}
@@ -96,9 +99,9 @@ class SubsceneLines {
 
 	}
 
-	goTo(pt, isFinished){
+	goTo(pt, isFinished, duration){
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished)
+		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, duration)
 		this._step++;
 	}
 
@@ -142,6 +145,13 @@ class SubsceneLines {
 		let volume = this.map(d, 10, 100, 1, 0)
 		this.volume = volume;
 		// this.volume = 0;
+
+		// for (var i = 0; i < this.animals.length; i++) {
+			// this.animals[i].render();
+
+			// const pos = [this.animals[i].shape.centerX + this._pt[0], this.animals[i].shape.centerY + this._pt[1], this.animals[i].shape.centerZ + this._pt[2]];
+			// this._bBall.draw(pos, [.1, .1, .1], [0.2, 0.6, 1.0]);
+		// }
 		// if(this.volume < .02) this.volume = .02;
 
 		// console.log("dist", this.linesManager.dist);

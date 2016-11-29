@@ -53,6 +53,7 @@ class ViewTrees extends alfrid.View {
 
 		super(vs, _fs);
 		this.useFallback = useFallback;
+		this.setupUniforms();
 	}
 
 
@@ -147,36 +148,44 @@ class ViewTrees extends alfrid.View {
 		// 		saveJson(this._treePositions);
 		// 	}
 		// });
+
+		
 	}
 
 
-	render(textureRad, textureIrr, textureNoise, textureEnv) {
+	setupUniforms() {
 		this.shader.bind();
-
-		this.shader.uniform("textureTree", "uniform1i", 1);
-		this._textureTree.bind(1);
-
-		this.shader.uniform("textureNoise", "uniform1i", 2);
-		textureNoise.bind(2);
-
-		if(this.useFallback) {
-			this.shader.uniform("textureEnv", "uniform1i", 3);
-			textureEnv.bind(3);
-		} else {
-			this.shader.uniform('uRadianceMap', 'uniform1i', 3);
-			textureRad.bind(3);
-
-			this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
-			textureIrr.bind(4);	
-		}
-
+		ShaderUtils.bindUniforms(this.shader, oUniforms);
 		this.shader.uniform('uExposure', 'float', Params.exposure);
 		this.shader.uniform('uGamma', 'float', Params.gamma);
 		
 		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
 		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 
-		ShaderUtils.bindUniforms(this.shader, oUniforms);
+		this.shader.uniform("textureTree", "uniform1i", 1);
+		this.shader.uniform("textureNoise", "uniform1i", 2);
+
+		if(this.useFallback) {
+			this.shader.uniform("textureEnv", "uniform1i", 3);
+		} else {
+			this.shader.uniform('uRadianceMap', 'uniform1i', 3);
+			this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
+		}
+	}
+
+
+	render(textureRad, textureIrr, textureNoise, textureEnv) {
+		this.shader.bind();
+
+		this._textureTree.bind(1);
+		textureNoise.bind(2);
+
+		if(this.useFallback) {
+			textureEnv.bind(3);
+		} else {
+			textureRad.bind(3);
+			textureIrr.bind(4);	
+		}
 
 		this.shader.uniform("uClipY", "float", Params.clipY);
 		this.shader.uniform("uDir", "float", Params.clipDir);

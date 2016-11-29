@@ -181,7 +181,6 @@ function _initSound() {
 	]
 
 	let song = songs[Math.floor(Math.random() * songs.length)];
-	console.log('Song :', song);
 
 	SoundCloudBadge({
 		client_id: 'e8b7a335a5321247b38da4ccc07b07a2',

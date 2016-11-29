@@ -151,6 +151,10 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx = new alfrid.EaseNumber(rx);
 		this.orbitalControl.ry = new alfrid.EaseNumber(ry);
 		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+
+		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
+		this.orbitalControl.radius.limit(3, 30);
+		
 		this._hasTouchControl = true;
 	}
 
@@ -453,16 +457,13 @@ class SceneApp extends alfrid.Scene {
 
 
 
-		if(!GL.isMobile) {
-			GL.enableAdditiveBlending();
+		GL.enableAdditiveBlending();
+		GL.disable(GL.DEPTH_TEST);
 
-			GL.disable(GL.DEPTH_TEST);
-
-			this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
-			this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
-			GL.enableAlphaBlending();
-			GL.enable(GL.DEPTH_TEST);
-		}
+		this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+		GL.enableAlphaBlending();
+		GL.enable(GL.DEPTH_TEST);
 
 		this._subParticles.render();
 

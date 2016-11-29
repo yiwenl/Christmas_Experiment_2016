@@ -23,6 +23,8 @@ class ViewTrunk extends alfrid.View {
 		const _fs = ShaderUtils.addUniforms(useFallback ? fsFallback : fs, oUniforms);
 
 		super(vs, _fs);
+		this.useFallback = useFallback;
+		this.setupUniforms();
 	}
 
 
@@ -36,25 +38,15 @@ class ViewTrunk extends alfrid.View {
 		this._textureAO = new alfrid.GLTexture(getAsset('ao'));
 	}
 
-
-	render(textureRad, textureIrr, textureEnv) {
+	setupUniforms() {
 		this.shader.bind();
-
 		this.shader.uniform("textureAO", "uniform1i", 1);
-		this._textureAO.bind(1);
-
-		// this.shader.uniform("textureNoise", "uniform1i", 2);
-		// textureNoise.bind(2);
 
 		if(this.useFallback) {
 			this.shader.uniform("textureEnv", "uniform1i", 3);
-			textureEnv.bind(3);
 		} else {
 			this.shader.uniform('uRadianceMap', 'uniform1i', 3);
-			textureRad.bind(3);
-
 			this.shader.uniform('uIrradianceMap', 'uniform1i', 4);
-			textureIrr.bind(4);	
 		}
 
 		this.shader.uniform('uExposure', 'float', Params.exposure);
@@ -67,6 +59,20 @@ class ViewTrunk extends alfrid.View {
 		this.shader.uniform("uScale", "vec3", this.scale);
 
 		ShaderUtils.bindUniforms(this.shader, oUniforms);
+	}
+
+
+	render(textureRad, textureIrr, textureEnv) {
+		this.shader.bind();
+
+		this._textureAO.bind(1);
+
+		if(this.useFallback) {
+			textureEnv.bind(3);
+		} else {
+			textureRad.bind(3);
+			textureIrr.bind(4);	
+		}
 
 		this.shader.uniform("uClipY", "float", Params.clipY);
 		this.shader.uniform("uDir", "float", Params.clipDir);

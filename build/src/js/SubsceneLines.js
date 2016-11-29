@@ -49,30 +49,30 @@ class SubsceneLines {
 		// this._viewDear = new ViewDear();
 		this.animals = [];
 
-		// let shapes = [
-		// 	ViewBoar,
-		// 	ViewBat,
-		// 	ViewFox,
-		// 	ViewBear,
-		// 	ViewDear,
-		// 	ViewWolf,
-		// 	ViewRabbit,
-		// 	ViewWeasel
-		// ];
-
 		let shapes = [
-			ViewWeasel,
 			ViewBoar,
-			ViewRabbit,
-			ViewWolf,
-			ViewDear,
-			ViewBear,
-			ViewFox,
 			ViewBat,
+			ViewFox,
+			ViewBear,
+			ViewDear,
+			ViewWolf,
+			ViewRabbit,
+			ViewWeasel
 		];
 
+		// let shapes = [
+		// 	ViewWeasel,
+		// 	ViewBoar,
+		// 	ViewRabbit,
+		// 	ViewWolf,
+		// 	ViewDear,
+		// 	ViewBear,
+		// 	ViewFox,
+		// 	ViewBat,
+		// ];
+
 		let data = [
-			{ pos:[0,0,0], rx: -10 * Math.PI/180, ry: 0},
+			{ pos:[0,0,0], rx: 0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
@@ -85,25 +85,14 @@ class SubsceneLines {
 		]
 
 
-		let eyes = [
-			[[0,0,0], [0,0,0]],
-
-			[0.25564561210530967, 2.5, 7.689787053823033]
-
-
-			[[0.4371179766905522, 0.08633617174277397, -0.0013592794941699182], [0.4371179766905522, 0.08633617174277397, -0.0890547307311147]],
-			[0.28450194001197815, 2.6161389350891113, 7.575733184814453]
-			// [[0.4371179766905522 0.08633617174277397 -0.0013592794941699182], [0.4371179766905522 0.08633617174277397 -0.0890547307311147],
-		]
-
-
-		for (var i = 0; i < CameraStops.length + 1; i++) {
+		for (var i = 0; i < CameraStops.length; i++) {
 			// CameraStops[i]
 
 
 			let view = new shapes[i % shapes.length];
 
-			if(i === CameraStops.length){
+			if(false){
+			// if(i === CameraStops.length){
 				let dataStop = CameraStops[0];
 				let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
 				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)

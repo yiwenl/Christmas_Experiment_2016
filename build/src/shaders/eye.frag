@@ -3,6 +3,9 @@
 #define SHADER_NAME SIMPLE_TEXTURE
 
 precision highp float;
+
+uniform float uOpacity;
+
 varying vec2 vTextureCoord;
 varying vec3 vNormal;
 
@@ -15,4 +18,5 @@ void main(void) {
 
 
     gl_FragColor = vec4(vec3(d), 1.0);
+    gl_FragColor *= uOpacity;
 }

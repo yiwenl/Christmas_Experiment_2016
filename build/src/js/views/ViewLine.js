@@ -314,6 +314,14 @@ class ViewLine extends alfrid.View {
 		this.callback = callback;
 		this.willDraw = false;
 
+		if(this.app._vEyeLeft.opacity > 0){
+			this.app._vEyeLeft.hide()
+		}
+
+		if(this.app._vEyeRight.opacity > 0){
+			this.app._vEyeRight.hide()
+		}
+
 		// Easings.instance.to(this, 4, {
 		// 	delay: 2,
 		// 	alpha: Math.random() * .6 + .2,
@@ -348,7 +356,7 @@ class ViewLine extends alfrid.View {
 		var secondPoint = this.line.vert[this.line.vert.length-2];
 		this.path = []
 
-		var pathLine = this.animal.getPointsWithPos(this.posToDraw)
+		var pathLine = this.animal.finalP;
 
 		// let pathLine = this.animal.finalP;
 		for (var i = 0; i < pathLine.length; i++) {
@@ -484,23 +492,26 @@ class ViewLine extends alfrid.View {
 
 		let eyes = this.animal.shape.positionedEyes
 
-		console.log("eyes[0]", eyes);
 		if(eyes[0]){
 			this.app._vEyeLeft._finalPosition[0] = eyes[0][0];
 			this.app._vEyeLeft._finalPosition[1] = -eyes[0][1];
 			this.app._vEyeLeft._finalPosition[2] = -eyes[0][2];
+			this.app._vEyeLeft.prepare(true);
 		}
 		else {
 			this.app._vEyeLeft.hide()
+			this.app._vEyeLeft.prepare(false);
 		}
 
 		if(eyes[1]){
 			this.app._vEyeRight._finalPosition[0] = eyes[1][0];
 			this.app._vEyeRight._finalPosition[1] = -eyes[1][1];
 			this.app._vEyeRight._finalPosition[2] = -eyes[1][2];
+			this.app._vEyeRight.prepare(true);
 		}
 		else {
 			this.app._vEyeRight.hide()
+			this.app._vEyeRight.prepare(false);
 		}
 		// var ptsAnimal = this.animal.getPointsWithPos(this.posToDraw)
 

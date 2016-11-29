@@ -254,8 +254,7 @@ class SceneApp extends alfrid.Scene {
 				this.isFinished = true;
 				// this._finish();
 			}
-			else {
-			}
+
 			this._gotoStop(next);
 		}
 		else {
@@ -324,13 +323,19 @@ class SceneApp extends alfrid.Scene {
 		className = `stop-${this._stop}`;
 		document.body.classList.add(className);
 
-		if(i === 8) {
-			console.debug('Finishing');
+		alfrid.Scheduler.delay(()=> {
+				this._vEyeLeft.show();
+				this._vEyeRight.show();
+		}, null, (TweenSpeed + rotSpeed/2) * 1000 * 1000);
 
-			alfrid.Scheduler.delay(()=> {
-				this.finishFinalShape();
-			}, null, 1000);
-		}
+
+		// if(i === 8) {
+		// 	console.debug('Finishing');
+		//
+		// 	alfrid.Scheduler.delay(()=> {
+		// 		this.finishFinalShape();
+		// 	}, null, 1000);
+		// }
 	}
 
 

@@ -71,7 +71,7 @@ class SceneApp extends alfrid.Scene {
 			console.log(this.eyeX, this.eyeY, this.eyeZ);
 		}
 
-		const range = 5;
+		// const range = 5;
 		// gui.add(this, 'eyeX', -range, range).onChange(trace);
 		// gui.add(this, 'eyeY', -range, range).onChange(trace);
 		// gui.add(this, 'eyeZ', -range, range).onChange(trace);

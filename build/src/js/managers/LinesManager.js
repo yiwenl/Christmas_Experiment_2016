@@ -69,10 +69,8 @@ class LinesManager {
 
   moveTo(pt, animal, isFinished, firstTime){
 
-
-    console.log("---0", animal);
+    let drawingLine = null;
     let duration = firstTime ? 8 : 3;
-    // console.log(duration);
     // ignore that
     this.isFinished = isFinished;
     let freeLines = [];
@@ -92,7 +90,6 @@ class LinesManager {
       idx = Math.floor(Math.random() * freeLines.length);
       indexToDraw = freeLines[idx];
       this.splice(freeLines, idx); // commented that to focus on the movement, not the drawing
-      console.log("---1", indexToDraw);
     }
 
     let indexPair1 = null; // some special behaviours for two lines
@@ -112,7 +109,6 @@ class LinesManager {
     this.objectsToTween = [];
     let index = 0;
 
-    console.log("---2", this.lines.length);
     for (var i = 0; i < this.lines.length; i++) {
       let l = this.lines[i];
       if(!this.targetPoints[i]){
@@ -138,7 +134,7 @@ class LinesManager {
       l.firstTime = false;
       if(!this.isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         // duration = duration
-        console.log("---3");
+        drawingLine = l;
         l.willDraw = animal;
         l.posToDraw = pt;
 
@@ -168,7 +164,6 @@ class LinesManager {
         let indexL = i;
         let pt = this.targetPoints[indexL]
         l.undraw(()=>{
-          // console.log("here");
           let o = this._moveLineTo({
             line: l,
             pt: pt,
@@ -204,6 +199,8 @@ class LinesManager {
       }
 
     }
+
+    return drawingLine;
   }
 
   // this method has been created cause I needed one for the callback after undrawing
@@ -221,7 +218,6 @@ class LinesManager {
   }
 
   undraw(callback){
-    console.log("here");
     for (let i = 0; i < this.linesDrawing.length; i++) {
       let l = this.linesDrawing[i];
       l.undraw();
@@ -238,7 +234,6 @@ class LinesManager {
 
     let o = this.objectsToTween[index]
     if(!o.delete){
-      // console.log("move", index, line.willDraw);
       for (var k = 0; k < o.props.length; k++) {
         var e = o.props[k];
         o.obj[e.var] = o.ease(o.currentIteration, e.value, e.toValue - e.value, o.duration);
@@ -251,7 +246,6 @@ class LinesManager {
         o.delete = true;
 
         if(line.willDraw){
-          console.log("SHOULD DRAW HERE");
           line.transformTo(line.willDraw);
         }
         else {

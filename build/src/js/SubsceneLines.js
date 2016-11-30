@@ -112,8 +112,10 @@ class SubsceneLines {
 		this.delayedCalls.add(this._scene.stopLightSound.bind(this._scene), 5);
 		// newMusic.fade(newMusic.volume, this.fadeOutDuration);
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
+		let lineToFollow = this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
 		this._step++;
+
+		return lineToFollow.line.points;
 	}
 
 	pause(){

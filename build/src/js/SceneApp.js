@@ -327,6 +327,11 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_finish() {
+		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
+
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -335,10 +340,6 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
-		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
-
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-		this._subLines.goTo([0, -1, 0], true);
 		// this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -356,6 +357,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this._stop = i;
+		const dataStop = CameraStops[this._stop];
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+
+		let lineToFollow = this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
+
 		this._postEffectOffset.value = 0;
 		this.orbitalControl.lock(false);
 		this._vTitle.close();
@@ -372,12 +380,7 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
-		this._stop = i;
-		const dataStop = CameraStops[this._stop];
 
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-
-		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
 
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;

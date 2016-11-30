@@ -32,6 +32,7 @@ class SubsceneLines {
 	}
 
 	_initViews() {
+		this.firstTime = true;
 		// this.delayedCalls.clear();
 		// this._step = 0;
 		this.cameraPos = [0,0,0];
@@ -41,46 +42,6 @@ class SubsceneLines {
 
 		this.animals = [];
 
-		this.shapes = [
-			null,
-			ViewBoar,
-			ViewBat,
-			ViewFox,
-			ViewBear,
-			ViewDear,
-			ViewWolf,
-			ViewRabbit,
-			ViewWeasel
-		];
-
-
-		let data = [
-			null,
-			{ pos:[0,-.7,0], rx: 0, ry: 0},
-			{ pos:[0,2,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,.4,0], rx:0, ry: 0},
-			{ pos:[0,.5,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,.4,0], rx:0, ry: 0},
-			{ pos:[0,-.4,0], rx:0, ry: 0}
-		]
-
-
-		for (var i = 0; i < CameraStops.length; i++) {
-			// CameraStops[i]
-
-			if(this.shapes[i]){
-				let view = new this.shapes[i % this.shapes.length];
-
-				let dataStop = CameraStops[i];
-				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
-
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
-				this.animals.push(view);
-
-			}
-		}
 
 		this.linesManager = new LinesManager(this._scene);
 
@@ -94,18 +55,47 @@ class SubsceneLines {
 	}
 
 	updateAnimals(){
-		let data = [
+		this.shapes = [
 			null,
-			{ pos:[-4,-0.5,-.5], rx: 0, ry: 0},
-			{ pos:[0,2,0], rx:0, ry: 0},
-			{ pos:[3,.5,-3], rx:0, ry: -60 * Math.PI / 180},
-			// { pos:[3,.5,-3], rx:0, ry: 0},
-			{ pos:[0,.8,-5], rx:0, ry: -15 * Math.PI / 180},
-			{ pos:[0,1.2,-6], rx:0, ry: 14 * Math.PI / 180},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,1.4,5], rx:0, ry: 0},
-			{ pos:[7,-.4,0], rx:0, ry: 30 * Math.PI / 180}
-		]
+			ViewBoar,
+			ViewBat,
+			ViewFox,
+			ViewBear,
+			ViewDear,
+			ViewWolf,
+			ViewRabbit,
+			ViewWeasel
+		];
+
+		let data;
+		if(vrPresenting){
+			data = [
+				null,
+				{ pos:[-4,-0.5,-.5], rx: 0, ry: 0},
+				{ pos:[0,2,0], rx:0, ry: 0},
+				{ pos:[3,.5,-3], rx:0, ry: -60 * Math.PI / 180},
+				// { pos:[3,.5,-3], rx:0, ry: 0},
+				{ pos:[0,.8,-5], rx:0, ry: -15 * Math.PI / 180},
+				{ pos:[0,1.2,-6], rx:0, ry: 14 * Math.PI / 180},
+				{ pos:[0,0,0], rx:0, ry: 0},
+				{ pos:[0,1.4,5], rx:0, ry: 0},
+				{ pos:[7,-.4,0], rx:0, ry: 30 * Math.PI / 180}
+			]
+		}
+		else {
+			data = [
+				null,
+				{ pos:[0,-.7,0], rx: 0, ry: 0},
+				{ pos:[0,2,0], rx:0, ry: 0},
+				{ pos:[0,0,0], rx:0, ry: 0},
+				{ pos:[0,.4,0], rx:0, ry: 0},
+				{ pos:[0,.5,0], rx:0, ry: 0},
+				{ pos:[0,0,0], rx:0, ry: 0},
+				{ pos:[0,.4,0], rx:0, ry: 0},
+				{ pos:[0,-.4,0], rx:0, ry: 0}
+			]
+		}
+
 
 		this.animals = [];
 		for (var i = 0; i < CameraStops.length; i++) {
@@ -117,7 +107,12 @@ class SubsceneLines {
 				let dataStop = CameraStops[i];
 				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
 
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
+				let debug = false;
+				if(i === 1){
+					debug = true;
+				}
+
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry, debug)
 				this.animals.push(view);
 
 			}
@@ -132,6 +127,10 @@ class SubsceneLines {
 	}
 
 	goTo(pt, isFinished, firstTime){
+		if(this.firstTime){
+			this.updateAnimals();
+			this.firstTime = false;
+		}
 		this._scene.fadeInLightVolume();
 
 		this.delayedCalls.clear();

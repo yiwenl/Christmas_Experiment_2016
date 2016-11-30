@@ -52,7 +52,7 @@ class ViewAnimal extends alfrid.View {
     this.line = new Line(this.finalP);
 	}
 
-	updatePos(pos, rx = 0, ry = 0){
+	updatePos(pos, rx = 0, ry = 0, debug){
 		this.pos = pos;
 		this.shape.rotateY(ry);
 

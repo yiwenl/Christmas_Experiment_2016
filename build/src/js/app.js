@@ -105,7 +105,7 @@ function _onVR(vrDisplay) {
 				console.log('Scene :', scene, 'present VR now ');
 				window.vrPresenting = true;
 				scene.resize();
-				scene.setVR();
+				// scene.setVR();
 			});
 		});
 	} else {

@@ -219,9 +219,9 @@ class ViewLine extends alfrid.View {
 				speed = .6;
 			}
 			for (var i = 1; i < line.points.length; i++) {
-				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
-				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
-				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
+				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * speed * this.mainSpeed * (vrPresenting ? .5 : 1);
+				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * speed * this.mainSpeed * (vrPresenting ? .5 : 1);
+				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * speed * this.mainSpeed * (vrPresenting ? .5 : 1);
 			}
 
 			var pts = this.getPoints(line.points);
@@ -658,7 +658,8 @@ class ViewLine extends alfrid.View {
 	render() {
 		this._tick+= .1 * (vrPresenting ? .25 : 1);
 
-		let canUpdate = (this.tickRender++ % (vrPresenting ? 4 :  2) == 0);
+		let canUpdate = (this.tickRender++ % 2 == 0);
+		// let canUpdate = (this.tickRender++ % (vrPresenting ? 2 :  2) == 0);
 
 		if(canUpdate){
 			if(this.easings.tweens.length){
@@ -710,7 +711,7 @@ class ViewLine extends alfrid.View {
 							this.line.vert[o.point][2] = this.path[indexFloor][2];
 						}
 
-						o.currentIteration += 1;// do something here
+						o.currentIteration += vrPresenting ? .25 : 1;// do something here
 						if(o.currentIteration > o.duration){
 							o.delete = true;
 						}

@@ -74,16 +74,14 @@ class SubsceneLines {
 
 		let data = [
 			null,
-			{ pos:[0,0,0], rx: 0, ry: 0},
+			{ pos:[0,-.7,0], rx: 0, ry: 0},
+			{ pos:[0,2,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,.4,0], rx:0, ry: 0},
+			{ pos:[0,.5,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
-			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,.4,0], rx:0, ry: 0},
+			{ pos:[0,-.4,0], rx:0, ry: 0}
 		]
 
 

@@ -314,14 +314,6 @@ class ViewLine extends alfrid.View {
 		this.callback = callback;
 		this.willDraw = false;
 
-		if(this.app._vEyeLeft.opacity > 0){
-			this.app._vEyeLeft.hide()
-		}
-
-		if(this.app._vEyeRight.opacity > 0){
-			this.app._vEyeRight.hide()
-		}
-
 		// Easings.instance.to(this, 4, {
 		// 	delay: 2,
 		// 	alpha: Math.random() * .6 + .2,
@@ -346,7 +338,23 @@ class ViewLine extends alfrid.View {
 				this.wander();
 			}
 
+			if(this.app._vEyeLeft.isVisible){
+				this.app._vEyeLeft.hide(true)
+			}
+
+			if(this.app._vEyeRight.isVisible){
+				this.app._vEyeRight.hide(true)
+			}
+
 			return;
+		}
+
+		if(this.app._vEyeLeft.isVisible){
+			this.app._vEyeLeft.hide()
+		}
+
+		if(this.app._vEyeRight.isVisible){
+			this.app._vEyeRight.hide()
 		}
 
 		this.state = STATES.leaving;

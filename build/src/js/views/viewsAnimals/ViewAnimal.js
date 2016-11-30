@@ -52,6 +52,18 @@ class ViewAnimal extends alfrid.View {
     this.line = new Line(this.finalP);
 	}
 
+	updatePos(pos, rx = 0, ry = 0){
+		this.pos = pos;
+		this.shape.rotateY(ry);
+
+		// this.points = []
+    // this.spline = new Spline([]);
+		// this.tick = 0;
+    this.finalP = this.getPoints(this.shape.getPoints());
+    // this.line = new Line(this.finalP);
+
+	}
+
   getPointsWithPos(pt){
 		var array = [];
 		let index= 0;

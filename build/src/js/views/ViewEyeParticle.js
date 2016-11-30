@@ -140,6 +140,7 @@ class ViewEyeParticle extends alfrid.View {
 		this.shader.bind();
 		// this.shader.uniform("float", "uOpacity", 1);
 		this.shader.uniform("uOpacity", "float", this.opacity);
+		this.shader.uniform("uScale", "float", 1);
 		// this.shader.uniform("float", "uOpacity", this.opacity.value);
 		// this.shader.uniform("uPosition", "vec3", [0,-2,0]);
 		this.shader.uniform("uPosition", "vec3", this._finalPosition);

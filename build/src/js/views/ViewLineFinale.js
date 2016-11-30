@@ -89,6 +89,7 @@ class ViewLineFinale extends alfrid.View {
 		this.easings.killTweensOf(this);
 		this.animated = 1;
 		this.deltaTime = 0;
+		this.stopRendering = false;
 	}
 
 	resetOptions(data){
@@ -107,7 +108,10 @@ class ViewLineFinale extends alfrid.View {
 	fadeOut(){
 		this.easings.to(this, 2, {
 			alpha: 0,
-			ease: this.easings.easeInSine
+			ease: this.easings.easeInSine,
+			onComplete: ()=> {
+				this.stopRendering = true;
+			}
 		})
 	}
 
@@ -170,7 +174,7 @@ class ViewLineFinale extends alfrid.View {
 
 	render() {
 
-		if(!this.isReady) return;
+		if(!this.isReady || this.stopRendering) return;
 		// this.easings.update();
 
 		// console.log(this.isPaused);

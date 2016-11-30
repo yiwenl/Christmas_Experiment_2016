@@ -314,14 +314,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
-		console.debug('Restart');
 		UIUtils.clearAllstops();
+		this.reset()
 
 		alfrid.Scheduler.delay(()=>{
 			UIUtils.clearAllstops();
 			this._gotoStop(1);
 		}, null, 300);
-		this.reset()
 	}
 
 	_finish() {

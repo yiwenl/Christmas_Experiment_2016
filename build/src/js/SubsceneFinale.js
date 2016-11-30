@@ -240,7 +240,7 @@ class SubsceneFinale {
 				this._scene.pressAndHold(1);
 			}
 			else {
-				this._scene.pressAndHold(Math.min(this.tickSpace/800, 1);
+				this._scene.pressAndHold(Math.min(this.tickSpace/800, 1));
 			}
 			this.viewOwl.render();
 

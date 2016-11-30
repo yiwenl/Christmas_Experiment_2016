@@ -165,6 +165,7 @@ function _init3D() {
 	_initControls();
 }
 
+let indexPress;
 
 function _initControls() {
 	const btnStart = document.body.querySelector('.button-start');
@@ -182,7 +183,36 @@ function _initControls() {
 	btnRestart.addEventListener('click', ()=> {
 		scene.restart();
 	});
+
+	const btnPress = document.body.querySelector('.button-press');
+	btnPress.addEventListener('mousedown', onPressDown);
+	btnPress.addEventListener('mouseup', onPressUp);
 }
+
+
+function onPressDown() {
+	console.log('pressDown');
+	indexPress = alfrid.Scheduler.addEF(onPressing);
+}
+
+
+function onPressing() {
+	console.log('pressing');
+	scene._spacePressed = true;
+	if(scene._hasFormFinalShape) {
+		onPressUp();
+	}
+}
+
+
+function onPressUp() {
+	console.log('pressUp');
+	alfrid.Scheduler.removeEF(indexPress);
+	scene._spacePressed = false;	
+	indexPress = -1;
+}
+
+
 
 function _initSound() {
 	const songs = [

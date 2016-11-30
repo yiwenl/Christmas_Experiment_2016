@@ -51,9 +51,16 @@ button {
 	left: 0;
 	width: 100%;
 	height: 100%;
+	opacity: 1;
+	transition: opacity .5s ease-out;
 
 	.hasVR & {
 		display: none;
+	}
+
+	.in-transition & {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 }
 
@@ -221,7 +228,6 @@ button {
 			margin-top:6px;
 		}
 	}
-
 
 }
 

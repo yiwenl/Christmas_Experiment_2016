@@ -16,6 +16,8 @@ void main(void) {
 	float d = min(distance(center, vTextureCoord), .5) / .5;
 	d = 1.0 - d;
 
+	d = pow(d, 2.25);
+
 
     gl_FragColor = vec4(vec3(d), 1.0);
     gl_FragColor *= uOpacity;

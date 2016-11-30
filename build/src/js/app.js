@@ -139,13 +139,13 @@ function _init3D() {
 	}
 
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
+	// window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();
 
 	//	STATS
-	if(!GL.isMobile) {
+	if(!GL.isMobile && 0) {
 		const stats = new Stats();
 		document.body.appendChild(stats.domElement);
 		alfrid.Scheduler.addEF(()=>stats.update());

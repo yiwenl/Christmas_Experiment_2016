@@ -51,17 +51,20 @@ button {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	opacity: 1;
 	transition: opacity .5s ease-out;
+	pointer-events: none;
 
 	.hasVR & {
 		display: none;
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.in-transition & {
 		opacity: 0.5;
 		pointer-events: none;
 	}
+
 }
 
 
@@ -344,7 +347,15 @@ button {
 	background: transparent;
 	border: 0;
 	font-size: 12px;
+	opacity: 0;
+	transition: opacity .5s ease-out .35s;
 	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
+	
+
+	.opened & {
+		opacity: 1;
+		pointer-events: auto;
+	}
 }
 
 .button-linbert {
@@ -354,9 +365,18 @@ button {
 	z-index: 9999;
 	bottom:60px;
 	right:67.5px;
+	opacity: 0;
+	transition: opacity .5s ease-out .25s;
 
 	background: url(../../dist/assets/img/linbert.png);
 	background-size: 100% 100%;
+	pointer-events: none;
+	
+
+	.opened & {
+		opacity: 1;
+		pointer-events: auto;
+	}
 }
 
 

@@ -155,6 +155,7 @@ class SceneApp extends alfrid.Scene {
 		alfrid.Scheduler.delay(()=> {
 			this._hasOpened = true;
 			UIUtils.setStop('stop-0');
+			document.body.classList.add('opened');
 		}, null, 4500);
 
 		this._hasVRNextPressed = false;

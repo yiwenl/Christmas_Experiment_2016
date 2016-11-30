@@ -71,10 +71,7 @@ class ViewOwl extends alfrid.View {
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
-			if(Easings.instance.tweens.length){
-				Easings.instance.update();
-			}
-			this.update();
+				this.update();
 		}
 
 		this.shader.bind();

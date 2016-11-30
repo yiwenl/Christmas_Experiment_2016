@@ -40,7 +40,7 @@ class ViewLineFinale extends alfrid.View {
 
 		this.mainSpeed = .6;
 
-
+		this.easings = new Easings();
 	}
 
 
@@ -103,30 +103,30 @@ class ViewLineFinale extends alfrid.View {
 	appear(delay=0){
 		this.deltaTime = 0;
 
-		Easings.instance.to(this, 4, {
+		this.easings.to(this, 4, {
 			alpha: 1,
-			// ease: Easings.instance.easeInOutCirc,
+			// ease: this.easings.easeInOutCirc,
 			delay: delay
 		});
 
-		// Easings.instance.to(this, 4, {
+		// this.easings.to(this, 4, {
 		// 	delay: delay,
 		// 	deltaTime: this.data.deltaTime,
-		// 	ease: Easings.instance.easeInOutCirc
+		// 	ease: this.easings.easeInOutCirc
 		// })
 	}
 
 	hide(delay = 0){
-		Easings.instance.to(this, 4, {
+		this.easings.to(this, 4, {
 			delay: delay,
-			ease: Easings.instance.easeOutSine,
+			ease: this.easings.easeOutSine,
 			alpha: 0
 		});
 
-		// Easings.instance.to(this, 4, {
+		// this.easings.to(this, 4, {
 		// 	delay: delay,
 		// 	deltaTime: -this.data.deltaTime,
-		// 	ease: Easings.instance.easeOutCirc
+		// 	ease: this.easings.easeOutCirc
 		// })
 	}
 
@@ -163,8 +163,8 @@ class ViewLineFinale extends alfrid.View {
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
-			if(Easings.instance.tweens.length){
-				Easings.instance.update();
+			if(this.easings.tweens.length){
+				this.easings.update();
 			}
 			if(!this.isPaused){
 				// this.update();

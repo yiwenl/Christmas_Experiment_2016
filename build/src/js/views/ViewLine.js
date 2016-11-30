@@ -37,6 +37,7 @@ class ViewLine extends alfrid.View {
 
 		this.mainSpeed = .6;
 
+		this.easings = new Easings();
 
 	}
 
@@ -178,7 +179,7 @@ class ViewLine extends alfrid.View {
 					var endIndex =  (this.path.length - 1) - i;
 
 					var obj = { startIndex: startIndex, endIndex: endIndex, currentIndex: startIndex}
-					var o = Easings.instance.returnVariable(obj, (this.firstTime ? 4 : 1 + .1), { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
+					var o = this.easings.returnVariable(obj, (this.firstTime ? 4 : 1 + .1), { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
 					o.point = startIndex;
 					this.objectsToTween[index++] = o;
 				}
@@ -248,7 +249,7 @@ class ViewLine extends alfrid.View {
 					// var endIndex =  this.animal.finalP - i
 
 					var obj = { startIndex: startIndex, endIndex: endIndex, currentIndex: startIndex}
-					var o = Easings.instance.returnVariable(obj, 2, { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
+					var o = this.easings.returnVariable(obj, 2, { currentIndex: endIndex }); // fake tween, just to get the info we want for the tween
 
 					o.point = startIndex;
 					this.objectsToTween[index++] = o;
@@ -314,16 +315,11 @@ class ViewLine extends alfrid.View {
 		this.callback = callback;
 		this.willDraw = false;
 
-		// Easings.instance.to(this, 4, {
+		// this.easings.to(this, 4, {
 		// 	delay: 2,
 		// 	alpha: Math.random() * .6 + .2,
-		// 	ease: Easings.instance.easeInCubic
+		// 	ease: this.easings.easeInCubic
 		// });
-
-		Easings.instance.to(this, .5, {
-			thickness: this.defaultThickness,
-			ease: Easings.instance.easeOutCubic
-		});
 
 		if(Math.random() > .4){
 		// if(false){
@@ -338,24 +334,28 @@ class ViewLine extends alfrid.View {
 				this.wander();
 			}
 
-			if(this.app._vEyeLeft.isVisible){
+			// if(this.app._vEyeLeft.isVisible){
 				this.app._vEyeLeft.hide(true)
-			}
+			// }
 
-			if(this.app._vEyeRight.isVisible){
+			// if(this.app._vEyeRight.isVisible){
 				this.app._vEyeRight.hide(true)
-			}
+			// }
+				this.easings.to(this, .3, {
+					thickness: this.defaultThickness,
+					ease: this.easings.easeOutCubic
+				});
 
 			return;
 		}
 
-		if(this.app._vEyeLeft.isVisible){
+		// if(this.app._vEyeLeft.isVisible){
 			this.app._vEyeLeft.hide()
-		}
+		// }
 
-		if(this.app._vEyeRight.isVisible){
+		// if(this.app._vEyeRight.isVisible){
 			this.app._vEyeRight.hide()
-		}
+		// }
 
 		this.state = STATES.leaving;
 		this.motion = this.motions[this.state][Math.floor(Math.random() * this.motions[this.state].length)];
@@ -472,14 +472,14 @@ class ViewLine extends alfrid.View {
 	}
 
 	transformTo(animal){
-		Easings.instance.to(this, 4, {
-			alpha: .9,
-			ease: Easings.instance.easeOutCubic
+		this.easings.to(this, 4, {
+			alpha: 1,
+			ease: this.easings.easeOutCubic
 		});
 
-		Easings.instance.to(this, .5, {
-			thickness: .5,
-			ease: Easings.instance.easeOutCubic
+		this.easings.to(this, .5, {
+			thickness: (GL.isMobile? .8 : .6),
+			ease: this.easings.easeOutCubic
 		});
 
 		this.willDraw = null;
@@ -645,8 +645,8 @@ class ViewLine extends alfrid.View {
 		let canUpdate = (this.tickRender++ % 2 == 0);
 
 		if(canUpdate){
-			if(Easings.instance.tweens.length){
-				Easings.instance.update();
+			if(this.easings.tweens.length){
+				this.easings.update();
 			}
 			this.update();
 		}
@@ -712,6 +712,11 @@ class ViewLine extends alfrid.View {
 					for (var i = 0; i < this.line.points.length; i++) {
 						this.points[this.points.length - 1- i] = this.line.vert[i*this.sub];
 					}
+
+					this.easings.to(this, .4, {
+						thickness: this.defaultThickness,
+						ease: this.easings.easeOutCubic
+					});
 
 					this._cutExtraPoints(this.isMobile? 12:20);
 

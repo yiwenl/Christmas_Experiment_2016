@@ -1,6 +1,7 @@
 // ViewEyeParticle.js
 
 import alfrid, { GL } from 'alfrid';
+import Easings from '../libs/Easings';
 import vs from '../../shaders/eye.vert';
 import fs from '../../shaders/eye.frag';
 
@@ -14,10 +15,13 @@ class ViewEyeParticle extends alfrid.View {
 
 		this.tick = Math.random() * Math.PI * 2;
 		this.delay = 0;
+
+		this.easings = new Easings();
 	}
 
 
 	_init() {
+		this.isVisible = false;
 		const size = .1;
 		this.mesh = alfrid.Geom.plane(size, size, 1);
 	}
@@ -31,70 +35,99 @@ class ViewEyeParticle extends alfrid.View {
 	slowMode() {
 		this.isSlowMode = true;
 	}
-
+	//
 	normalMode() {
 		this.isSlowMode = false;
 	}
 
 	show() {
 		if(!this.shouldAppear) return;
+		this.isVisible = false;
 
-		this.delay = 0;
-		this.appearing = true;
-		this.hidding = false; // should already set automatically to false but better be sure
+		this.easings.killTweensOf(this)
+		// this.easings.to(this, 10, {
+		this.easings.to(this, (this.isSlowMode ? 6:4), {
+			opacity: 1,
+			ease: this.easings.easeOutSine,
+			onComplete: ()=> {
+				console.log("here");
+				this.tick = 0;
+				this.isVisible = true;
+				this.isSlowMode = false;
+			}
+		});
+
+		// this.delay = 0;
+		// this.appearing = true;
+		// this.hidding = false; // should already set automatically to false but better be sure
 		// this.opacity.value = 1;
 	}
 
 
 	hide(force) {
 		this.normalMode();
-		this.delay = 0;
-		this.appearing = false; // should already set automatically to false but better be sure
+		// this.delay = 0;
+		// this.appearing = false; // should already set automatically to false but better be sure
 
-		if(force){
-			this.hidding = false;
+		// if(force){
+		// 	// this.hidding = false;
+		// 	this.isVisible = false;
+		// 	this.opacity = 0;
+		// }
+		// else {
+
+		// console.log("HIDE");
 			this.isVisible = false;
-			this.opacity = 0;
-		}
-		else {
-			this.hidding = true;
-		}
+
+			this.easings.killTweensOf(this)
+			this.easings.to(this, (force ? .2: 1), {
+				opacity: 0,
+				ease: this.easings.easeOutCirc,
+				onComplete: ()=> {
+				}
+			});
+			// this.hidding = true;
+		// }
 		// this.opacity.value = 0;
 	}
 
 
 	render(pos, pointTarget) {
+		this.easings.update();
 		// if(this.isSlowMode){
 		// 	this.tick+=.8;
 		// }
 		// else {
-			this.tick++;
+			this.tick+= 1/40;
 		// }
 
-		if(this.appearing){
-			this.opacity = Math.sin(Math.tan(this.tick/10) * Math.pow(Math.sin(this.tick/20), 10));
-			this.delay++;
-			// console.log(this.delay);
-			if(this.delay > (this.isSlowMode ? 240 : 120)){
-				// console.log("HERE");
-				this.appearing = false;
-				this.isVisible = true;
-				this.opacity = 1;
-			}
+		// if(this.appearing){
+		// 	this.opacity = Math.sin(Math.tan(this.tick/10) * Math.pow(Math.sin(this.tick/20), 10));
+		// 	this.delay++;
+		// 	// console.log(this.delay);
+		// 	if(this.delay > (this.isSlowMode ? 240 : 120)){
+		// 		// console.log("HERE");
+		// 		this.appearing = false;
+		// 		this.isVisible = true;
+		// 		this.opacity = 1;
+		// 	}
+		//
+		// }
+		// else if(this.hidding) {
+		// 	this.opacity = Math.sin(Math.tan(this.tick/20) * Math.pow(Math.sin(this.tick/20), 10));
+		// 	this.delay++;
+		// 	if(this.delay > 60){
+		// 		this.hidding = false;
+		// 		this.isVisible = false;
+		// 		this.opacity = 0;
+		// 	}
+		// }
+		if(this.isVisible) {
+			console.log("COS");
+			this.opacity = Math.cos(this.tick) * .2 + .8;
+		}
 
-		}
-		else if(this.hidding) {
-			this.opacity = Math.sin(Math.tan(this.tick/20) * Math.pow(Math.sin(this.tick/20), 10));
-			this.delay++;
-			if(this.delay > 60){
-				this.hidding = false;
-				this.isVisible = false;
-				this.opacity = 0;
-			}
-		}
-		else if(this.isVisible) {
-			this.opacity = Math.sin(this.tick/40) * .2 + .8;
-		}
+		// console.log(this.opacity);
 
 		// vec3.add(this._finalPosition, pos, pointTarget);
 		// this.opacity = 1;

@@ -179,13 +179,13 @@ class SubsceneFinale {
 
 
 				if(this.tickSpace <= 1000){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 1000);
-					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 1000);
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
+					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
 
 					// console.log(this.tickSpace);
-					if(this.tickSpace <= 1000){
+					if(this.tickSpace <= 800){
 						// console.log("changealpha");
-						this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 1000);
+						this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 800);
 					}
 				}
 				else {
@@ -212,9 +212,9 @@ class SubsceneFinale {
 					this.tickSpace = 0;
 				}
 
-				if(this.tickSpace <= 1000){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 1000);
-					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 1000);
+				if(this.tickSpace <= 800){
+					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
+					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
 
 					// if(this.tickSpace <= 100){
 						// this.alpha = this.easeInCirc(this.tickSpace, 0, 1, 100);
@@ -235,6 +235,13 @@ class SubsceneFinale {
 		}
 
 		if(this.isReady){
+
+			if(this.didFinalDrawing){
+				this._scene.pressAndHold(1);
+			}
+			else {
+				this._scene.pressAndHold(Math.min(this.tickSpace/800, 1);
+			}
 			this.viewOwl.render();
 
 			for (var i = 0; i < this.lines.length; i++) {

@@ -104,6 +104,7 @@ function _onVR(vrDisplay) {
 			VIVEUtils.present(GL.canvas, ()=> {
 				console.log('Scene :', scene, 'present VR now ');
 				window.vrPresenting = true;
+				document.body.classList.add('present-vr')
 				scene.resize();
 			});
 		});

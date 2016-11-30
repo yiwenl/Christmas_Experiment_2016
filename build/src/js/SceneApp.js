@@ -301,6 +301,9 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	pressAndHold(percentage, finished) {
+		if(this._stop !== CameraStops.length -1) {
+			return;
+		}
 		// percentage from 0 to 1
 		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 
@@ -310,9 +313,11 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
+		console.debug('Restart');
 		UIUtils.clearAllstops();
 
 		alfrid.Scheduler.delay(()=>{
+			UIUtils.clearAllstops();
 			this._gotoStop(1);
 		}, null, 300);
 	}
@@ -353,6 +358,7 @@ class SceneApp extends alfrid.Scene {
 
 	finishFinalShape() {
 		if(this._hasFormFinalShape) return;
+		console.log('Finish final shape');
 		this._hasFormFinalShape = true;
 		UIUtils.setStop('complete');
 	}

@@ -192,13 +192,11 @@ function _initControls() {
 
 
 function onPressDown() {
-	console.log('pressDown');
 	indexPress = alfrid.Scheduler.addEF(onPressing);
 }
 
 
 function onPressing() {
-	console.log('pressing');
 	scene._spacePressed = true;
 	if(scene._hasFormFinalShape) {
 		onPressUp();
@@ -207,7 +205,6 @@ function onPressing() {
 
 
 function onPressUp() {
-	console.log('pressUp');
 	alfrid.Scheduler.removeEF(indexPress);
 	scene._spacePressed = false;	
 	indexPress = -1;

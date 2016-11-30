@@ -141,6 +141,8 @@ class SceneApp extends alfrid.Scene {
 
 		
 		this._vTitle.setPosition(this._pointTarget);
+		this._pressBar = document.body.querySelector('.bar');
+		console.debug('Press bar:', this._pressBar);
 
 		this._hasOpened = false;
 		alfrid.Scheduler.delay(()=> {
@@ -287,6 +289,7 @@ class SceneApp extends alfrid.Scene {
 	pressAndHold(percentage) {
 		// percentage from 0 to 1
 		console.log("percentage :",percentage);
+		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 	}
 
 	_finish() {

@@ -123,7 +123,6 @@ class ViewEyeParticle extends alfrid.View {
 		// 	}
 		// }
 		if(this.isVisible) {
-			console.log("COS");
 			this.opacity = Math.cos(this.tick) * .2 + .8;
 		}
 

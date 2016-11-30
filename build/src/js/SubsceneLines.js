@@ -30,7 +30,7 @@ class SubsceneLines {
 	}
 
 	_initViews() {
-		this._step = 1;
+		this._step = 0;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
 		// this.lightSound = Sono.createSound({
@@ -50,6 +50,7 @@ class SubsceneLines {
 		this.animals = [];
 
 		let shapes = [
+			null,
 			ViewBoar,
 			ViewBat,
 			ViewFox,
@@ -72,6 +73,7 @@ class SubsceneLines {
 		// ];
 
 		let data = [
+			null,
 			{ pos:[0,0,0], rx: 0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
 			{ pos:[0,0,0], rx:0, ry: 0},
@@ -85,25 +87,27 @@ class SubsceneLines {
 		]
 
 
+		console.log(CameraStops.length);
 		for (var i = 0; i < CameraStops.length; i++) {
 			// CameraStops[i]
 
+			if(shapes[i]){
+				let view = new shapes[i % shapes.length];
 
-			let view = new shapes[i % shapes.length];
+				if(false){
+					// if(i === CameraStops.length){
+					let dataStop = CameraStops[0];
+					let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
+					view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)
+					this.animals.push(view);
+				}
+				else {
+					let dataStop = CameraStops[i];
+					let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
 
-			if(false){
-			// if(i === CameraStops.length){
-				let dataStop = CameraStops[0];
-				let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)
-				this.animals.push(view);
-			}
-			else {
-				let dataStop = CameraStops[i];
-				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
-
-				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
-				this.animals.push(view);
+					view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
+					this.animals.push(view);
+				}
 			}
 		}
 		// }

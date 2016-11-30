@@ -36,7 +36,7 @@ class Line extends alfrid.Mesh {
     this.vert = vertices || vert;
 
 
-    this.line();
+    this.line(true);
 
   }
 
@@ -110,6 +110,7 @@ class Line extends alfrid.Mesh {
 
   process(needsUpdate){
 
+    // console.log("here");
     var l = this.positions.length / 6;
 
     var v, index = 0, indexN = 0;
@@ -273,7 +274,7 @@ class Line extends alfrid.Mesh {
 
   render(points, needsUpdate = false){
 
-    this.vert = points;
+    this.vert = points || this.vert;
 
     this.line(needsUpdate);
   }

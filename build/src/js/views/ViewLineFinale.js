@@ -86,6 +86,7 @@ class ViewLineFinale extends alfrid.View {
 	}
 
 	reset(data){
+		this.animated = 1;
 		this.deltaTime = 0;
 		this.isReady = true;
 		this.data = data;
@@ -93,6 +94,10 @@ class ViewLineFinale extends alfrid.View {
 			return p * data.division });
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
+	}
+
+	finishDraw(){
+		this.animated = 0;
 	}
 
 	appear(delay=0){
@@ -167,9 +172,10 @@ class ViewLineFinale extends alfrid.View {
 		}
 
 		this.shader.bind();
-		this.shader.uniform("texture", "uniform1i", 0);
-		this.texture.bind(0);
+		// this.shader.uniform("texture", "uniform1i", 0);
+		// this.texture.bind(0);
 
+		this.shader.uniform("animated", "int", this.animated);
 		this.shader.uniform("uTime", "float", this._tick);
 		this.shader.uniform("ratio", "float", this.ratio);
 		this.shader.uniform("alpha", "float", this.alpha);

@@ -12,7 +12,7 @@ class ViewEyeParticle extends alfrid.View {
 		this.opacity = 0;
 		this._finalPosition = vec3.create();
 
-		this.tick = 0;
+		this.tick = Math.random() * Math.PI * 2;
 		this.delay = 0;
 	}
 
@@ -28,6 +28,14 @@ class ViewEyeParticle extends alfrid.View {
 		this.shouldAppear = visible;
 	}
 
+	slowMode() {
+		this.isSlowMode = true;
+	}
+
+	normalMode() {
+		this.isSlowMode = false;
+	}
+
 	show() {
 		if(!this.shouldAppear) return;
 
@@ -39,6 +47,7 @@ class ViewEyeParticle extends alfrid.View {
 
 
 	hide() {
+		this.normalMode();
 		this.delay = 0;
 		this.appearing = false; // should already set automatically to false but better be sure
 		this.hidding = true;
@@ -47,12 +56,19 @@ class ViewEyeParticle extends alfrid.View {
 
 
 	render(pos, pointTarget) {
-		this.tick++;
+		// if(this.isSlowMode){
+		// 	this.tick+=.8;
+		// }
+		// else {
+			this.tick++;
+		// }
 
 		if(this.appearing){
 			this.opacity = Math.sin(Math.tan(this.tick/10) * Math.pow(Math.sin(this.tick/20), 10));
 			this.delay++;
-			if(this.delay > 120){
+			console.log(this.delay);
+			if(this.delay > (this.isSlowMode ? 240 : 120)){
+				console.log("HERE");
 				this.appearing = false;
 				this.opacity = 1;
 			}
@@ -65,6 +81,9 @@ class ViewEyeParticle extends alfrid.View {
 				this.hidding = false;
 				this.opacity = 0;
 			}
+		}
+		else {
+			this.opacity = Math.abs(Math.sin(this.tick/40)) * .2 + .8;
 		}
 
 		// vec3.add(this._finalPosition, pos, pointTarget);

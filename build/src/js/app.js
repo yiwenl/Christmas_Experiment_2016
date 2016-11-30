@@ -117,6 +117,7 @@ function _onVR(vrDisplay) {
 	// document.body.classList.add('hasVR');
 	// hasVR = true;
 	console.debug('Has VR ? ', hasVR, Params);
+
 	_init3D();
 	_initSound();
 

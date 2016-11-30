@@ -37,14 +37,6 @@ class ViewTerrain extends alfrid.View {
 
 		this._textureHeight = new GLTexture(getAsset('height'));
 		this._textureNormal = new GLTexture(getAsset('normal'));
-
-		// gui.add(oUniforms, 'roughness', 0, 1);
-		// gui.add(oUniforms, 'specular', 0, 1);
-		// gui.add(oUniforms, 'metallic', 0, 1);
-		// gui.add(oUniforms, 'maxHeight', 0, 5);
-
-		
-
 	}
 
 	setupUniforms() {

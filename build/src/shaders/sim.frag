@@ -10,6 +10,12 @@ uniform sampler2D textureExtra;
 uniform float time;
 uniform float maxRadius;
 
+uniform vec3 gamepad0;
+uniform vec3 gamepad1;
+
+uniform float gamepad0Force;
+uniform float gamepad1Force;
+
 
 #define PI 3.141592657
 
@@ -138,6 +144,23 @@ void main(void) {
 		vel.xz -= normalize(pos.xz) * f;
 	}
 
+
+	const float minPadRadius = 2.0;
+	const float pullinForce = 0.03;
+	vec3 dir;
+	dist = distance(pos, gamepad0);
+	if(dist < minPadRadius) {
+		dir = normalize(gamepad0 - pos);
+		float f = 1.0 - dist / minPadRadius;
+		vel += dir * pullinForce * f * gamepad0Force;
+	}
+
+	dist = distance(pos, gamepad1);
+	if(dist < minPadRadius) {
+		dir = normalize(gamepad1 - pos);
+		float f = 1.0 - dist / minPadRadius;
+		vel += dir * pullinForce * f * gamepad1Force;
+	}
 
 	const float minY = 1.5;
 	if(pos.y < minY) {

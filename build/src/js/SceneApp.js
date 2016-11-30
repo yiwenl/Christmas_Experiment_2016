@@ -312,7 +312,14 @@ class SceneApp extends alfrid.Scene {
 
 	_finish() {
 
-		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.458826170582594,"ry":.085};
+		let dataStop;
+
+		if(vrPresenting){
+			dataStop = {"x":0.,"z":-.15,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":4.6121824555767954,"rx":0.458826170582594,"ry":.085};
+		}
+		else {
+			dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.458826170582594,"ry":.085};
+		}
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
@@ -424,7 +431,34 @@ class SceneApp extends alfrid.Scene {
 			}
 
 			if(!this._hasVRNextPressed && isMainButtonPressed) {
-				this.nextStop();
+				// this.nextStop();
+				// if(this._hasFormFinalShape) {
+				// 	console.debug(' RESTART ');
+				// 	this.restart();
+				// }
+				// else {
+					this.nextStop()
+				// }
+			}
+
+			if(this._hasVRNextPressed && isMainButtonPressed) {
+				if(this._stop == CameraStops.length-1) {
+
+					if(this._hasFormFinalShape) {
+						console.debug(' RESTART ');
+						this.nextStop();
+					} else {
+						console.debug('Press and hold');
+						this._spacePressed = true;
+					}
+
+				}
+				// else {
+					// this.nextStop();
+				// }
+			}
+			else{
+				this._spacePressed = false
 			}
 
 			this._hasVRNextPressed = isMainButtonPressed;
@@ -598,6 +632,9 @@ class SceneApp extends alfrid.Scene {
 		this._fboReflection.unbind();
 	}
 
+	setVR(){
+		this._subLines.updateAnimals();
+	}
 
 	resize() {
 		renderVR = hasVR && vrPresenting;

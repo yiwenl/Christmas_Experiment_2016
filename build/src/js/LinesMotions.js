@@ -1,23 +1,23 @@
 const Motions = {
 
 	travel1: (options)=>{
-		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1;
-		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1;
-		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1;
+		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1 * (vrPresenting ? .25 : 1);
 	},
 
 	travel2: (options)=>{
-		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1;
-		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1;
-		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1;
+		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1 * (vrPresenting ? .25 : 1);
 		options.targetPoint[0] +=  Math.cos(options.time/10 + Math.PI /4) * .08
 		options.targetPoint[1] +=  Math.abs(Math.sin(options.time/10 + Math.PI /4) * .04)
 	},
 
 	travel3: (options)=>{
-		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1;
-		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1;
-		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1;
+		options.targetPoint[0] += (options.position[0] - options.targetPoint[0]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[1] += (options.position[1] - options.targetPoint[1]) * .1 * (vrPresenting ? .25 : 1);
+		options.targetPoint[2] += (options.position[2] - options.targetPoint[2]) * .1 * (vrPresenting ? .25 : 1);
 		options.targetPoint[1] += 	Math.sin(options.time/10) * .1
 	},
 
@@ -28,7 +28,7 @@ const Motions = {
 
 		let tickLeaving = Math.sin(options.time/10) * 10
 		let tickLeaving2 = Math.cos(options.time/10) * 10
-		options.targetPoint[0] -= tickLeaving * .1
+		options.targetPoint[0] -= tickLeaving * .1 * (vrPresenting ? .25 : 1)
 	},
 
 	travelPair1:(options)=>{
@@ -38,7 +38,7 @@ const Motions = {
 
 		let tickLeaving = Math.sin(options.time/10) * 10
 		let tickLeaving2 = Math.sin(options.time/20) * 10
-		options.targetPoint[0] += tickLeaving * .1
+		options.targetPoint[0] += tickLeaving * .1 * (vrPresenting ? .25 : 1)
 	},
 
 	basic: (options)=>{
@@ -50,8 +50,8 @@ const Motions = {
 		options.targetPoint[0] = options.position[0] + Math.cos(options.time/20 + options.startAngle) * options.radius;
 		options.targetPoint[2] = options.position[2] + Math.sin(options.time/20 + options.startAngle) * options.radius;
 
-		options.xoff += .01;
-		options.yoff += .01;
+		options.xoff += .01 * (vrPresenting ? .25 : 1);
+		options.yoff += .01 * (vrPresenting ? .25 : 1);
 
 		var p = options.perlin.perlin2(options.xoff, options.yoff)
 		options.targetPoint[1] += p/20;

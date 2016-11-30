@@ -203,9 +203,9 @@ class ViewLine extends alfrid.View {
 
 			var pt0 = line.points[0];
 
-	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed;
-	    pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4 * this.mainSpeed;
-	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed;
+	    pt0[0] += (this.targetPoint[0] - pt0[0]) * 0.4 * this.mainSpeed * (vrPresenting ? .25 : 1);
+	    pt0[2] += (this.targetPoint[2] - pt0[2]) * 0.4 * this.mainSpeed * (vrPresenting ? .25 : 1);
+	    pt0[1] += (this.targetPoint[1] - pt0[1]) * 0.2 * this.mainSpeed * (vrPresenting ? .25 : 1);
 
 			let speed;
 
@@ -219,9 +219,9 @@ class ViewLine extends alfrid.View {
 				speed = .6;
 			}
 			for (var i = 1; i < line.points.length; i++) {
-				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * speed * this.mainSpeed;
-				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * speed * this.mainSpeed;
-				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * speed * this.mainSpeed;
+				line.points[i][0] += (line.points[i-1][0] - line.points[i][0]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
+				line.points[i][1] += (line.points[i-1][1] - line.points[i][1]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
+				line.points[i][2] += (line.points[i-1][2] - line.points[i][2]) * speed * this.mainSpeed * (vrPresenting ? .25 : 1);
 			}
 
 			var pts = this.getPoints(line.points);
@@ -656,9 +656,9 @@ class ViewLine extends alfrid.View {
 	}
 
 	render() {
-		this._tick+= .1 * (window.hasVR ? .66 : 1);
+		this._tick+= .1 * (vrPresenting ? .25 : 1);
 
-		let canUpdate = (this.tickRender++ % 2 == 0);
+		let canUpdate = (this.tickRender++ % (vrPresenting ? 4 :  2) == 0);
 
 		if(canUpdate){
 			if(this.easings.tweens.length){
@@ -710,7 +710,7 @@ class ViewLine extends alfrid.View {
 							this.line.vert[o.point][2] = this.path[indexFloor][2];
 						}
 
-						o.currentIteration += 1 * (window.hasVR ? .66 : 1);// do something here
+						o.currentIteration += 1;// do something here
 						if(o.currentIteration > o.duration){
 							o.delete = true;
 						}

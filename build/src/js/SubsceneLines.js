@@ -41,7 +41,7 @@ class SubsceneLines {
 
 		this.animals = [];
 
-		let shapes = [
+		this.shapes = [
 			null,
 			ViewBoar,
 			ViewBat,
@@ -52,6 +52,7 @@ class SubsceneLines {
 			ViewRabbit,
 			ViewWeasel
 		];
+
 
 		let data = [
 			null,
@@ -65,26 +66,19 @@ class SubsceneLines {
 			{ pos:[0,-.4,0], rx:0, ry: 0}
 		]
 
+
 		for (var i = 0; i < CameraStops.length; i++) {
 			// CameraStops[i]
 
-			if(shapes[i]){
-				let view = new shapes[i % shapes.length];
+			if(this.shapes[i]){
+				let view = new this.shapes[i % this.shapes.length];
 
-				if(false){
-					// if(i === CameraStops.length){
-					let dataStop = CameraStops[0];
-					let _pT = [dataStop.tx * Params.terrainSize/2 + data[0].pos[0], dataStop.ty + data[0].pos[1], dataStop.tz * Params.terrainSize/2 + data[0].pos[2]];
-					view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[0].rx + data[0].rx, CameraStops[0].ry + data[0].ry)
-					this.animals.push(view);
-				}
-				else {
-					let dataStop = CameraStops[i];
-					let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
+				let dataStop = CameraStops[i];
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
 
-					view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
-					this.animals.push(view);
-				}
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
+				this.animals.push(view);
+
 			}
 		}
 
@@ -95,6 +89,39 @@ class SubsceneLines {
 		}
 
 		this.reset();
+
+		// this.updateAnimals()
+	}
+
+	updateAnimals(){
+		let data = [
+			null,
+			{ pos:[-4,-0.5,-.5], rx: 0, ry: 0},
+			{ pos:[0,2,0], rx:0, ry: 0},
+			{ pos:[3,.5,-3], rx:0, ry: -60 * Math.PI / 180},
+			// { pos:[3,.5,-3], rx:0, ry: 0},
+			{ pos:[0,.8,-5], rx:0, ry: -15 * Math.PI / 180},
+			{ pos:[0,1.2,-6], rx:0, ry: 14 * Math.PI / 180},
+			{ pos:[0,0,0], rx:0, ry: 0},
+			{ pos:[0,1.4,5], rx:0, ry: 0},
+			{ pos:[7,-.4,0], rx:0, ry: 30 * Math.PI / 180}
+		]
+
+		this.animals = [];
+		for (var i = 0; i < CameraStops.length; i++) {
+			// CameraStops[i]
+
+			if(this.shapes[i]){
+				let view = new this.shapes[i % this.shapes.length];
+
+				let dataStop = CameraStops[i];
+				let _pT = [dataStop.tx * Params.terrainSize/2 + data[i].pos[0], dataStop.ty + data[i].pos[1], dataStop.tz * Params.terrainSize/2 + data[i].pos[2]];
+
+				view.reset([_pT[0], -_pT[1], -_pT[2]], CameraStops[i].rx + data[i].rx, CameraStops[i].ry + data[i].ry)
+				this.animals.push(view);
+
+			}
+		}
 	}
 
 	reset(){
@@ -117,7 +144,7 @@ class SubsceneLines {
 
 		if(lineToFollow){
 
-			return lineToFollow.line.points;
+			return lineToFollow;
 		}
 		else {
 			return false

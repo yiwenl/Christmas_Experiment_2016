@@ -6,6 +6,8 @@ import ViewTerrain from './ViewTerrain';
 import ViewWater from './ViewWater';
 import ViewNothing from './views/ViewNothing';
 
+import Sono from 'sono';
+
 import ViewFilmGrain from './ViewFilmGrain';
 import ViewTrees from './ViewTrees';
 import ViewFarground from './ViewFarground';
@@ -139,7 +141,7 @@ class SceneApp extends alfrid.Scene {
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
 
-		
+
 		this._vTitle.setPosition(this._pointTarget);
 		this._pressBar = document.body.querySelector('.bar');
 		console.debug('Press bar:', this._pressBar);
@@ -233,6 +235,12 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
 
+		this.lightSound = Sono.createSound({
+        src: ["./assets/sounds/light.mp3"],
+        volume: 0,
+				loop: true
+    });
+
 	}
 
 	_getReflectionMatrix() {
@@ -286,7 +294,7 @@ class SceneApp extends alfrid.Scene {
 		}
 	}
 
-	pressAndHold(percentage) {
+	pressAndHold(percentage, finished) {
 		// percentage from 0 to 1
 		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 
@@ -373,6 +381,29 @@ class SceneApp extends alfrid.Scene {
 		// }
 	}
 
+	/* Music controller, would be better to have its own class... */
+	setLightVolume(volume){
+		console.log(volume);
+		this.lightSound.volume = volume;
+	}
+
+	fadeOutLightVolume(){
+		this.lightSound.fade(0, 4);
+	}
+
+	playLightSound(){
+		this.lightSound.play();
+	}
+
+	stopLightSound(){
+		this.lightSound.pause();
+	}
+
+	fadeInLightVolume(){
+		this.lightSound.play();
+		this.lightSound.volume = 0;
+		this.lightSound.fade(1, 1);
+	}
 
 	toRender() {
 		// console.log(this._postEffectOffset.value);

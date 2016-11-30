@@ -24,6 +24,7 @@ class SubsceneFinale {
 		// let owl = new Owl();
 
 		this.isReady = false;
+		this.playSound = false;
 		this.ratio = 0;
 		this.alpha = 0;
 		this.tickSpace = 0;
@@ -178,7 +179,7 @@ class SubsceneFinale {
 				this.tickSpace++;
 
 
-				if(this.tickSpace <= 1000){
+				if(this.tickSpace <= 800){
 					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
 					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
 
@@ -236,11 +237,21 @@ class SubsceneFinale {
 
 		if(this.isReady){
 
+			if(!this.playSound){
+				this.playSound = true;
+				this._scene.playLightSound()
+			}
+
+			if(this.tickSpace <= 200){
+				let vol = this.easeInSine(this.tickSpace, 0, 1, 200);
+				this._scene.setLightVolume(vol)
+			}
+
 			if(this.didFinalDrawing){
-				this._scene.pressAndHold(1);
+				this._scene.pressAndHold(1, true);
 			}
 			else {
-				this._scene.pressAndHold(Math.min(this.tickSpace/800, 1));
+				this._scene.pressAndHold(this.tickSpace/800, false);
 			}
 			this.viewOwl.render();
 

@@ -210,7 +210,7 @@ class ViewLine extends alfrid.View {
 			let speed;
 
 			if(this.state === STATES.wandering){
-				speed = .4;
+				speed = .3;
 			}
 			else if(this.state === STATES.finishing){
 				speed = .3;

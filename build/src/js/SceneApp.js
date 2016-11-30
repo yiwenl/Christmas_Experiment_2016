@@ -321,6 +321,7 @@ class SceneApp extends alfrid.Scene {
 			UIUtils.clearAllstops();
 			this._gotoStop(1);
 		}, null, 300);
+		this.reset()
 	}
 
 	_finish() {
@@ -644,7 +645,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	setVR(){
-		this._subLines.updateAnimals();
+		// this._subLines.updateAnimals();
 	}
 
 	resize() {

@@ -106,7 +106,7 @@ function _onVR(vrDisplay) {
 				window.vrPresenting = true;
 				document.body.classList.add('present-vr')
 				scene.resize();
-				scene.setVR();
+				// scene.setVR();
 			});
 		});
 	} else {

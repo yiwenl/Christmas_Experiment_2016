@@ -14,6 +14,8 @@ import ViewFarground from './ViewFarground';
 import ViewTrunk from './views/ViewTrunk';
 import ViewEyeParticle from './views/ViewEyeParticle';
 import ViewTitle from './views/ViewTitle';
+import ViewPressHold from './views/ViewPressHold';
+import ViewVignette from './views/ViewVignette';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -230,6 +232,8 @@ class SceneApp extends alfrid.Scene {
 		this._vEyeRight = new ViewEyeParticle();
 		this._vNothing = new ViewNothing();
 		this._vTitle = new ViewTitle();
+		this._vVignette = new ViewVignette();
+		this._vPress = new ViewPressHold();
 
 
 		//	Sub scenes
@@ -320,7 +324,6 @@ class SceneApp extends alfrid.Scene {
 	restart() {
 		this.reset()
 
-
 		alfrid.Scheduler.delay(()=>{
 			UIUtils.clearAllstops();
 			this._gotoStop(1);
@@ -340,6 +343,9 @@ class SceneApp extends alfrid.Scene {
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
+
+		console.debug('OPEN PRESS');
+		this._vPress.open();
 
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
@@ -364,9 +370,9 @@ class SceneApp extends alfrid.Scene {
 	finishFinalShape() {
 
 		if(this._hasFormFinalShape) return;
-		console.log('Finish final shape');
 		this._hasFormFinalShape = true;
 		UIUtils.setStop('complete');
+		this._vPress.close();
 	}
 
 	_gotoStop(i) {
@@ -523,6 +529,9 @@ class SceneApp extends alfrid.Scene {
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();
+			GL.disable(GL.DEPTH_TEST);
+			this._vVignette.render();
+			GL.enable(GL.DEPTH_TEST);
 		} else {
 
 			GL.enable(GL.SCISSOR_TEST);
@@ -637,6 +646,7 @@ class SceneApp extends alfrid.Scene {
 		this._subParticles.render();
 
 		this._vTitle.render();
+		this._vPress.render();
 		this._vNothing.render();
 
 	}

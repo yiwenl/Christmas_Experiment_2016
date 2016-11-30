@@ -8,7 +8,7 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
-// let TARGET_SERVER_IP = 'localhost';
+let TARGET_SERVER_IP = 'localhost';
 // let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
 // window.socket = socket;
 
@@ -29,6 +29,7 @@ const assets = [
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'starsmapMobile', url:'assets/img/starsmapMobile.jpg' },
 	{ id:'vignette', url:'assets/img/vignette.png' },
+	{ id:'presshold', url:'assets/img/presshold.png' },
 	{ id:'stroke', url:'assets/img/stroke3.png' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },

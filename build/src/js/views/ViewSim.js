@@ -35,12 +35,6 @@ class ViewSim extends alfrid.View {
 		for(let i=0; i<gamePads.length; i++) {
 			let force = gamePads[i].buttons[1].pressed ? 1 : 0;
 			let pos = [0, 0, 0];
-			if(i == 0) {
-				console.log(posOffset);
-				console.log(`gamepad${i}Force`, force, `gamepad${i}`, gamePads[i].position);	
-			}
-
-			// vec3.sub(pos, gamepad.position, );
 			vec3.sub(pos, gamePads[i].position, posOffset);
 			
 			this.shader.uniform(`gamepad${i}`, "vec3", pos);

@@ -98,10 +98,6 @@ class VIVEUtils {
 			const gamepad = gamepads[i]
 
 			if(gamepad && gamepad.pose) {
-				if(Math.random() > .999) {
-					console.log(i, 'pose', gamepad);	
-				}
-
 				if(!gamepad.pose.position) continue;
 				
 				const o = {

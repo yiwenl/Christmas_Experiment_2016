@@ -20,6 +20,7 @@ import PassFXAA from './effectComposer/passes/PassFXAA';
 import Params from './Params';
 import VIVEUtils from './VIVEUtils';
 import CameraVive from './CameraVive';
+import UIUtils from './utils/UIUtils';
 
 import SubsceneParticles from './SubsceneParticles';
 import SubsceneLines from './SubsceneLines';
@@ -33,6 +34,7 @@ import fsSoftLight from '../shaders/softlight.frag';
 const RAD = Math.PI / 180;
 const TweenSpeed = GL.isMobile ? 0.007 : 0.0035;
 const rotSpeed = GL.isMobile ? 0.004 : 0.002;
+let renderVR = false;
 
 const scissor = function(x, y, w, h) {
 	GL.scissor(x, y, w, h);
@@ -66,6 +68,9 @@ class SceneApp extends alfrid.Scene {
 		this._hasPostEffect = !GL.isMobile;
 		this._postEffectOffset = new alfrid.TweenNumber(1, 'expInOut', 0.01);
 
+		this._hasFormFinalShape = false;
+
+
 		const trace = () => {
 			console.log(this.eyeX, this.eyeY, this.eyeZ);
 		}
@@ -91,6 +96,7 @@ class SceneApp extends alfrid.Scene {
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._stop = 0;
 		this._hasTouchControl = true;
+		this._spacePressed = false;
 
 		this.resize();
 
@@ -145,8 +151,10 @@ class SceneApp extends alfrid.Scene {
 		this._hasOpened = false;
 		alfrid.Scheduler.delay(()=> {
 			this._hasOpened = true;
-			document.body.classList.add('stop-0');
+			UIUtils.setStop('stop-0');
 		}, null, 4500);
+
+		this._hasVRNextPressed = false;
 	}
 
 	_enableCameraTouchControl() {
@@ -197,6 +205,8 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initViews() {
+		this.isFinished = false;
+		this.finishAnimating = false;
 
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
@@ -230,34 +240,17 @@ class SceneApp extends alfrid.Scene {
 		this._composer.addPass(this._passFxaa);
 
 		this.lightSound = Sono.createSound({
-        src: ["./assets/sounds/light.mp3"],
-        volume: 0,
-				loop: true
-    });
+	        src: ["./assets/sounds/light.mp3"],
+	        volume: 0,
+					loop: true
+	    });
 
-		this.reset();
-
-	}
-
-	reset(){
-		this._hasFormFinalShape = false;
-		this._stop = 0;
-		this._hasTouchControl = true;
-		this._spacePressed = false;
-		this.isFinished = false;
-		this.finishAnimating = false;
-		this.lightSound.stop();
-
-		this._vEyeLeft.reset();
-		this._vEyeRight.reset();
-		this._subLines.reset();
-		this._subFinale.reset();
 	}
 
 	_getReflectionMatrix() {
-		const camera = hasVR ? this.cameraVive : this.camera;
+		const camera = renderVR ? this.cameraVive : this.camera;
 
-		const range = hasVR ? 0 : .15;
+		const range = renderVR ? 0 : .15;
 		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
 		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
 		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
@@ -290,7 +283,7 @@ class SceneApp extends alfrid.Scene {
 			if(next >= CameraStops.length - 1) {
 				// console.log("here");
 				// next = 1;
-
+				this._subFinale.isReady = true;
 				this.isFinished = true;
 				// this._finish();
 			}
@@ -298,11 +291,7 @@ class SceneApp extends alfrid.Scene {
 			this._gotoStop(next);
 		}
 		else {
-			this._subFinale.isReady = true;
-			let className = `stop-${this._stop}`;
-			document.body.classList.remove(className);
-
-			document.body.classList.add('stop-final');
+			UIUtils.setStop('stop-final');
 			this._finish()
 			this.finishAnimating = true;
 		}
@@ -318,22 +307,10 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
-		// reset variables
-		this.reset();
-
-
-
-
-		document.body.classList.remove('complete');
-		document.body.classList.remove('stop-final');
+		UIUtils.clearAllstops();
 	}
 
 	_finish() {
-		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
-
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
-
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -342,6 +319,10 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
+		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		this._subLines.goTo([0, -1, 0], true);
 		// this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -353,25 +334,13 @@ class SceneApp extends alfrid.Scene {
 	finishFinalShape() {
 		if(this._hasFormFinalShape) return;
 		this._hasFormFinalShape = true;
-		document.body.classList.remove('stop-8');
-		document.body.classList.remove('stop-final');
-		document.body.classList.add('complete');
+		UIUtils.setStop('complete');
 	}
 
 	_gotoStop(i) {
-		this._stop = i;
-		const dataStop = CameraStops[this._stop];
-
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-
-		let lineToFollow = this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
-
 		this._postEffectOffset.value = 0;
 		this.orbitalControl.lock(false);
 		this._vTitle.close();
-		let className = `stop-${this._stop}`;
-		document.body.classList.remove(className);
-		document.body.classList.remove('complete');
 		this._hasFormFinalShape = false;
 
 		this._hasTouchControl = false;
@@ -382,7 +351,12 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
+		this._stop = i;
+		const dataStop = CameraStops[this._stop];
 
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+
+		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
 
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -390,22 +364,15 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.rx.value = dataStop.rx;
 		this.orbitalControl.ry.value = dataStop.ry;
 
-		className = `stop-${this._stop}`;
-		document.body.classList.add(className);
+		let className = `stop-${this._stop}`;
+		UIUtils.setStop(className);
+
+
 
 		alfrid.Scheduler.delay(()=> {
-				this._vEyeLeft.show();
-				this._vEyeRight.show();
+			this._vEyeLeft.show();
+			this._vEyeRight.show();
 		}, null, (TweenSpeed + rotSpeed/2) * 1000 * 1000);
-
-
-		// if(i === 8) {
-		// 	console.debug('Finishing');
-		//
-		// 	alfrid.Scheduler.delay(()=> {
-		// 		this.finishFinalShape();
-		// 	}, null, 1000);
-		// }
 	}
 
 	/* Music controller, would be better to have its own class... */
@@ -432,15 +399,33 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	toRender() {
+		renderVR = hasVR && vrPresenting;
+
+		if(Math.random() > .99) {
+			console.log('Rendering in VR :', renderVR);	
+		}
+		
 		let _gamePads = [];
 		if(hasVR) {
 			_gamePads = VIVEUtils.gamePads;
+			let isMainButtonPressed = false;
+			for(let i=0; i<_gamePads.length; i++) {
+				let buttons = _gamePads[i].buttons;
+				if(buttons[0].pressed) {
+					isMainButtonPressed = true;
+					break;
+				}
+			}
+
+			if(!this._hasVRNextPressed && isMainButtonPressed) {
+				this.nextStop();
+			} 
+
+			this._hasVRNextPressed = isMainButtonPressed;
 		}
 
 		// console.log(this._postEffectOffset.value);
-		if(this._postEffectOffset.value <= 0.0001) {
-			this._hasPostEffect = false;
-		}
+		if(this._postEffectOffset.value <= 0.0001) {	this._hasPostEffect = false; }
 		//	update subscenes
 
 		if(this.timerBeforeNext > 0){
@@ -449,18 +434,17 @@ class SceneApp extends alfrid.Scene {
 
 		this._subParticles.update(_gamePads, this.positionOffset);
 		this._subLines.update();
-
-		// if(this.isFinished){
-			this._subFinale.update();
-		// }
-
-
+		this._subFinale.update();
 		Params.clipY = Params.seaLevel;
 
 		GL.clear(0, 0, 0, 0);
 
+		if(hasVR) {
+			//	VR enter frame
+			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
+		}
 
-		if(!hasVR) {
+		if(!renderVR) {
 			//	get reflection matrix
 			this._getReflectionMatrix();
 
@@ -480,7 +464,6 @@ class SceneApp extends alfrid.Scene {
 				this._bCopy.draw(this._composer.getTexture());
 			}
 
-
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();
@@ -488,9 +471,7 @@ class SceneApp extends alfrid.Scene {
 
 			GL.enable(GL.SCISSOR_TEST);
 			const w2 = GL.width/2;
-
-			//	VR enter frame
-			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
+			
 
 			//	get VR data
 			const frameData = VIVEUtils.getFrameData();
@@ -552,7 +533,7 @@ class SceneApp extends alfrid.Scene {
 		this._vFg.render();
 
 
-		if(withWater && !hasVR) {
+		if(withWater && !window.vrPresenting) {
 			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
@@ -601,8 +582,6 @@ class SceneApp extends alfrid.Scene {
 
 		this._vTitle.render();
 		this._vNothing.render();
-
-		
 	}
 
 
@@ -615,9 +594,10 @@ class SceneApp extends alfrid.Scene {
 
 
 	resize() {
-		const scale = hasVR ? 2 : 1;
+		renderVR = hasVR && vrPresenting;
+		const scale = renderVR ? 2 : 1;
 		GL.setSize(window.innerWidth*scale, window.innerHeight*scale);
-		if(!hasVR) {
+		if(!renderVR) {
 			this.camera.setAspectRatio(GL.aspectRatio);
 			this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		}
@@ -631,8 +611,8 @@ class SceneApp extends alfrid.Scene {
 
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
-		this._fboReflection 	= new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
-		this._fboRender 		= new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
+		this._fboReflection 	= new alfrid.FrameBuffer((renderVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
+		this._fboRender 		= new alfrid.FrameBuffer((renderVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
 	}
 }
 

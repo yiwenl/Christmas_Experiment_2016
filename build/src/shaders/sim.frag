@@ -146,7 +146,7 @@ void main(void) {
 
 
 	const float minPadRadius = 2.0;
-	const float pullinForce = 0.05;
+	const float pullinForce = 0.03;
 	vec3 dir;
 	dist = distance(pos, gamepad0);
 	if(dist < minPadRadius) {

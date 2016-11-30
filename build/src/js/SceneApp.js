@@ -640,7 +640,7 @@ class SceneApp extends alfrid.Scene {
 		this._subParticles.render();
 
 		this._vTitle.render();
-		this._vPress.render();
+		if(hasVR) this._vPress.render();
 		this._vNothing.render();
 
 	}

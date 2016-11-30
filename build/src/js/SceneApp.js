@@ -66,9 +66,6 @@ class SceneApp extends alfrid.Scene {
 		this._hasPostEffect = !GL.isMobile;
 		this._postEffectOffset = new alfrid.TweenNumber(1, 'expInOut', 0.01);
 
-		this._hasFormFinalShape = false;
-
-
 		const trace = () => {
 			console.log(this.eyeX, this.eyeY, this.eyeZ);
 		}
@@ -94,7 +91,6 @@ class SceneApp extends alfrid.Scene {
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._stop = 0;
 		this._hasTouchControl = true;
-		this._spacePressed = false;
 
 		this.resize();
 
@@ -201,8 +197,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initViews() {
-		this.isFinished = false;
-		this.finishAnimating = false;
 
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
@@ -241,6 +235,23 @@ class SceneApp extends alfrid.Scene {
 				loop: true
     });
 
+		this.reset();
+
+	}
+
+	reset(){
+		this._hasFormFinalShape = false;
+		this._stop = 0;
+		this._hasTouchControl = true;
+		this._spacePressed = false;
+		this.isFinished = false;
+		this.finishAnimating = false;
+		this.lightSound.stop();
+
+		this._vEyeLeft.reset();
+		this._vEyeRight.reset();
+		this._subLines.reset();
+		this._subFinale.reset();
 	}
 
 	_getReflectionMatrix() {
@@ -305,7 +316,12 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
-		console.log('Restart');
+		// reset variables
+		this.reset();
+
+
+
+
 		document.body.classList.remove('complete');
 		document.body.classList.remove('stop-final');
 	}

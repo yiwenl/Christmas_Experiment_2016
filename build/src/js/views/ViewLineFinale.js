@@ -85,10 +85,17 @@ class ViewLineFinale extends alfrid.View {
 
 	}
 
-	reset(data){
+	reset(){
+		this.animated = 1;
+		this.deltaTime = 0;
+	}
+
+	resetOptions(data){
 		this.animated = 1;
 		this.deltaTime = 0;
 		this.isReady = true;
+
+
 		this.data = data;
 		this.line = new Line(this.getPoints(data.points),(p)=>{
 			return p * data.division });

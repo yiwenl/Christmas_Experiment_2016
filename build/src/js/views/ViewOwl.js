@@ -22,15 +22,11 @@ class ViewOwl extends alfrid.View {
 		this.app = app;
 		this._tick = 0;
 
-
-
 	}
 
 
 	_init() {
 
-    this.ratio = 0;
-    this.alpha = 0;
 
     this.owl = new Owl();
     this.lines = [];
@@ -41,6 +37,13 @@ class ViewOwl extends alfrid.View {
       this.lines.push(l);
     }
 
+		this.reset()
+	}
+
+	reset(){
+
+		this.ratio = 0;
+		this.alpha = 0;
 	}
 
 

@@ -26,6 +26,13 @@ class ViewEyeParticle extends alfrid.View {
 		this.mesh = alfrid.Geom.plane(size, size, 1);
 	}
 
+	reset() {
+		this.opacity = 0;
+		this.shouldAppear = false;
+		this.isSlowMode = false;
+		this.isVisible = false;
+	}
+
 	// call prepare from the line drawing (where we get the eyes)
 	// we want to make them blink (or not) later when the camera arrives
 	prepare(visible = false) {
@@ -123,7 +130,7 @@ class ViewEyeParticle extends alfrid.View {
 		// 	}
 		// }
 		if(this.isVisible) {
-			this.opacity = Math.cos(this.tick) * .2 + .8;
+			this.opacity = Math.cos(this.tick) * .1 + .9;
 		}
 
 		// console.log(this.opacity);

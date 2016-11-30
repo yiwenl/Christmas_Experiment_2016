@@ -27,13 +27,13 @@ class ViewLine extends alfrid.View {
 	constructor(app) {
 		super(vs, fs);
 
-		this.alpha = 1;
+		// this.alpha = 1;
 
-		this.isPaused = false;
+		// this.isPaused = false;
 		this.app = app;
 		this._tick = 0;
-		this.tickLeaving = 0;
-		this.tickRender = 0;
+		// this.tickLeaving = 0;
+		// this.tickRender = 0;
 
 		this.mainSpeed = .6;
 
@@ -44,7 +44,7 @@ class ViewLine extends alfrid.View {
 
 	_init() {
 
-		this.delayBeforeNewMotion = Math.random() * 120 + 120;
+		// this.delayBeforeNewMotion = Math.random() * 120 + 120;
 		this.perlin = new Perlin.Noise(Math.random());
 		this.position = [0, 0, 0]
 		this.spline = new Spline([]);
@@ -65,13 +65,13 @@ class ViewLine extends alfrid.View {
 		this.line.points = this.points;
 
 		// properties for wandering animation
-		this.willDraw = false; // sorry, will change that, used to know if the line is supposed to draw after travelling
+		// this.willDraw = false; // sorry, will change that, used to know if the line is supposed to draw after travelling
 		// this.posToDraw = null; // sorry, will change that, used to know if the line is supposed to draw after travelling
 
 		this.tick = Math.random() * Math.PI*2 * 100;
 
 		this.speed = .5 + Math.random();
-		this.mainSpeed = .6;
+		// this.mainSpeed = .6;
 
 		this.targetPoint = [0,0,0];
 
@@ -86,7 +86,7 @@ class ViewLine extends alfrid.View {
 			yoff:  Math.random() * 100
 		}
 
-		this.motion = null;
+		// this.motion = null;
 
 		this.motions = {
 			0: [Motions.circle.bind(Motions), Motions.snake.bind(Motions)],
@@ -97,7 +97,21 @@ class ViewLine extends alfrid.View {
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
 
-		this.wander()
+		this.reset();
+
+	}
+
+	reset(){
+		this.alpha = 1;
+		this.isPaused = false;
+		this.tickLeaving = 0;
+		this.tickRender = 0;
+		this.delayBeforeNewMotion = Math.random() * 120 + 120;
+		this.willDraw = false;
+		this.mainSpeed = .6;
+		this.motion = null;
+
+		this.wander();
 
 	}
 
@@ -472,6 +486,8 @@ class ViewLine extends alfrid.View {
 	}
 
 	transformTo(animal){
+
+		console.log("!!!!!!!!!HERE");
 		this.easings.to(this, 4, {
 			alpha: 1,
 			ease: this.easings.easeOutCubic

@@ -57,7 +57,7 @@ class ViewEyeParticle extends alfrid.View {
 		this.scale = 1;
 		// this.easings.to(this, 10, {
 
-		this.easings.to(this, 6, {
+		this.easings.to(this, 4, {
 			scale: 2,
 			ease: this.easings.easeOutCirc,
 			onComplete: ()=>{
@@ -155,7 +155,7 @@ class ViewEyeParticle extends alfrid.View {
 		}
 
 		// console.log(this.opacity);
-		console.log(this.scale);
+		// console.log(this.scale);
 		// vec3.add(this._finalPosition, pos, pointTarget);
 		// this.opacity = 1;
 		this.shader.bind();

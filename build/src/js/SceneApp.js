@@ -30,6 +30,7 @@ import GetReflectionMatrix from './utils/GetReflectionMatrix';
 import CameraStops from './CameraStops';
 
 import fsSoftLight from '../shaders/softlight.frag';
+import DelayedCalls from './libs/DelayedCalls';
 
 const RAD = Math.PI / 180;
 const TweenSpeed = GL.isMobile ? 0.007 : 0.0035;
@@ -115,6 +116,8 @@ class SceneApp extends alfrid.Scene {
 		// btnNext.addEventListener('touchstart', (e)=> {
 		// 	this.nextStop();
 		// });
+
+		this.delayedCalls = new DelayedCalls();
 
 		window.addEventListener('keydown', (e)=> {
 			if(!this._hasOpened) {	return; }
@@ -272,6 +275,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	render() {
+		this.delayedCalls.update();
 		this.time += 0.01;
 		if(!window.hasVR) {
 			this.toRender();
@@ -324,7 +328,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_finish() {
-
+		this.delayedCalls.clear();
 		let dataStop;
 
 		if(vrPresenting){
@@ -358,6 +362,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	finishFinalShape() {
+
 		if(this._hasFormFinalShape) return;
 		console.log('Finish final shape');
 		this._hasFormFinalShape = true;
@@ -365,6 +370,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this.delayedCalls.clear();
 		this._postEffectOffset.value = 0;
 		this.orbitalControl.lock(false);
 		this._vTitle.close();
@@ -398,10 +404,10 @@ class SceneApp extends alfrid.Scene {
 		let className = `stop-${this._stop}`;
 		UIUtils.setStop(className);
 
-		alfrid.Scheduler.delay(()=> {
+		this.delayedCalls.add(()=>{
 			this._vEyeLeft.show();
 			this._vEyeRight.show();
-		}, null, (TweenSpeed + rotSpeed/2) * 1000 * 1000);
+		}, (TweenSpeed + rotSpeed/2) * 1000)
 	}
 
 	/* Music controller, would be better to have its own class... */
@@ -636,6 +642,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	reset(){
+		this.delayedCalls.clear();
 		this._hasFormFinalShape = false;
 	this._stop = 0;
 	this._hasTouchControl = true;

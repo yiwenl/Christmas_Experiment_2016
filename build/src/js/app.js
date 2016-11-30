@@ -198,12 +198,12 @@ function _onSound(err, src, json) {
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 1.0;
+	audio.volume = 0.2;
 
 	const btnSound = document.body.querySelector('.button-sound');
 	btnSound.addEventListener('click', ()=> {
 		soundOn = !soundOn;
 		btnSound.innerHTML = soundOn ? 'SOUND OFF' : 'SOUND ON';
-		audio.volume = soundOn ? 1 : 0;
+		audio.volume = soundOn ? 0.2 : 0;
 	});
 }

@@ -150,7 +150,7 @@ class ViewLine extends alfrid.View {
 
 		this.tick = Math.random() * Math.PI*2 * 100;
 		this.motionOptions.startAngle = Math.random() * Math.PI*2;
-		this.motionOptions.radius = 10;
+		this.motionOptions.radius = vrPresenting ? 30 : 10;
 
 		this.speed = .5 + Math.random() * 2;
 

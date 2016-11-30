@@ -307,8 +307,8 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
-		UIUtils.clearAllstops();
 		this.reset()
+		UIUtils.clearAllstops();
 	}
 
 	_finish() {
@@ -433,13 +433,13 @@ class SceneApp extends alfrid.Scene {
 
 			if(!this._hasVRNextPressed && isMainButtonPressed) {
 				// this.nextStop();
-				// if(this._hasFormFinalShape) {
-				// 	console.debug(' RESTART ');
-				// 	this.restart();
-				// }
-				// else {
+				if(this._hasFormFinalShape) {
+					console.debug(' RESTART ');
+					this.restart();
+				}
+				else {
 					this.nextStop()
-				// }
+				}
 			}
 
 			if(this._hasVRNextPressed && isMainButtonPressed) {
@@ -625,7 +625,21 @@ class SceneApp extends alfrid.Scene {
 		this._vNothing.render();
 	}
 
+	reset(){
+		this._hasFormFinalShape = false;
+	this._stop = 0;
+	this._hasTouchControl = true;
+	this._spacePressed = false;
+	this.isFinished = false;
+	this.finishAnimating = false;
+	this.lightSound.stop();
 
+	this._vEyeLeft.reset();
+	this._vEyeRight.reset();
+	this._subLines.reset();
+	this._subFinale.reset();
+
+	}
 	_renderReflection() {
 		this._fboReflection.bind();
 		GL.clear(0, 0, 0, 0);

@@ -498,7 +498,7 @@ class ViewLine extends alfrid.View {
 
 		// let eyes = this.animal.shape.getEyes();
 
-		let eyes = this.animal.shape.positionedEyes
+		let eyes = this.animal.shape.eyes
 
 		if(eyes[0]){
 			this.app._vEyeLeft._finalPosition[0] = eyes[0][0];

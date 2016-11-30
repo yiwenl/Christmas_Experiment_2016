@@ -68,11 +68,11 @@ class ViewOwl extends alfrid.View {
 	render() {
 		this._tick+= .1 * (window.hasVR ? .66 : 1);
 
-		let canUpdate = (this.tickRender++ % 2 == 0);
-
-		if(canUpdate){
-				this.update();
-		}
+		// let canUpdate = (this.tickRender++ % 2 == 0);
+		//
+		// if(canUpdate){
+		// 		this.update();
+		// }
 
 		this.shader.bind();
 

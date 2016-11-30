@@ -100,35 +100,35 @@ class ViewLineFinale extends alfrid.View {
 		this.animated = 0;
 	}
 
-	appear(delay=0){
-		this.deltaTime = 0;
-
-		this.easings.to(this, 4, {
-			alpha: 1,
-			// ease: this.easings.easeInOutCirc,
-			delay: delay
-		});
-
-		// this.easings.to(this, 4, {
-		// 	delay: delay,
-		// 	deltaTime: this.data.deltaTime,
-		// 	ease: this.easings.easeInOutCirc
-		// })
-	}
-
-	hide(delay = 0){
-		this.easings.to(this, 4, {
-			delay: delay,
-			ease: this.easings.easeOutSine,
-			alpha: 0
-		});
-
-		// this.easings.to(this, 4, {
-		// 	delay: delay,
-		// 	deltaTime: -this.data.deltaTime,
-		// 	ease: this.easings.easeOutCirc
-		// })
-	}
+	// appear(delay=0){
+	// 	this.deltaTime = 0;
+	//
+	// 	this.easings.to(this, 4, {
+	// 		alpha: 1,
+	// 		// ease: this.easings.easeInOutCirc,
+	// 		delay: delay
+	// 	});
+	//
+	// 	// this.easings.to(this, 4, {
+	// 	// 	delay: delay,
+	// 	// 	deltaTime: this.data.deltaTime,
+	// 	// 	ease: this.easings.easeInOutCirc
+	// 	// })
+	// }
+	//
+	// hide(delay = 0){
+	// 	this.easings.to(this, 4, {
+	// 		delay: delay,
+	// 		ease: this.easings.easeOutSine,
+	// 		alpha: 0
+	// 	});
+	//
+	// 	// this.easings.to(this, 4, {
+	// 	// 	delay: delay,
+	// 	// 	deltaTime: -this.data.deltaTime,
+	// 	// 	ease: this.easings.easeOutCirc
+	// 	// })
+	// }
 
   getPoints(pts){
 		this.spline.points = pts;
@@ -160,22 +160,22 @@ class ViewLineFinale extends alfrid.View {
 		// console.log(this.isPaused);
 		this._tick += this.data.deltaTime * (window.hasVR ? .66 : 1) * (this.hide? -1:1);
 		// this._tick += this.deltaTime * (window.hasVR ? .66 : 1);
-		let canUpdate = (this.tickRender++ % 2 == 0);
+		// let canUpdate = (this.tickRender++ % 2 == 0);
 
-		if(canUpdate){
-			if(this.easings.tweens.length){
-				this.easings.update();
-			}
-			if(!this.isPaused){
-				// this.update();
-			}
-		}
+		// if(canUpdate){
+		// 	// if(this.easings.tweens.length){
+		// 	// 	this.easings.update();
+		// 	// }
+		// 	if(!this.isPaused){
+		// 		// this.update();
+		// 	}
+		// }
 
 		this.shader.bind();
 		// this.shader.uniform("texture", "uniform1i", 0);
 		// this.texture.bind(0);
 
-		this.shader.uniform("animated", "int", this.animated);
+		// this.shader.uniform("animated", "int", this.animated);
 		this.shader.uniform("uTime", "float", this._tick);
 		this.shader.uniform("ratio", "float", this.ratio);
 		this.shader.uniform("alpha", "float", this.alpha);

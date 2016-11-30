@@ -277,7 +277,7 @@ class SceneApp extends alfrid.Scene {
 			if(next >= CameraStops.length - 1) {
 				// console.log("here");
 				// next = 1;
-				this._subFinale.isReady = true;
+
 				this.isFinished = true;
 				// this._finish();
 			}
@@ -285,6 +285,7 @@ class SceneApp extends alfrid.Scene {
 			this._gotoStop(next);
 		}
 		else {
+			this._subFinale.isReady = true;
 			let className = `stop-${this._stop}`;
 			document.body.classList.remove(className);
 
@@ -378,7 +379,7 @@ class SceneApp extends alfrid.Scene {
 
 	/* Music controller, would be better to have its own class... */
 	setLightVolume(volume){
-		console.log(volume);
+		// console.log(volume);
 		this.lightSound.volume = volume;
 	}
 

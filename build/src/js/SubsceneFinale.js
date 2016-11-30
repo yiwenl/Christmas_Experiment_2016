@@ -207,7 +207,7 @@ class SubsceneFinale {
 				}
 
 				if(this.alpha > 0.01){
-					this.alpha *= .98;
+					// this.alpha *= .98;
 				}
 				else {
 					this.tickSpace = 0;
@@ -216,7 +216,7 @@ class SubsceneFinale {
 				if(this.tickSpace <= 800){
 					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
 					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
-
+					this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 800);
 					// if(this.tickSpace <= 100){
 						// this.alpha = this.easeInCirc(this.tickSpace, 0, 1, 100);
 					// }
@@ -239,6 +239,7 @@ class SubsceneFinale {
 
 			if(this._scene.lightSound.paused){
 				// this.playSound = true;
+				console.log("here");
 				this._scene.playLightSound()
 			}
 

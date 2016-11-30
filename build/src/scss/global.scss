@@ -164,84 +164,6 @@ a {
 	}
 }
 
-.instruction {
-	position: absolute;
-	z-index: 99999;
-	color:white;
-	pointer-events:none;
-	width:100%;
-	bottom:50px;
-	text-align: center;
-	letter-spacing: 1px;
-
-	transition:opacity .5s ease-out;
-
-	opacity: 0;
-}
-
-
-.instruction-next {
-	opacity: 1;
-	transition:opacity .5s ease-out .5s;
-
-	.is-mobile & {
-		display: none;
-	}
-
-	.stop-8 &,
-	.complete & {
-		transition:opacity .5s ease-out;
-		opacity: 0;
-	}
-
-}
-
-.instruction-hold {
-	.stop-8 & {
-		transition:opacity .5s ease-out .5s;
-		opacity: 1;
-	}
-
-	.complete & {
-		transition:opacity .5s ease-out;
-		opacity: 0;	
-	}
-}
-
-
-.instruction-restart {
-	.complete & {
-		opacity: 1;
-	}
-}
-
-.instruction-next_mobile {
-	opacity: 1;
-	display: none;
-
-	.is-mobile & {
-		display: block;
-	}
-}
-
-
-.instructions {
-	pointer-events:none;
-	position: absolute;
-	z-index: 9999;
-	width: 100%;
-	height: 100%;
-
-	opacity: 0;
-
-
-	transition: opacity .5s ease-out;
-
-	.opened & {
-		opacity: 1;
-	}
-}
-
 .button {
 	background: transparent;
 	position: absolute;
@@ -308,6 +230,11 @@ a {
 		transition: opacity .5s ease-out 3.0s;
 		opacity: 1;
 		pointer-events:auto;
+	}
+
+
+	.is-mobile & {
+		bottom:15%;
 	}
 }
 

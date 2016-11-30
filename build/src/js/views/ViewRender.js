@@ -37,6 +37,13 @@ class ViewRender extends alfrid.View {
 		this.mesh = new alfrid.Mesh(GL.POINTS);
 		this.mesh.bufferVertex(positions);
 		this.mesh.bufferIndex(indices);
+
+		this.shader.bind();
+		this.shader.uniform('textureCurr', 'uniform1i', 0);
+		this.shader.uniform('textureNext', 'uniform1i', 1);
+		this.shader.uniform('textureExtra', 'uniform1i', 2);
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 	}
 
 
@@ -44,21 +51,14 @@ class ViewRender extends alfrid.View {
 		this.time += 0.1;
 		this.shader.bind();
 
-		this.shader.uniform('textureCurr', 'uniform1i', 0);
 		textureCurr.bind(0);
-
-		this.shader.uniform('textureNext', 'uniform1i', 1);
 		textureNext.bind(1);
-
-		this.shader.uniform('textureExtra', 'uniform1i', 2);
 		textureExtra.bind(2);
 
 		this.shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 		this.shader.uniform('percent', 'float', p);
 		this.shader.uniform('time', 'float', this.time);
-
-		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
-		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
+		
 		GL.draw(this.mesh);
 	}
 

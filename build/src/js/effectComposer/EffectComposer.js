@@ -32,7 +32,7 @@ class EffectComposer {
 	}
 
 
-	render(mSourceTexture) {
+	render(mSourceTexture, rect) {
 		let haveOwnFbo = false;
 		let fboTarget;
 		let source;
@@ -59,6 +59,9 @@ class EffectComposer {
 
 
 			fboTarget.bind();
+			if(rect) {
+				GL.viewport(rect.x, rect.y, rect.w, rect.h);
+			}
 			GL.clear(0, 0, 0, 0);
 			pass.render(source);
 			GL.draw(this._mesh);

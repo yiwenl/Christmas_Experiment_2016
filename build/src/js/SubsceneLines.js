@@ -74,7 +74,7 @@ class SubsceneLines {
 				{ pos:[-4,-0.5,-.5], rx: 0, ry: 0},
 				{ pos:[0,2,0], rx:0, ry: 0},
 				{ pos:[3,.5,-3], rx:0, ry: -60 * Math.PI / 180},
-				{ pos:[3,.5,-3], rx:0, ry: 0},
+				// { pos:[3,.5,-3], rx:0, ry: 0},
 				{ pos:[0,.8,-5], rx:0, ry: -15 * Math.PI / 180},
 				{ pos:[0,1.2,-6], rx:0, ry: 14 * Math.PI / 180},
 				{ pos:[0,0,0], rx:0, ry: 0},

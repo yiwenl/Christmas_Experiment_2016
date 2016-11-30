@@ -32,21 +32,13 @@ class SubsceneLines {
 	}
 
 	_initViews() {
-		// if(this.delayedCalls){
-			this.delayedCalls.clear();
-		// }
-		this._step = 0;
+		// this.delayedCalls.clear();
+		// this._step = 0;
 		this.cameraPos = [0,0,0];
-		this._tick = 0;
-
-		// setTimeout(()=>{
-			// this.pause()
-		// }, 2000)
+		// this._tick = 0;
 
 		this.controller = new Controller(this);
 
-		// just a dear
-		// this._viewDear = new ViewDear();
 		this.animals = [];
 
 		let shapes = [
@@ -61,17 +53,6 @@ class SubsceneLines {
 			ViewWeasel
 		];
 
-		// let shapes = [
-		// 	ViewWeasel,
-		// 	ViewBoar,
-		// 	ViewRabbit,
-		// 	ViewWolf,
-		// 	ViewDear,
-		// 	ViewBear,
-		// 	ViewFox,
-		// 	ViewBat,
-		// ];
-
 		let data = [
 			null,
 			{ pos:[0,-.7,0], rx: 0, ry: 0},
@@ -84,8 +65,6 @@ class SubsceneLines {
 			{ pos:[0,-.4,0], rx:0, ry: 0}
 		]
 
-
-		console.log(CameraStops.length);
 		for (var i = 0; i < CameraStops.length; i++) {
 			// CameraStops[i]
 
@@ -108,8 +87,6 @@ class SubsceneLines {
 				}
 			}
 		}
-		// }
-
 
 		this.linesManager = new LinesManager(this._scene);
 
@@ -117,9 +94,14 @@ class SubsceneLines {
 			this.linesManager.addLine();
 		}
 
-		// this._vLine = new ViewLine(this);
-		// this._vLine.alpha = .3 + Math.random() * .5
+		this.reset();
+	}
 
+	reset(){
+		this.delayedCalls.clear();
+		this._step = 0;
+		this._tick = 0;
+		this.linesManager.reset();
 	}
 
 	goTo(pt, isFinished, firstTime){
@@ -130,8 +112,10 @@ class SubsceneLines {
 		this.delayedCalls.add(this._scene.stopLightSound.bind(this._scene), 5);
 		// newMusic.fade(newMusic.volume, this.fadeOutDuration);
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
+		let lineToFollow = this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
 		this._step++;
+
+		return lineToFollow.line.points;
 	}
 
 	pause(){
@@ -163,12 +147,6 @@ class SubsceneLines {
 
 		this.linesManager.update(pos);
 
-		let d = this.linesManager.dist;
-
-		if(d < 10) d= 10;
-		if(d > 100) d= 100;
-		let volume = this.map(d, 10, 100, 1, 0)
-		this.volume = volume;
 		// this.volume = 0;
 
 		// for (var i = 0; i < this.animals.length; i++) {

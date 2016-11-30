@@ -22,15 +22,11 @@ class ViewOwl extends alfrid.View {
 		this.app = app;
 		this._tick = 0;
 
-
-
 	}
 
 
 	_init() {
 
-    this.ratio = 0;
-    this.alpha = 0;
 
     this.owl = new Owl();
     this.lines = [];
@@ -41,6 +37,13 @@ class ViewOwl extends alfrid.View {
       this.lines.push(l);
     }
 
+		this.reset()
+	}
+
+	reset(){
+
+		this.ratio = 0;
+		this.alpha = 0;
 	}
 
 
@@ -68,11 +71,11 @@ class ViewOwl extends alfrid.View {
 	render() {
 		this._tick+= .1 * (window.hasVR ? .66 : 1);
 
-		let canUpdate = (this.tickRender++ % 2 == 0);
-
-		if(canUpdate){
-				this.update();
-		}
+		// let canUpdate = (this.tickRender++ % 2 == 0);
+		//
+		// if(canUpdate){
+		// 		this.update();
+		// }
 
 		this.shader.bind();
 

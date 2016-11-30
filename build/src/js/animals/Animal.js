@@ -156,29 +156,29 @@ class Animal {
     let verts = [];
 
     for (var i = 0; i < v.length; i++) {
-      let vect = [];
-      let vect2 = [];
-      vect[0] = v[i][0];
-      vect[1] = v[i][1];
-      vect[2] = v[i][2];
+      // let vect = [];
+      // let vect2 = [];
+      // vect[0] = v[i][0];
+      // vect[1] = v[i][1];
+      // vect[2] = v[i][2];
 
-      vec3.transformMat4(vect2, vect, this.m);
-      verts.push(vect2);
+      vec3.transformMat4(v[i], v[i], this.m);
+      // verts.push(v[i]);
     }
 
     this.positionedEyes = []
     for (var i = 0; i < this.eyes.length; i++) {
-      let vect = [];
-      let vect2 = [];
-      vect[0] = this.eyes[i][0];
-      vect[1] = this.eyes[i][1];
-      vect[2] = this.eyes[i][2];
+      // let vect = [];
+      // let vect2 = [];
+      // vect[0] = this.eyes[i][0];
+      // vect[1] = this.eyes[i][1];
+      // vect[2] = this.eyes[i][2];
 
-      vec3.transformMat4(vect2, vect, this.m);
-      this.positionedEyes.push(vect2);
+      vec3.transformMat4(this.eyes[i], this.eyes[i], this.m);
+      // this.positionedEyes.push(this.eyes[i]);
     }
 
-    return verts;
+    return v;
   }
 }
 

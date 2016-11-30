@@ -26,11 +26,21 @@ class LinesManager {
     this.tick = 0;
 
     this.targetPoints = [];
-    this.dist = 1000;
   }
 
   reset(){
+    this.state = STATES.wandering;
     this.isFinished = false;
+
+    // for (var i = 0; i < this.linesDrawing.length; i++) {
+      // this.linesAvailableForDrawing[this.linesAvailableForDrawing.length] = this.linesDrawing[i];
+    // }
+
+    for (var i = 0; i < this.lines.length; i++) {
+      this.lines[i].reset();
+    }
+
+    this.linesDrawing = [];
   }
 
   addLine(){
@@ -59,8 +69,8 @@ class LinesManager {
 
   moveTo(pt, animal, isFinished, firstTime){
 
+    let drawingLine = null;
     let duration = firstTime ? 8 : 3;
-    // console.log(duration);
     // ignore that
     this.isFinished = isFinished;
     let freeLines = [];
@@ -98,6 +108,7 @@ class LinesManager {
 
     this.objectsToTween = [];
     let index = 0;
+
     for (var i = 0; i < this.lines.length; i++) {
       let l = this.lines[i];
       if(!this.targetPoints[i]){
@@ -123,6 +134,7 @@ class LinesManager {
       l.firstTime = false;
       if(!this.isFinished && i === indexToDraw){ // for now will never go into that condition to focus on the displacement
         // duration = duration
+        drawingLine = l;
         l.willDraw = animal;
         l.posToDraw = pt;
 
@@ -152,7 +164,6 @@ class LinesManager {
         let indexL = i;
         let pt = this.targetPoints[indexL]
         l.undraw(()=>{
-          // console.log("here");
           let o = this._moveLineTo({
             line: l,
             pt: pt,
@@ -188,6 +199,8 @@ class LinesManager {
       }
 
     }
+
+    return drawingLine;
   }
 
   // this method has been created cause I needed one for the callback after undrawing
@@ -205,7 +218,6 @@ class LinesManager {
   }
 
   undraw(callback){
-    console.log("here");
     for (let i = 0; i < this.linesDrawing.length; i++) {
       let l = this.linesDrawing[i];
       l.undraw();
@@ -217,6 +229,7 @@ class LinesManager {
   }
 
   moveTargetPoints(index){
+
     let line = this.lines[index];
 
     let o = this.objectsToTween[index]
@@ -254,28 +267,15 @@ class LinesManager {
   }
 
   update(cameraPos){
-    // this.tick++;
 
-    // console.log(cameraPos);
-    // if(this.tick %2===0){
-    this.dist =10000
-    let d = 0;
     for (var i = 0; i < this.lines.length; i++) {
       let pt = this.lines[i].line.points[0];
 
-      if(cameraPos){
-        d = (pt[0] - cameraPos[0]) * (pt[0] - cameraPos[0]) + (pt[1] - cameraPos[1]) * (pt[1] - cameraPos[1]) + (pt[2] - cameraPos[2]) * (pt[2] - cameraPos[2]);
-        if(d < this.dist){
-          this.dist = d;
-        }
-      }
-      // console.log(i,this.lines[i].line.points.length);
       if(this.state === STATES.travelling && this.lines[i].state === STATES_LINE.travelling){
         this.moveTargetPoints(i);
       }
       this.lines[i].render();
     }
-    // }
   }
 
   easeInCubic(t, b, c, d) {

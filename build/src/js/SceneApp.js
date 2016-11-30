@@ -66,9 +66,6 @@ class SceneApp extends alfrid.Scene {
 		this._hasPostEffect = !GL.isMobile;
 		this._postEffectOffset = new alfrid.TweenNumber(1, 'expInOut', 0.01);
 
-		this._hasFormFinalShape = false;
-
-
 		const trace = () => {
 			console.log(this.eyeX, this.eyeY, this.eyeZ);
 		}
@@ -94,7 +91,6 @@ class SceneApp extends alfrid.Scene {
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._stop = 0;
 		this._hasTouchControl = true;
-		this._spacePressed = false;
 
 		this.resize();
 
@@ -201,8 +197,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initViews() {
-		this.isFinished = false;
-		this.finishAnimating = false;
 
 		this._bCopy = new alfrid.BatchCopy();
 		this._bSky = new alfrid.BatchSky(80);
@@ -241,6 +235,23 @@ class SceneApp extends alfrid.Scene {
 				loop: true
     });
 
+		this.reset();
+
+	}
+
+	reset(){
+		this._hasFormFinalShape = false;
+		this._stop = 0;
+		this._hasTouchControl = true;
+		this._spacePressed = false;
+		this.isFinished = false;
+		this.finishAnimating = false;
+		this.lightSound.stop();
+
+		this._vEyeLeft.reset();
+		this._vEyeRight.reset();
+		this._subLines.reset();
+		this._subFinale.reset();
 	}
 
 	_getReflectionMatrix() {
@@ -279,7 +290,7 @@ class SceneApp extends alfrid.Scene {
 			if(next >= CameraStops.length - 1) {
 				// console.log("here");
 				// next = 1;
-				this._subFinale.isReady = true;
+
 				this.isFinished = true;
 				// this._finish();
 			}
@@ -287,6 +298,7 @@ class SceneApp extends alfrid.Scene {
 			this._gotoStop(next);
 		}
 		else {
+			this._subFinale.isReady = true;
 			let className = `stop-${this._stop}`;
 			document.body.classList.remove(className);
 
@@ -306,12 +318,22 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	restart() {
-		console.log('Restart');
+		// reset variables
+		this.reset();
+
+
+
+
 		document.body.classList.remove('complete');
 		document.body.classList.remove('stop-final');
 	}
 
 	_finish() {
+		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
+
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -320,10 +342,6 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
-		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
-
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-		this._subLines.goTo([0, -1, 0], true);
 		// this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
@@ -341,6 +359,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this._stop = i;
+		const dataStop = CameraStops[this._stop];
+
+		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+
+		let lineToFollow = this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
+
 		this._postEffectOffset.value = 0;
 		this.orbitalControl.lock(false);
 		this._vTitle.close();
@@ -357,12 +382,7 @@ class SceneApp extends alfrid.Scene {
 		this.orbitalControl.ry = new alfrid.TweenNumber(ry, 'expInOut', rotSpeed);
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
-		this._stop = i;
-		const dataStop = CameraStops[this._stop];
 
-		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
-
-		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
 
 
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;

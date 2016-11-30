@@ -86,6 +86,7 @@ class ViewLineFinale extends alfrid.View {
 	}
 
 	reset(){
+		this.easings.killTweensOf(this);
 		this.animated = 1;
 		this.deltaTime = 0;
 	}
@@ -101,6 +102,13 @@ class ViewLineFinale extends alfrid.View {
 			return p * data.division });
 
 		this.texture = new alfrid.GLTexture(getAsset('stroke'));
+	}
+
+	fadeOut(){
+		this.easings.to(this, 2, {
+			alpha: 0,
+			ease: this.easings.easeInSine
+		})
 	}
 
 	finishDraw(){
@@ -163,6 +171,7 @@ class ViewLineFinale extends alfrid.View {
 	render() {
 
 		if(!this.isReady) return;
+		// this.easings.update();
 
 		// console.log(this.isPaused);
 		this._tick += this.data.deltaTime * (window.hasVR ? .66 : 1) * (this.hide? -1:1);
@@ -170,9 +179,9 @@ class ViewLineFinale extends alfrid.View {
 		// let canUpdate = (this.tickRender++ % 2 == 0);
 
 		// if(canUpdate){
-		// 	// if(this.easings.tweens.length){
-		// 	// 	this.easings.update();
-		// 	// }
+			if(this.easings.tweens.length){
+				this.easings.update();
+			}
 		// 	if(!this.isPaused){
 		// 		// this.update();
 		// 	}

@@ -27,10 +27,10 @@ class SubsceneFinale {
 		let methods = [this.firstLine.bind(this), this.secondLine.bind(this)]
 		this.lines = [];
 		let index = 0;
-		for (var i = 0; i < (GL.isMobile ? 3 : 6); i++) {
+		for (var i = 0; i < (GL.isMobile ? 2 : 4); i++) {
 			let data = methods[i % methods.length]();
 			// console.log(data);
-			data.alpha = Math.random() * .8 + .2;
+			data.alpha = Math.random() * .6 + .2;
 
 			if(data.id === 2){
 				data.thickness = Math.random() * .01 + .01;
@@ -164,8 +164,8 @@ class SubsceneFinale {
 
 
 				if(this.tickSpace <= 800){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
-					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
+					this.ratio = this.easeOutCirc(this.tickSpace, 0, 1, 800);
+					this.ratioOwl = this.easeInSine(this.tickSpace, 0, 1, 800);
 
 					// console.log(this.tickSpace);
 					if(this.tickSpace <= 800){
@@ -179,6 +179,10 @@ class SubsceneFinale {
 					this.didFinalDrawing = true;
 					this._scene.fadeOutLightVolume();
 					this.viewOwl.drawEyes();
+
+					for (var i = 0; i < this.lines.length; i++) {
+						this.lines[i].fadeOut();
+					}
 				}
 			}
 			else {
@@ -195,8 +199,8 @@ class SubsceneFinale {
 				}
 
 				if(this.tickSpace <= 800){
-					this.ratio = this.easeInSine(this.tickSpace, 0, 1, 800);
-					this.ratioOwl = this.easeInOutCirc(this.tickSpace, 0, 1, 800);
+					this.ratio = this.easeOutCirc(this.tickSpace, 0, 1, 800);
+					this.ratioOwl = this.easeInSine(this.tickSpace, 0, 1, 800);
 					this.alpha = this.easeOutCirc(this.tickSpace, 0, 1, 800);
 					// if(this.tickSpace <= 100){
 						// this.alpha = this.easeInCirc(this.tickSpace, 0, 1, 100);
@@ -206,7 +210,7 @@ class SubsceneFinale {
 
 			for (var i = 0; i < this.lines.length; i++) {
 				this.lines[i].ratio = this.ratio;
-				this.lines[i].alpha = this.alpha;
+				this.lines[i].alpha = this.alpha * this.lines[i].data.alpha;
 				this.lines[i].hide = !this.isIncreasing;
 			}
 

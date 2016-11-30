@@ -115,7 +115,13 @@ class SubsceneLines {
 		let lineToFollow = this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
 		this._step++;
 
-		return lineToFollow.line.points;
+		if(lineToFollow){
+
+			return lineToFollow.line.points;
+		}
+		else {
+			return false
+		}
 	}
 
 	pause(){

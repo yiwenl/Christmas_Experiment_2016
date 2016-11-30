@@ -332,6 +332,8 @@ class SceneApp extends alfrid.Scene {
 
 	_finish() {
 		this.delayedCalls.clear();
+		this._vEyeLeft.hide(true);
+		this._vEyeLeft.hide(true);
 		let dataStop;
 
 		if(vrPresenting){

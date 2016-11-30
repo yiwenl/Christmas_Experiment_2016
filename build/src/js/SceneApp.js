@@ -327,7 +327,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_finish() {
-		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.0198826170582594,"ry":0};
+		const dataStop = {"x":0.,"z":-0.,"tx":-0.020370370370370372,"ty":2.543168085871387,"tz":0.6121824555767954,"rx":0.458826170582594,"ry":.085};
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		let lineToFollow = this._subLines.goTo([0, -1, 0], true);

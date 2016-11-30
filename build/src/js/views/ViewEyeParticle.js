@@ -22,7 +22,7 @@ class ViewEyeParticle extends alfrid.View {
 
 	_init() {
 		this.isVisible = false;
-		const size = .1;
+		const size = .2;
 		this.mesh = alfrid.Geom.plane(size, size, 1);
 	}
 

@@ -193,7 +193,7 @@ class SubsceneFinale {
 					// this.alpha = 1;
 					// this.ratio = 1;
 					this.didFinalDrawing = true;
-
+					this._scene.fadeOutLightVolume();
 					this.viewOwl.drawEyes();
 					// for (var i = 0; i < this.linesOwl.length; i++) {
 					// 	this.linesOwl[i].finishDraw();
@@ -237,8 +237,8 @@ class SubsceneFinale {
 
 		if(this.isReady){
 
-			if(!this.playSound){
-				this.playSound = true;
+			if(this._scene.lightSound.paused){
+				// this.playSound = true;
 				this._scene.playLightSound()
 			}
 

@@ -240,9 +240,35 @@ button {
 		pointer-events:auto;
 	}
 
-
 	.is-mobile & {
 		bottom:15%;
+	}
+}
+
+.pressbar {
+	position: absolute;
+	top:30px;
+}
+
+.button-press {
+	top: auto;
+	bottom:10%;
+	width:196px;
+	margin-left:-98px;
+
+	.stop-final & {
+		transition: opacity 1s ease-out 2s;
+		opacity: 1;
+		pointer-events:auto;
+	}
+
+	.bar {
+		transition:width .5s ease-out;
+		width:0%;
+	}
+
+	.barbg {
+		opacity: .5;
 	}
 }
 
@@ -301,4 +327,5 @@ button {
 	background: url(../../dist/assets/img/linbert.png);
 	background-size: 100% 100%;
 }
+
 

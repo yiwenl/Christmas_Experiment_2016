@@ -141,8 +141,10 @@ class SceneApp extends alfrid.Scene {
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
 
-		// this._gotoStop(8);
+
 		this._vTitle.setPosition(this._pointTarget);
+		this._pressBar = document.body.querySelector('.bar');
+		console.debug('Press bar:', this._pressBar);
 
 		this._hasOpened = false;
 		alfrid.Scheduler.delay(()=> {
@@ -154,14 +156,11 @@ class SceneApp extends alfrid.Scene {
 	_enableCameraTouchControl() {
 		if(this._hasTouchControl) {	return;	}
 
-		console.debug('Enable camera touch control');
-
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
 
 		this.orbitalControl.rx = new alfrid.EaseNumber(rx);
 		this.orbitalControl.ry = new alfrid.EaseNumber(ry);
-		// this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		this.orbitalControl.radius.limit(3, 30);
@@ -169,19 +168,19 @@ class SceneApp extends alfrid.Scene {
 		this._hasTouchControl = true;
 	}
 
-	_onCameraAngle(angles) {
-		this.orbitalControl.rx.value = angles.rx;
-		this.orbitalControl.ry.value = angles.ry;
-	}
+	// _onCameraAngle(angles) {
+	// 	this.orbitalControl.rx.value = angles.rx;
+	// 	this.orbitalControl.ry.value = angles.ry;
+	// }
 
-	_onCameraPosition(pos) {
-		this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
-		this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
-	}
+	// _onCameraPosition(pos) {
+	// 	this.cameraOffsetX.value = pos.x * Params.terrainSize/2;
+	// 	this.cameraOffsetZ.value = pos.z * Params.terrainSize/2;
+	// }
 
-	_onTargetPosition(pos) {
-		this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
-	}
+	// _onTargetPosition(pos) {
+	// 	this._pointTarget = [pos.x * Params.terrainSize/2, pos.y, pos.z * Params.terrainSize/2];
+	// }
 
 	_initTextures() {
 		let irr_posx = alfrid.HDRLoader.parse(getAsset('irr_posx'));
@@ -286,6 +285,10 @@ class SceneApp extends alfrid.Scene {
 			this._gotoStop(next);
 		}
 		else {
+			let className = `stop-${this._stop}`;
+			document.body.classList.remove(className);
+
+			document.body.classList.add('stop-final');
 			this._finish()
 			this.finishAnimating = true;
 		}
@@ -293,7 +296,8 @@ class SceneApp extends alfrid.Scene {
 
 	pressAndHold(percentage, finished) {
 		// percentage from 0 to 1
-		// console.log("percentage :",percentage);
+		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
+
 	}
 
 	_finish() {

@@ -62,7 +62,7 @@ class SceneApp extends alfrid.Scene {
 		this.eyeY = 0;
 		this.eyeZ = 0;
 		this._hasPostEffect = !GL.isMobile;
-		this._postEffectOffset = new alfrid.TweenNumber(1, 'expIn', 0.005);
+		this._postEffectOffset = new alfrid.TweenNumber(1, 'expInOut', 0.01);
 
 		this._hasFormFinalShape = false;
 

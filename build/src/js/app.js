@@ -24,6 +24,7 @@ const assets = [
 	{ id:'fg', url:'assets/img/fg.png' },
 	{ id:'fgMobile', url:'assets/img/fgMobile.png' },
 	{ id:'gradient', url:'assets/img/gradient.jpg' },
+	{ id:'gradientMap', url:'assets/img/gradientMap.jpg' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
 	{ id:'starsmapMobile', url:'assets/img/starsmapMobile.jpg' },

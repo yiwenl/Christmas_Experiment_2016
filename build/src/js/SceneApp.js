@@ -61,6 +61,8 @@ class SceneApp extends alfrid.Scene {
 		this.eyeX = 0;
 		this.eyeY = 0;
 		this.eyeZ = 0;
+		this._hasPostEffect = !GL.isMobile;
+		this._postEffectOffset = new alfrid.TweenNumber(1, 'expIn', 0.005);
 
 		this._hasFormFinalShape = false;
 
@@ -185,6 +187,7 @@ class SceneApp extends alfrid.Scene {
 		this._textureStar = new GLTexture(getAsset(GL.isMobile ? 'starsmapMobile' : 'starsmap'));
 		this._textureNoise = new GLTexture(getAsset('noise'));
 		this._textureGradient = new GLTexture(getAsset('gradient'));
+		this._textureGradientMap = new GLTexture(getAsset('gradientMap'));
 
 		this._resetFrameBuffer();
 	}
@@ -215,9 +218,11 @@ class SceneApp extends alfrid.Scene {
 		this._subLines = new SubsceneLines(this);
 		this._subFinale = new SubsceneFinale(this);
 
+		//	post effect
 		this._composer = new EffectComposer(GL.width, GL.height);
 		this._passSoftLight = new Pass(fsSoftLight)
 		this._passSoftLight.bindTexture('textureGradient', this._textureGradient);
+		this._passSoftLight.bindTexture('textureGradientMap', this._textureGradientMap);
 		this._passFxaa = new PassFXAA();
 		this._composer.addPass(this._passSoftLight);
 		this._composer.addPass(this._passFxaa);
@@ -300,6 +305,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_gotoStop(i) {
+		this._postEffectOffset.value = 0;
 		this.orbitalControl.lock(false);
 		this._vTitle.close();
 		let className = `stop-${this._stop}`;
@@ -342,6 +348,10 @@ class SceneApp extends alfrid.Scene {
 
 
 	toRender() {
+		// console.log(this._postEffectOffset.value);
+		if(this._postEffectOffset.value <= 0.0001) {
+			this._hasPostEffect = false;
+		}
 		//	update subscenes
 
 		if(this.timerBeforeNext > 0){
@@ -367,9 +377,21 @@ class SceneApp extends alfrid.Scene {
 
 			GL.setMatrices(this.cameraReflection);
 			this._renderReflection();
+
+			if(this._hasPostEffect) {
+				this._fboRender.bind();
+				GL.clear(0, 0, 0, 0);
+			}
 			GL.setMatrices(this.camera);
 			this._renderScene(true);
+			if(this._hasPostEffect) {
+				this._fboRender.unbind();
+				this._passSoftLight.uniform('offset', 'float', this._postEffectOffset.value);
+				this._composer.render(this._fboRender.getTexture());
+				this._bCopy.draw(this._composer.getTexture());
+			}
 
+			
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();
@@ -441,7 +463,7 @@ class SceneApp extends alfrid.Scene {
 		this._vFg.render();
 
 
-		if(withWater) {
+		if(withWater && !hasVR) {
 			this._vWater.render(this._fboReflection.getTexture());
 		}
 		this._vTerrain.render(this._textureRad, this._textureIrr, this._textureNoise, this._textureStar);
@@ -488,14 +510,17 @@ class SceneApp extends alfrid.Scene {
 			this.cameraReflection.setAspectRatio(GL.aspectRatio);
 		}
 
+		this._composer = new EffectComposer(GL.width, GL.height);
+		this._composer.addPass(this._passSoftLight);
+		this._composer.addPass(this._passFxaa);
 
 		this._resetFrameBuffer();
 	}
 
 	_resetFrameBuffer() {
 		const scale = GL.isMobile ? 0.5 : 1;
-		this._fboReflection = new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
-		// console.log('Frame buffer size : ', this._fboReflection.width, this._fboReflection.height);
+		this._fboReflection 	= new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
+		this._fboRender 		= new alfrid.FrameBuffer((hasVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
 	}
 }
 

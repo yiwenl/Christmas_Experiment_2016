@@ -14,21 +14,19 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform float uTime;
-uniform int animated;
-
-
 uniform float thickness;
+
+
 uniform float aspect;
 
 varying vec2 vUV;
-varying vec3 vPosition;
 varying vec3 vColor;
 varying vec3 vNormal;
 varying float vCounters;
 
 void main() {
 
-  // float thickness = .1;
+  // float thickness = 1. * width;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);
@@ -42,7 +40,6 @@ void main() {
   // vec4 currentProjected = projViewModel * vec4(aVertexPosition, 1.0);
   // vec4 nextProjected = projViewModel * vec4(aNext, 1.0);
 
-  vPosition = currentProjected.xyz;
   vNormal = aNormal;
   vUV = aTextureCoord;
   //get 2D screen space with W divide and aspect correction
@@ -52,13 +49,9 @@ void main() {
 
   vCounters = aCounters;
 
-  float len = thickness *  sin(width+uTime) * (1.-smoothstep(.9,1.,vUV.x*1.));
-
-
-
-  // float len = thickness *  sin(width+uTime) * (1.-smoothstep(.9,1.,vUV.x*1.));
-  // len *= smoothstep(vUV.x * 2.,vUV.y * 2.+2.,-uTime);;
-
+  float len = thickness * width * (1.-smoothstep(.9,1.,vUV.x*1.));
+  // len *= smoothstep(vUV.x*2.,vUV.y*2.+2.,-uTime*2000.);;
+  // len *= smoothstep(vUV.x * 2., vUV.y * 2.+ 1., -uTime*2000.);
 
   float orientation = direction;
 

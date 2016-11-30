@@ -92,6 +92,7 @@ class SceneApp extends alfrid.Scene {
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		this._stop = 0;
 		this._hasTouchControl = true;
+		this._spacePressed = false;
 
 		this.resize();
 
@@ -120,6 +121,7 @@ class SceneApp extends alfrid.Scene {
 						this.nextStop();
 					} else {
 						console.debug('Press and hold');
+						this._spacePressed = true;
 					}
 
 				} else {
@@ -128,6 +130,11 @@ class SceneApp extends alfrid.Scene {
 			}
 		});
 
+		window.addEventListener('keyup', (e)=> {
+			if(e.keyCode === 32) {
+				this._spacePressed = false;
+			}
+		});
 
 		GL.canvas.addEventListener('mousedown', (e)=>this._enableCameraTouchControl());
 		GL.canvas.addEventListener('touchstart', (e)=>this._enableCameraTouchControl());
@@ -260,14 +267,14 @@ class SceneApp extends alfrid.Scene {
 		this.timerBeforeNext = 120;
 		if(!this.isFinished){
 			let next = this._stop + 1;
-			if(next >= CameraStops.length) {
-				next = 1;
+			if(next >= CameraStops.length - 1) {
+				// console.log("here");
+				// next = 1;
 				this._subFinale.isReady = true;
 				this.isFinished = true;
 				// this._finish();
 			}
-			else {
-			}
+
 			this._gotoStop(next);
 		}
 		else {
@@ -337,13 +344,19 @@ class SceneApp extends alfrid.Scene {
 		className = `stop-${this._stop}`;
 		document.body.classList.add(className);
 
-		if(i === 8) {
-			console.debug('Finishing');
+		alfrid.Scheduler.delay(()=> {
+				this._vEyeLeft.show();
+				this._vEyeRight.show();
+		}, null, (TweenSpeed + rotSpeed/2) * 1000 * 1000);
 
-			alfrid.Scheduler.delay(()=> {
-				this.finishFinalShape();
-			}, null, 1000);
-		}
+
+		// if(i === 8) {
+		// 	console.debug('Finishing');
+		//
+		// 	alfrid.Scheduler.delay(()=> {
+		// 		this.finishFinalShape();
+		// 	}, null, 1000);
+		// }
 	}
 
 
@@ -472,10 +485,10 @@ class SceneApp extends alfrid.Scene {
 		// this._bBall.draw(this._pointTarget, [.5, .5, .5], [.8, .2, .1]);
 
 		this._subLines.render(this.orbitalControl.position);
-		// this._subFinale.render();
 
-		// if(this.isFinished){
-		// }
+		if(this.isFinished){
+			this._subFinale.render();
+		}
 
 
 

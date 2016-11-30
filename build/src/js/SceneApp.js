@@ -401,10 +401,6 @@ class SceneApp extends alfrid.Scene {
 	toRender() {
 		renderVR = hasVR && vrPresenting;
 
-		if(Math.random() > .99) {
-			console.log('Rendering in VR :', renderVR);	
-		}
-		
 		let _gamePads = [];
 		if(hasVR) {
 			_gamePads = VIVEUtils.gamePads;

@@ -160,7 +160,7 @@ class SceneApp extends alfrid.Scene {
 
 		this.orbitalControl.rx.limit(0.3, Math.PI/2 - 0.75);
 		this.orbitalControl.radius.limit(3, 30);
-		
+
 		this._hasTouchControl = true;
 	}
 
@@ -284,6 +284,11 @@ class SceneApp extends alfrid.Scene {
 		}
 	}
 
+	pressAndHold(percentage) {
+		// percentage from 0 to 1
+		console.log("percentage :",percentage);
+	}
+
 	_finish() {
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
@@ -405,7 +410,7 @@ class SceneApp extends alfrid.Scene {
 				this._bCopy.draw(this._composer.getTexture());
 			}
 
-			
+
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();

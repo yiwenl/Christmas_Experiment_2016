@@ -33,11 +33,11 @@ class SubsceneLines {
 		this._step = 0;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
-		// this.lightSound = Sono.createSound({
-	 //        src: ["./assets/sounds/light.mp3"],
-	 //        volume: 0,
-		// 			loop: true
-	 //    });
+		this.lightSound = Sono.createSound({
+        src: ["./assets/sounds/light.mp3"],
+        volume: 0,
+				// loop: true
+    });
 
 		// setTimeout(()=>{
 			// this.pause()
@@ -122,9 +122,13 @@ class SubsceneLines {
 
 	}
 
-	goTo(pt, isFinished, duration){
+	goTo(pt, isFinished, firstTime){
+		// this.lightSound.play();
+		// this.lightSound.volume = 0;
+		// this.lightSound.fade(1, .5);
+		// newMusic.fade(newMusic.volume, this.fadeOutDuration);
 		// say the lines to all move to pt ! Second paramater is the animal to draw
-		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, duration)
+		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
 		this._step++;
 	}
 

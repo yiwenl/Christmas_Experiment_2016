@@ -299,6 +299,15 @@ class SceneApp extends alfrid.Scene {
 		// percentage from 0 to 1
 		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 
+		if(finished) {
+			this.finishFinalShape();
+		}
+	}
+
+	restart() {
+		console.log('Restart');
+		document.body.classList.remove('complete');
+		document.body.classList.remove('stop-final');
 	}
 
 	_finish() {
@@ -316,7 +325,6 @@ class SceneApp extends alfrid.Scene {
 		this._subLines.goTo([0, -1, 0], true);
 		// this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], this.isFinished);
 
-
 		this.cameraOffsetX.value = dataStop.x * Params.terrainSize/2;
 		this.cameraOffsetZ.value = dataStop.z * Params.terrainSize/2;
 		this.orbitalControl.rx.value = dataStop.rx;
@@ -324,8 +332,10 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	finishFinalShape() {
+		if(this._hasFormFinalShape) return;
 		this._hasFormFinalShape = true;
 		document.body.classList.remove('stop-8');
+		document.body.classList.remove('stop-final');
 		document.body.classList.add('complete');
 	}
 
@@ -336,8 +346,8 @@ class SceneApp extends alfrid.Scene {
 		let className = `stop-${this._stop}`;
 		document.body.classList.remove(className);
 		document.body.classList.remove('complete');
+		this._hasFormFinalShape = false;
 
-		console.log("goto stop", i);
 		this._hasTouchControl = false;
 		const rx = this.orbitalControl.rx.value;
 		const ry = this.orbitalControl.ry.value;
@@ -379,7 +389,6 @@ class SceneApp extends alfrid.Scene {
 
 	/* Music controller, would be better to have its own class... */
 	setLightVolume(volume){
-		// console.log(volume);
 		this.lightSound.volume = volume;
 	}
 

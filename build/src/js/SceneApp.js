@@ -250,13 +250,15 @@ class SceneApp extends alfrid.Scene {
 		const offsetX = Math.cos(Math.sin(this.time * 0.3987454) * 1.3265432);
 		const offsetY = Math.sin(Math.sin(this.time) * 0.5789423);
 		const offsetZ = Math.cos(Math.cos(this.time * 0.67894) * 0.5789423);
-		mat4.translate(	camera.viewMatrix,
-						camera.viewMatrix,
-						vec3.fromValues(
+		this.positionOffset = vec3.fromValues(
 							this.cameraOffsetX.value + offsetX * range,
 							this.cameraOffsetY.value + offsetY * range,
 							this.cameraOffsetZ.value + offsetZ * range
-						));
+						);
+		mat4.translate(	camera.viewMatrix,
+						camera.viewMatrix,
+						this.positionOffset
+						);
 
 		GetReflectionMatrix(camera, Params.seaLevel, this.cameraReflection)
 	}
@@ -410,6 +412,11 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	toRender() {
+		let _gamePads = [];
+		if(hasVR) {
+			_gamePads = VIVEUtils.gamePads;
+		}
+
 		// console.log(this._postEffectOffset.value);
 		if(this._postEffectOffset.value <= 0.0001) {
 			this._hasPostEffect = false;
@@ -420,7 +427,7 @@ class SceneApp extends alfrid.Scene {
 			this.timerBeforeNext--;
 		}
 
-		this._subParticles.update();
+		this._subParticles.update(_gamePads, this.positionOffset);
 		this._subLines.update();
 
 		// if(this.isFinished){
@@ -538,14 +545,35 @@ class SceneApp extends alfrid.Scene {
 		if(this.isFinished){
 			this._subFinale.render();
 		}
-
-
+		
 
 		GL.enableAdditiveBlending();
 		GL.disable(GL.DEPTH_TEST);
 
 		this._vEyeLeft.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
 		this._vEyeRight.render([this.eyeX, this.eyeY, this.eyeZ], this._pointTarget);
+
+		if(hasVR) {
+			const { gamePads } = VIVEUtils;
+
+			let pos = vec3.create();
+			const s = .25;
+
+			for(let i=0; i<gamePads.length; i++) {
+				let gamepad = gamePads[i];
+				vec3.sub(pos, gamepad.position, this.positionOffset);
+				let color = [0.1, 0.1, 0.1];
+				for(let i=0; i<3; i++) {
+					if(gamepad.buttons[i].pressed) {
+						color[i] = .2;
+					}
+				}
+
+				this._bBall.draw(pos, [s, s, s], color, .5);
+			}
+
+		}
+
 		GL.enableAlphaBlending();
 		GL.enable(GL.DEPTH_TEST);
 
@@ -553,6 +581,8 @@ class SceneApp extends alfrid.Scene {
 
 		this._vTitle.render();
 		this._vNothing.render();
+
+		
 	}
 
 

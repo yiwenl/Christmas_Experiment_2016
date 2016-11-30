@@ -18,7 +18,7 @@ class ViewTitle extends alfrid.View {
 
 	_init() {
 		const ratio = 1280/720;
-		const size = 4;
+		const size = hasVR ? 1 : 4;
 		this.mesh = alfrid.Geom.plane(size * ratio, size, 1);
 
 		this._texture = new alfrid.GLTexture(getAsset('title'));

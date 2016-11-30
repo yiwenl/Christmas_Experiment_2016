@@ -38,11 +38,6 @@ class SubsceneLines {
 		this._step = 0;
 		this.cameraPos = [0,0,0];
 		this._tick = 0;
-		this.lightSound = Sono.createSound({
-        src: ["./assets/sounds/light.mp3"],
-        volume: 0,
-				// loop: true
-    });
 
 		// setTimeout(()=>{
 			// this.pause()
@@ -127,20 +122,12 @@ class SubsceneLines {
 
 	}
 
-	fadeOutVolume(){
-		this.lightSound.fade(0, 4);
-		this.delayedCalls.add(()=>{
-			this.lightSound.stop();
-		}, 4);
-	}
-
 	goTo(pt, isFinished, firstTime){
-		this.lightSound.play();
-		this.lightSound.volume = 0;
-		this.lightSound.fade(1, .2);
+		this._scene.fadeInLightVolume();
 
 		this.delayedCalls.clear();
-		this.delayedCalls.add(this.fadeOutVolume.bind(this), 1);
+		this.delayedCalls.add(this._scene.fadeOutLightVolume.bind(this._scene), 1);
+		this.delayedCalls.add(this._scene.stopLightSound.bind(this._scene), 5);
 		// newMusic.fade(newMusic.volume, this.fadeOutDuration);
 		// say the lines to all move to pt ! Second paramater is the animal to draw
 		this.linesManager.moveTo(pt, this.animals[this._step % this.animals.length], isFinished, firstTime)
@@ -168,11 +155,6 @@ class SubsceneLines {
 
 	update(pos) {
 		this.delayedCalls.update()
-		// this.lightSound.volume += (this.volume - this.lightSound.volume) * .1;
-
-		// if(this.lightSound.volume > 1){
-		// 	this.lightSound.volume = 1;
-		// }
 	}
 
 	render(pos) {

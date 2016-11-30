@@ -45,7 +45,11 @@ class ViewTitle extends alfrid.View {
 		this.shader.uniform("uPosition", "vec3", this.finalPosition);
 		this.shader.uniform("texture", "uniform1i", 0);
 		this.shader.uniform("uOpacity", "float", this.opacity.value);
-		this.shader.uniform("uScale", "float", vrPresenting ? 1 : 4);
+		if(GL.isMobile) {
+			this.shader.uniform("uScale", "float", 2);
+		} else {
+			this.shader.uniform("uScale", "float", vrPresenting ? 1 : 4);
+		}
 		this._texture.bind(0);
 		GL.draw(this.mesh);
 		GL.enable(GL.DEPTH_TEST);

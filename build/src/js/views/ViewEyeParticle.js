@@ -24,6 +24,7 @@ class ViewEyeParticle extends alfrid.View {
 		this.isVisible = false;
 		const size = .2;
 		this.mesh = alfrid.Geom.plane(size, size, 1);
+		this.scale = 1;
 	}
 
 	reset() {
@@ -52,8 +53,28 @@ class ViewEyeParticle extends alfrid.View {
 		this.isVisible = false;
 
 		this.easings.killTweensOf(this)
+
+		this.scale = 1;
 		// this.easings.to(this, 10, {
-		this.easings.to(this, (this.isSlowMode ? 6:4), {
+
+		this.easings.to(this, 6, {
+			scale: 2,
+			ease: this.easings.easeOutCirc,
+			onComplete: ()=>{
+
+				this.easings.to(this, 3, {
+					scale: 1,
+					ease: this.easings.easeOutBack,
+					onComplete: ()=>{
+
+					}
+				});
+
+			}
+		});
+
+
+		this.easings.to(this, 4, {
 			opacity: 1,
 			ease: this.easings.easeOutSine,
 			onComplete: ()=> {
@@ -134,13 +155,13 @@ class ViewEyeParticle extends alfrid.View {
 		}
 
 		// console.log(this.opacity);
-
+		console.log(this.scale);
 		// vec3.add(this._finalPosition, pos, pointTarget);
 		// this.opacity = 1;
 		this.shader.bind();
 		// this.shader.uniform("float", "uOpacity", 1);
 		this.shader.uniform("uOpacity", "float", this.opacity);
-		this.shader.uniform("uScale", "float", 1);
+		this.shader.uniform("uScale", "float", this.scale);
 		// this.shader.uniform("float", "uOpacity", this.opacity.value);
 		// this.shader.uniform("uPosition", "vec3", [0,-2,0]);
 		this.shader.uniform("uPosition", "vec3", this._finalPosition);

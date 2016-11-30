@@ -233,8 +233,7 @@ button {
 	.stop-5 &,
 	.stop-6 &,
 	.stop-7 &,
-	.stop-8 &,
-	.complete & {
+	.stop-8 & {
 		transition: opacity .5s ease-out 3.0s;
 		opacity: 1;
 		pointer-events:auto;
@@ -284,6 +283,15 @@ button {
 
 	opacity: 0;
 	transition: opacity .5s ease-out;
+
+	.complete & {
+		opacity: 1;
+		pointer-events: auto;
+
+		.button-restart {
+			pointer-events: auto;
+		}
+	}
 
 	.merry-xmas {
 		color:white;

@@ -174,6 +174,12 @@ function _initControls() {
 	btnContinue.addEventListener('click', ()=> {
 		scene.nextStop();
 	});
+
+	const btnRestart = document.body.querySelector('.button-restart');
+	console.log('btnRestart', btnRestart);
+	btnRestart.addEventListener('click', ()=> {
+		scene.restart();
+	});
 }
 
 function _initSound() {

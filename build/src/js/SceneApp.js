@@ -298,9 +298,15 @@ class SceneApp extends alfrid.Scene {
 		// percentage from 0 to 1
 		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 
-		if(percentage == 1) {
+		if(finished) {
 			this.finishFinalShape();
 		}
+	}
+
+	restart() {
+		console.log('Restart');
+		document.body.classList.remove('complete');
+		document.body.classList.remove('stop-final');
 	}
 
 	_finish() {
@@ -326,7 +332,6 @@ class SceneApp extends alfrid.Scene {
 
 	finishFinalShape() {
 		if(this._hasFormFinalShape) return;
-		console.debug('Finished final Shape');
 		this._hasFormFinalShape = true;
 		document.body.classList.remove('stop-8');
 		document.body.classList.remove('stop-final');
@@ -383,7 +388,6 @@ class SceneApp extends alfrid.Scene {
 
 	/* Music controller, would be better to have its own class... */
 	setLightVolume(volume){
-		console.log(volume);
 		this.lightSound.volume = volume;
 	}
 

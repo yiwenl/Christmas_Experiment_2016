@@ -94,6 +94,9 @@ class SceneApp extends alfrid.Scene {
 		this.cameraVive = new CameraVive();
 
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		this._currPointTarget = vec3.create();
+		this._prevPointTarget = vec3.fromValues(dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2);
+		this._tweenPointTarget = new alfrid.TweenNumber(0, 'cubicInOut', TweenSpeed);
 		this._stop = 0;
 		this._hasTouchControl = true;
 		this._spacePressed = false;
@@ -152,6 +155,7 @@ class SceneApp extends alfrid.Scene {
 		alfrid.Scheduler.delay(()=> {
 			this._hasOpened = true;
 			UIUtils.setStop('stop-0');
+			document.body.classList.add('opened');
 		}, null, 4500);
 
 		this._hasVRNextPressed = false;
@@ -298,6 +302,9 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	pressAndHold(percentage, finished) {
+		if(this._stop !== CameraStops.length -1) {
+			return;
+		}
 		// percentage from 0 to 1
 		this._pressBar.style.width = `${Math.floor(100 * percentage)}%`;
 
@@ -308,7 +315,12 @@ class SceneApp extends alfrid.Scene {
 
 	restart() {
 		this.reset()
-		UIUtils.clearAllstops();
+
+
+		alfrid.Scheduler.delay(()=>{
+			UIUtils.clearAllstops();
+			this._gotoStop(1);
+		}, null, 300);
 	}
 
 	_finish() {
@@ -347,6 +359,7 @@ class SceneApp extends alfrid.Scene {
 
 	finishFinalShape() {
 		if(this._hasFormFinalShape) return;
+		console.log('Finish final shape');
 		this._hasFormFinalShape = true;
 		UIUtils.setStop('complete');
 	}
@@ -368,7 +381,11 @@ class SceneApp extends alfrid.Scene {
 		this._stop = i;
 		const dataStop = CameraStops[this._stop];
 
+		vec3.copy(this._prevPointTarget, this._pointTarget);
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
+		this._tweenPointTarget.setTo(0);
+		this._tweenPointTarget.value = 1;
+
 
 		this._subLines.goTo([this._pointTarget[0], -this._pointTarget[1], -this._pointTarget[2]], false);
 
@@ -380,8 +397,6 @@ class SceneApp extends alfrid.Scene {
 
 		let className = `stop-${this._stop}`;
 		UIUtils.setStop(className);
-
-
 
 		alfrid.Scheduler.delay(()=> {
 			this._vEyeLeft.show();
@@ -413,11 +428,8 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	toRender() {
+		vec3.lerp(this._currPointTarget, this._prevPointTarget, this._pointTarget, this._tweenPointTarget.value);
 		renderVR = hasVR && vrPresenting;
-
-		if(Math.random() > .99) {
-			console.log('Rendering in VR :', renderVR);
-		}
 
 		let _gamePads = [];
 		if(hasVR) {
@@ -480,10 +492,7 @@ class SceneApp extends alfrid.Scene {
 
 		GL.clear(0, 0, 0, 0);
 
-		if(hasVR) {
-			//	VR enter frame
-			VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());
-		}
+		if(hasVR) {	VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());	}
 
 		if(!renderVR) {
 			//	get reflection matrix
@@ -623,6 +632,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._vTitle.render();
 		this._vNothing.render();
+
 	}
 
 	reset(){
@@ -671,6 +681,21 @@ class SceneApp extends alfrid.Scene {
 		const scale = GL.isMobile ? 0.5 : 1;
 		this._fboReflection 	= new alfrid.FrameBuffer((renderVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
 		this._fboRender 		= new alfrid.FrameBuffer((renderVR ? GL.width / 2 : GL.width) * scale, GL.height * scale, {type:GL.gl.UNSIGNED_BYTE});
+	}
+
+
+	get isInTransition() {
+		if(this._tweenPointTarget.value == 0) {
+			return false;
+		} else if(this._tweenPointTarget.value == 1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	setSpacePressed(value) {
+		this._spacePressed = value;
 	}
 }
 

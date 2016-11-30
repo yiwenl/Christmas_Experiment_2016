@@ -104,6 +104,7 @@ function _onVR(vrDisplay) {
 			VIVEUtils.present(GL.canvas, ()=> {
 				console.log('Scene :', scene, 'present VR now ');
 				window.vrPresenting = true;
+				document.body.classList.add('present-vr')
 				scene.resize();
 				// scene.setVR();
 			});
@@ -138,13 +139,13 @@ function _init3D() {
 	}
 
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
+	// window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();
 
 	//	STATS
-	if(!GL.isMobile) {
+	if(!GL.isMobile && 0) {
 		const stats = new Stats();
 		document.body.appendChild(stats.domElement);
 		alfrid.Scheduler.addEF(()=>stats.update());
@@ -165,6 +166,7 @@ function _init3D() {
 	_initControls();
 }
 
+let indexPress;
 
 function _initControls() {
 	const btnStart = document.body.querySelector('.button-start');
@@ -182,7 +184,33 @@ function _initControls() {
 	btnRestart.addEventListener('click', ()=> {
 		scene.restart();
 	});
+
+	const btnPress = document.body.querySelector('.button-press');
+	btnPress.addEventListener('mousedown', onPressDown);
+	btnPress.addEventListener('mouseup', onPressUp);
 }
+
+
+function onPressDown() {
+	indexPress = alfrid.Scheduler.addEF(onPressing);
+}
+
+
+function onPressing() {
+	scene._spacePressed = true;
+	if(scene._hasFormFinalShape) {
+		onPressUp();
+	}
+}
+
+
+function onPressUp() {
+	alfrid.Scheduler.removeEF(indexPress);
+	scene._spacePressed = false;	
+	indexPress = -1;
+}
+
+
 
 function _initSound() {
 	const songs = [

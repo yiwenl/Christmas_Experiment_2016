@@ -14,6 +14,7 @@ import ViewFarground from './ViewFarground';
 import ViewTrunk from './views/ViewTrunk';
 import ViewEyeParticle from './views/ViewEyeParticle';
 import ViewTitle from './views/ViewTitle';
+import ViewVignette from './views/ViewVignette';
 import EffectComposer from './effectComposer/EffectComposer';
 import Pass from './effectComposer/Pass';
 import PassFXAA from './effectComposer/passes/PassFXAA';
@@ -227,6 +228,7 @@ class SceneApp extends alfrid.Scene {
 		this._vEyeRight = new ViewEyeParticle();
 		this._vNothing = new ViewNothing();
 		this._vTitle = new ViewTitle();
+		this._vVignette = new ViewVignette();
 
 
 		//	Sub scenes
@@ -517,6 +519,9 @@ class SceneApp extends alfrid.Scene {
 			GL.enableAdditiveBlending();
 			this._vFilmGrain.render();
 			GL.enableAlphaBlending();
+			GL.disable(GL.DEPTH_TEST);
+			this._vVignette.render();
+			GL.enable(GL.DEPTH_TEST);
 		} else {
 
 			GL.enable(GL.SCISSOR_TEST);
@@ -541,6 +546,9 @@ class SceneApp extends alfrid.Scene {
 			scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
+			GL.disable(GL.DEPTH_TEST);
+			this._vVignette.render();
+			GL.enable(GL.DEPTH_TEST);
 
 
 			//	right eye
@@ -557,6 +565,9 @@ class SceneApp extends alfrid.Scene {
 			scissor(w2, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVive);
 			this._renderScene(true);
+			GL.disable(GL.DEPTH_TEST);
+			this._vVignette.render();
+			GL.enable(GL.DEPTH_TEST);
 
 
 			GL.disable(GL.SCISSOR_TEST);

@@ -19,7 +19,7 @@ class Controller {
 
   pause(e){
       this.owner.pause();
-      console.log("pause");
+      // console.log("pause");
   }
 
   undrawPress(e){

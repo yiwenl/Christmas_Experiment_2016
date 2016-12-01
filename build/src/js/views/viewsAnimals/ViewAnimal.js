@@ -17,7 +17,7 @@ class ViewAnimal extends alfrid.View {
 		super(vs, fs);
 		this.pos = pos;
 
-		console.log("0-----", this.pos);
+		// console.log("0-----", this.pos);
 		// this.shape = new Dear();
 
 		this.time = Math.random() * 0xFF;

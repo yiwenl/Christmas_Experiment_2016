@@ -25,7 +25,7 @@ class Mesh {
 		this._attributes          = [];
 		this._instancedAttributes = [];
 		this._vertexSize          = 0;
-		
+
 		this._vertices            = [];
 		this._texCoords           = [];
 		this._normals             = [];
@@ -42,22 +42,22 @@ class Mesh {
 		if(!this._extVAO) {	return; }
 		this.shader = shader;
 		if(!this._vao) {
-			this._vao = this._extVAO.createVertexArrayOES(); 	
-			console.debug('Create VAO :', this.vao);
+			this._vao = this._extVAO.createVertexArrayOES();
+			// console.debug('Create VAO :', this.vao);
 		}
-		
-		this._extVAO.bindVertexArrayOES(this._vao); 
+
+		this._extVAO.bindVertexArrayOES(this._vao);
 	}
 
 	unbindVAO() {
 		if(!this._extVAO) {	return; }
-		this._extVAO.bindVertexArrayOES(null);  
-		
+		this._extVAO.bindVertexArrayOES(null);
+
 	}
 
 	deleteVAO() {
 		if(!this._extVAO) {	return; }
-		this._extVAO.deleteVertexArrayOES(this._vao); 
+		this._extVAO.deleteVertexArrayOES(this._vao);
 	}
 
 
@@ -73,7 +73,7 @@ class Mesh {
 				tempNormals.push([1, 0, 0]);
 			}
 
-			this.bufferNormal(tempNormals, isDynamic);	
+			this.bufferNormal(tempNormals, isDynamic);
 		}
 
 		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
@@ -103,7 +103,7 @@ class Mesh {
 		const drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
 		if (!this.iBuffer) {
-			this.iBuffer      = gl.createBuffer();	
+			this.iBuffer      = gl.createBuffer();
 		}
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
@@ -135,7 +135,7 @@ class Mesh {
 			}
 		}
 
-		//	flatten buffer data		
+		//	flatten buffer data
 		if(mIsFlatten) {
 			bufferData = mData;
 		} else {
@@ -143,11 +143,11 @@ class Mesh {
 				for(let j = 0; j < mData[i].length; j++) {
 					bufferData.push(mData[i][j]);
 				}
-			}	
+			}
 		}
 
-		
-		if(index === -1) {	
+
+		if(index === -1) {
 
 			//	attribute not exist yet, create new buffer
 			buffer = gl.createBuffer();
@@ -203,15 +203,15 @@ class Mesh {
 			}
 		}
 
-		//	flatten buffer data		
+		//	flatten buffer data
 		for(i = 0; i < mData.length; i++) {
 			for(let j = 0; j < mData[i].length; j++) {
 				bufferData.push(mData[i][j]);
 			}
 		}
 
-		
-		if(index === -1) {	
+
+		if(index === -1) {
 
 			//	attribute not exist yet, create new buffer
 			buffer = gl.createBuffer();
@@ -375,7 +375,7 @@ class Mesh {
 
 	get hasTangents() {
 		if(this._tangents.length === 0) {	return false; }
-		return true;	
+		return true;
 	}
 
 	get faces() {	return this._faces;	}

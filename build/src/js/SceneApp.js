@@ -75,7 +75,7 @@ class SceneApp extends alfrid.Scene {
 
 
 		const trace = () => {
-			console.log(this.eyeX, this.eyeY, this.eyeZ);
+			// console.log(this.eyeX, this.eyeY, this.eyeZ);
 		}
 
 		// const range = 5;
@@ -129,10 +129,10 @@ class SceneApp extends alfrid.Scene {
 				if(this._stop == CameraStops.length-1) {
 
 					if(this._hasFormFinalShape) {
-						console.debug(' RESTART ');
+						// console.debug(' RESTART ');
 						this.nextStop();
 					} else {
-						console.debug('Press and hold');
+						// console.debug('Press and hold');
 						this._spacePressed = true;
 					}
 
@@ -154,7 +154,7 @@ class SceneApp extends alfrid.Scene {
 
 		this._vTitle.setPosition(this._pointTarget);
 		this._pressBar = document.body.querySelector('.bar');
-		console.debug('Press bar:', this._pressBar);
+		// console.debug('Press bar:', this._pressBar);
 
 		this._hasOpened = false;
 		alfrid.Scheduler.delay(()=> {
@@ -346,7 +346,7 @@ class SceneApp extends alfrid.Scene {
 		this._pointTarget = [dataStop.tx * Params.terrainSize/2, dataStop.ty, dataStop.tz * Params.terrainSize/2];
 		let lineToFollow = this._subLines.goTo([0, -1, 0], true);
 
-		console.debug('OPEN PRESS');
+		// console.debug('OPEN PRESS');
 		this._vPress.open();
 
 		this._hasTouchControl = false;
@@ -460,7 +460,7 @@ class SceneApp extends alfrid.Scene {
 			if(!this._hasVRNextPressed && isMainButtonPressed) {
 				// this.nextStop();
 				if(this._hasFormFinalShape) {
-					console.debug(' RESTART ');
+					// console.debug(' RESTART ');
 					this.restart();
 				}
 				else {
@@ -472,10 +472,10 @@ class SceneApp extends alfrid.Scene {
 				if(this._stop == CameraStops.length-1) {
 
 					if(this._hasFormFinalShape) {
-						console.debug(' RESTART ');
+						// console.debug(' RESTART ');
 						this.nextStop();
 					} else {
-						console.debug('Press and hold');
+						// console.debug('Press and hold');
 						this._spacePressed = true;
 					}
 

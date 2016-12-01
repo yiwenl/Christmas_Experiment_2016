@@ -107,7 +107,6 @@ class Animal {
 	}
 
 	rotateY(ry){
-    console.log('rotate Y ');
     glmatrix.mat4.identity(this.mRY);
     glmatrix.mat4.fromYRotation(this.mRY, ry);
 		// glmatrix.mat4.rotateY(this.mRY, this.mRY, ry - Math.PI/2)

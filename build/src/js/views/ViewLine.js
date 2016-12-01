@@ -487,7 +487,7 @@ class ViewLine extends alfrid.View {
 
 	transformTo(animal){
 
-		console.log("!!!!!!!!!HERE");
+		// console.log("!!!!!!!!!HERE");
 		this.easings.to(this, 4, {
 			alpha: 1,
 			ease: this.easings.easeOutCubic

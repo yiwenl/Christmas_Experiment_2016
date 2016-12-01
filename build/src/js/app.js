@@ -61,7 +61,6 @@ function _init() {
 		}).on('error', function (error) {
 			console.error(error);
 		}).on('progress', function (p) {
-			// console.log('Progress : ', p);
 			let loader = document.body.querySelector('.Loading-Bar');
 			if(loader) loader.style.width = (p * 100).toFixed(2) + '%';
 		}).on('complete', _onImageLoaded)
@@ -75,7 +74,6 @@ function _init() {
 
 function _onImageLoaded(o) {
 	//	ASSETS
-	console.log('Image Loaded : ', o);
 	window.assets = o;
 	const loader = document.body.querySelector('.Loading-Bar');
 	loader.style.width = '100%';
@@ -96,7 +94,7 @@ function _initVR() {
 }
 
 function _onVR(vrDisplay) {
-	console.debug('on VR :', vrDisplay);
+	// console.debug('on VR :', vrDisplay);
 
 	if(vrDisplay != null) {
 		hasVR = true;
@@ -104,7 +102,6 @@ function _onVR(vrDisplay) {
 		let btnVR = document.body.querySelector('#enterVr');
 		btnVR.addEventListener('click', ()=> {
 			VIVEUtils.present(GL.canvas, ()=> {
-				console.log('Scene :', scene, 'present VR now ');
 				window.vrPresenting = true;
 				document.body.classList.add('present-vr')
 				scene.resize();
@@ -120,7 +117,7 @@ function _onVR(vrDisplay) {
 
 	// document.body.classList.add('hasVR');
 	// hasVR = true;
-	console.debug('Has VR ? ', hasVR, Params);
+	// console.debug('Has VR ? ', hasVR, Params);
 
 	_init3D();
 	_initSound();
@@ -157,7 +154,6 @@ function _init3D() {
 	// gui.add(Params, 'gamma', 1, 5);
 	// gui.add(Params, 'exposure', 1, 25);
 	// gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
-	// 	console.log(Params);
 	// });
 	// gui.add(Params, 'postEffect');
 
@@ -182,7 +178,6 @@ function _initControls() {
 	});
 
 	const btnRestart = document.body.querySelector('.button-restart');
-	console.log('btnRestart', btnRestart);
 	btnRestart.addEventListener('click', ()=> {
 		scene.restart();
 	});
@@ -209,9 +204,9 @@ function onPressing() {
 
 
 function onPressUp() {
-	console.debug('press up');
+	// console.debug('press up');
 	alfrid.Scheduler.removeEF(indexPress);
-	scene._spacePressed = false;	
+	scene._spacePressed = false;
 	indexPress = -1;
 }
 
@@ -234,7 +229,6 @@ function _initSound() {
 let soundOn = true;
 
 function _onSound(err, src, json) {
-	// console.log('on Sound : ', src, json);
 	const audio = new Audio();
 	audio.src = src;
 	audio.play();

@@ -78,7 +78,7 @@ class ViewEyeParticle extends alfrid.View {
 			opacity: 1,
 			ease: this.easings.easeOutSine,
 			onComplete: ()=> {
-				console.log("here");
+				// console.log("here");
 				this.tick = 0;
 				this.isVisible = true;
 				this.isSlowMode = false;

@@ -9,7 +9,7 @@ class VIVEUtils {
 		this.id = 'ID' + count ++;
 		this._gamePads = [];
 
-		console.log(this.id);
+		// console.log(this.id);
 	}
 
 
@@ -67,10 +67,10 @@ class VIVEUtils {
 		});
 	}
 
-	
+
 	submitFrame() {
 		if(this._vrDisplay.isPresenting) {
-			this._vrDisplay.submitFrame();	
+			this._vrDisplay.submitFrame();
 		}
 	}
 
@@ -93,13 +93,13 @@ class VIVEUtils {
 		let count = 0;
 
 		this._gamePads = [];
-		
+
 		for(let i=0; i<gamepads.length; i++) {
 			const gamepad = gamepads[i]
 
 			if(gamepad && gamepad.pose) {
 				if(!gamepad.pose.position) continue;
-				
+
 				const o = {
 					position:gamepad.pose.position,
 					orientation:gamepad.pose.orientation,

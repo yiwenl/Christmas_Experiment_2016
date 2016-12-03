@@ -244,7 +244,10 @@ function _onSound(err, src, json) {
 	const btnSound = document.body.querySelector('.button-sound');
 	btnSound.addEventListener('click', ()=> {
 		soundOn = !soundOn;
-		btnSound.innerHTML = soundOn ? 'SOUND OFF' : 'SOUND ON';
-		audio.volume = soundOn ? 0.5 : 0;
+		if(!soundOn) {
+			btnSound.classList.add('sound-off');
+		} else {
+			btnSound.classList.remove('sound-off');
+		}
 	});
 }

@@ -133,7 +133,7 @@ button {
 	cursor: pointer;
 
     transition: opacity .5s ease-out;
-    display:none;
+    display: none;
     opacity: 0;
     z-index: 999;
 
@@ -170,6 +170,17 @@ button {
 
 	background: url(../../dist/assets/img/logo_vr.png);
 	background-size: cover;
+}
+
+.vr-desc {
+	position: relative;
+	left: 50%;
+	margin-left: -336.5px;
+	margin-top: 10px;
+	width: 673px;
+	height: 12px;
+	background: url(../../dist/assets/img/webvrHint.png);
+	background-size: 100% 100%;
 }
 
 .button-next {
@@ -218,7 +229,7 @@ button {
 	transition: opacity .5s ease-out;
 	opacity: 0;
 
-	div {
+	.spacebar {
 		width:100%;
 		height:30px;
 		margin-top:5px;
@@ -242,6 +253,12 @@ button {
 		opacity: 1;
 		pointer-events:auto;
 	}
+
+	div {
+		height: 23px;
+		background: url(../../dist/assets/img/start.png);
+		background-size: 100% 100%;
+	}
 }
 
 
@@ -251,6 +268,12 @@ button {
 	bottom:10%;
 	width:108px;
 	margin-left:-54px;
+
+	div {
+		height: 23px;
+		background: url(../../dist/assets/img/continue.png);
+		background-size: 100% 100%;
+	}
 
 	.stop-1 &,
 	.stop-2 &,
@@ -280,6 +303,12 @@ button {
 	bottom:10%;
 	width:196px;
 	margin-left:-98px;
+
+	.press-title {
+		height: 23px;
+		background: url(../../dist/assets/img/pressnhold.png);
+		background-size: 100% 100%;
+	}
 
 	.stop-final & {
 		transition: opacity 1s ease-out 2s;
@@ -319,11 +348,21 @@ button {
 		}
 	}
 
-	.merry-xmas {
+	/*.merry-xmas {
 		color:white;
 		width:100%;
 		text-align: center;
 		font-size:42px;
+	}*/
+
+	.merry-xmas {
+		position: relative;
+		left: 50%;
+		margin-left: -120px;
+		width: 264px;
+		height: 39px;
+		background: url(../../dist/assets/img/merryxmas.png);
+		background-size: 100% 100%;
 	}
 }
 
@@ -333,28 +372,11 @@ button {
 	margin-left:-49px;
 	bottom:auto;
 	top: 40%;
-}
 
-
-.button-sound {
-	color:white;
-	outline: none;
-	position: absolute;
-	cursor: pointer;
-	z-index: 9999;
-	right: 50px;
-	bottom: 30px;
-	background: transparent;
-	border: 0;
-	font-size: 12px;
-	opacity: 0;
-	transition: opacity .5s ease-out .35s;
-	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
-	
-
-	.opened & {
-		opacity: 1;
-		pointer-events: auto;
+	div {
+		height: 23px;
+		background: url(../../dist/assets/img/restart.png);
+		background-size: 100% 100%;	
 	}
 }
 
@@ -376,6 +398,58 @@ button {
 	.opened & {
 		opacity: 1;
 		pointer-events: auto;
+	}
+}
+
+.button-sound {
+	color:white;
+	outline: none;
+	position: absolute;
+	cursor: pointer;
+	z-index: 9999;
+	width: 75px;
+	height: 11.5px;
+	right: 50px;
+	bottom: 30px;
+	background: transparent;
+	border: 0;
+	font-size: 12px;
+	opacity: 0;
+	transition: opacity .5s ease-out .35s;
+	font-family: 'BRUX-Regular', 'Open Sans', sans-serif;
+	
+
+	.opened & {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+.icon-on {
+	width: 59.5px;
+	height: 11.5px;
+	position: absolute;
+	background: url(../../dist/assets/img/soundOn.png);
+	background-size: 100% 100%;	
+	opacity: 0;
+	transition: opacity .25s ease-out;
+
+	.sound-off & {
+		opacity: 1;
+	}
+}
+
+.icon-off {
+	width: 75px;
+	height: 11.5px;
+	position: absolute;
+	background: url(../../dist/assets/img/soundOff.png);
+	background-size: 100% 100%;	
+	opacity: 1;
+	transition: opacity .25s ease-out;
+
+	.sound-off & {
+		opacity: 0;
 	}
 }
 

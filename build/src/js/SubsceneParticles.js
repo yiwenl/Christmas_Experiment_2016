@@ -53,10 +53,10 @@ class SubsceneParticles {
 	}
 
 
-	updateFbo() {
+	updateFbo(gamePads, posOffset) {
 		this._fboTarget.bind();
 		GL.clear(0, 0, 0, 1);
-		this._vSim.render(this._fboCurrent.getTexture(1), this._fboCurrent.getTexture(0), this._fboCurrent.getTexture(2));
+		this._vSim.render(this._fboCurrent.getTexture(1), this._fboCurrent.getTexture(0), this._fboCurrent.getTexture(2), gamePads, posOffset);
 		this._fboTarget.unbind();
 
 
@@ -66,14 +66,14 @@ class SubsceneParticles {
 	}
 
 
-	update() {
+	update(gamePads, posOffset) {
 		if(!this._enabled) {	return; }
 
 		this._count ++;
 		if(this._count % Params.skipCount == 0) {
 			this._count = 0;
 			if(!GL.isMobile) {
-				this.updateFbo();	
+				this.updateFbo(gamePads, posOffset);	
 			}
 		}
 	}
@@ -84,8 +84,10 @@ class SubsceneParticles {
 
 		let p = this._count / Params.skipCount;
 		GL.enableAdditiveBlending();
+		if(hasVR) {	GL.disable(GL.DEPTH_TEST);		}
 		this._vRender.render(this._fboTarget.getTexture(0), this._fboCurrent.getTexture(0), p, this._fboCurrent.getTexture(2));
 		GL.enableAlphaBlending();
+		if(hasVR) {	GL.enable(GL.DEPTH_TEST); 	}
 	}
 }
 

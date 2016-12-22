@@ -32,9 +32,9 @@ class OrbitalControl {
 		this.radius          = new EaseNumber(mRadius);
 		this.position        = glm.vec3.fromValues(0, 0, this.radius.value);
 		this.positionOffset  = glm.vec3.create();
-		this._rx             = new EaseNumber(0);
-		this._rx.limit(-Math.PI / 2, Math.PI / 2);
-		this._ry             = new EaseNumber(0);
+		this.rx             = new EaseNumber(0);
+		this.rx.limit(-Math.PI / 2, Math.PI / 2);
+		this.ry             = new EaseNumber(0);
 		this._preRX          = 0;
 		this._preRY          = 0;
 		
@@ -85,8 +85,8 @@ class OrbitalControl {
 		this._isMouseDown = true;
 		getMouse(mEvent, this._mouse);
 		getMouse(mEvent, this._preMouse);
-		this._preRX = this._rx.targetValue;
-		this._preRY = this._ry.targetValue;
+		this._preRX = this.rx.targetValue;
+		this._preRY = this.ry.targetValue;
 	}
 
 
@@ -98,11 +98,11 @@ class OrbitalControl {
 		if(this._isMouseDown) {
 			let diffX = -(this._mouse.x - this._preMouse.x);
 			if(this._isInvert) { diffX *= -1; }
-			this._ry.value = this._preRY - diffX * 0.01 * this.sensitivity;
+			this.ry.value = this._preRY - diffX * 0.01 * this.sensitivity;
 
 			let diffY = -(this._mouse.y - this._preMouse.y);
 			if(this._isInvert) { diffY *= -1; }
-			this._rx.value = this._preRX - diffY * 0.01 * this.sensitivity;
+			this.rx.value = this._preRX - diffY * 0.01 * this.sensitivity;
 		}
 	}
 
@@ -145,10 +145,10 @@ class OrbitalControl {
 
 
 	_updatePosition() {
-		this.position[1] = Math.sin(this._rx.value) * this.radius.value;
-		const tr = Math.cos(this._rx.value) * this.radius.value;
-		this.position[0] = Math.cos(this._ry.value + Math.PI * 0.5) * tr;
-		this.position[2] = Math.sin(this._ry.value + Math.PI * 0.5) * tr;
+		this.position[1] = Math.sin(this.rx.value) * this.radius.value;
+		const tr = Math.cos(this.rx.value) * this.radius.value;
+		this.position[0] = Math.cos(this.ry.value + Math.PI * 0.5) * tr;
+		this.position[2] = Math.sin(this.ry.value + Math.PI * 0.5) * tr;
 		glm.vec3.add(this.position, this.position, this.positionOffset);
 	}
 
@@ -158,17 +158,6 @@ class OrbitalControl {
 	}
 
 
-	//	GETTER / SETTER
-
-
-	get rx() {
-		return this._rx;
-	}
-
-
-	get ry() {
-		return this._ry;
-	}
 }
 
 

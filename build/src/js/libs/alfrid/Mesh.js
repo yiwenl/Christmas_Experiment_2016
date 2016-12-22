@@ -25,7 +25,7 @@ class Mesh {
 		this._attributes          = [];
 		this._instancedAttributes = [];
 		this._vertexSize          = 0;
-		
+
 		this._vertices            = [];
 		this._texCoords           = [];
 		this._normals             = [];
@@ -42,42 +42,41 @@ class Mesh {
 		if(!this._extVAO) {	return; }
 		this.shader = shader;
 		if(!this._vao) {
-			this._vao = this._extVAO.createVertexArrayOES(); 	
-			console.debug('Create VAO :', this.vao);
+			this._vao = this._extVAO.createVertexArrayOES();
+			// console.debug('Create VAO :', this.vao);
 		}
-		
-		this._extVAO.bindVertexArrayOES(this._vao); 
+
+		this._extVAO.bindVertexArrayOES(this._vao);
 	}
 
 	unbindVAO() {
 		if(!this._extVAO) {	return; }
-		this._extVAO.bindVertexArrayOES(null);  
-		
+		this._extVAO.bindVertexArrayOES(null);
+
 	}
 
 	deleteVAO() {
 		if(!this._extVAO) {	return; }
-		this._extVAO.deleteVertexArrayOES(this._vao); 
+		this._extVAO.deleteVertexArrayOES(this._vao);
 	}
 
 
-	bufferVertex(mArrayVertices, isDynamic = false, mIsFlatten = false) {
+	bufferVertex(mArrayVertices, isDynamic = false, mIsFlatten = false, generateNormal = false) {
 
 		this._vertexSize = mArrayVertices.length;
 		this.bufferData(mArrayVertices, 'aVertexPosition', 3, isDynamic, mIsFlatten);
 		this._vertices = mArrayVertices;
 
-
-		const tempNormals = [];
-		for (let i = 0; i < mArrayVertices.length; i++) {
-			tempNormals.push([1, 0, 0]);
-		}
-
 		if (this._normals.length < this._vertices.length) {
-			this.bufferNormal(tempNormals, isDynamic);	
+			const tempNormals = [];
+			for (let i = 0; i < mArrayVertices.length; i++) {
+				tempNormals.push([1, 0, 0]);
+			}
+
+			this.bufferNormal(tempNormals, isDynamic);
 		}
 
-		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES) {
+		if (this._indices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
 			this._generateFaces();
 		}
 	}
@@ -99,12 +98,12 @@ class Mesh {
 	}
 
 
-	bufferIndex(mArrayIndices, isDynamic = false) {
+	bufferIndex(mArrayIndices, isDynamic = false, generateNormal = false) {
 
 		const drawType        = isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 		this._indices         = mArrayIndices;
 		if (!this.iBuffer) {
-			this.iBuffer      = gl.createBuffer();	
+			this.iBuffer      = gl.createBuffer();
 		}
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.iBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mArrayIndices), drawType);
@@ -112,7 +111,7 @@ class Mesh {
 		this.iBuffer.numItems = mArrayIndices.length;
 
 
-		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES) {
+		if (this._vertices.length > 0 && this.drawType === GL.TRIANGLES && generateNormal) {
 			this._generateFaces();
 		}
 	}
@@ -136,7 +135,7 @@ class Mesh {
 			}
 		}
 
-		//	flatten buffer data		
+		//	flatten buffer data
 		if(mIsFlatten) {
 			bufferData = mData;
 		} else {
@@ -144,11 +143,11 @@ class Mesh {
 				for(let j = 0; j < mData[i].length; j++) {
 					bufferData.push(mData[i][j]);
 				}
-			}	
+			}
 		}
 
-		
-		if(index === -1) {	
+
+		if(index === -1) {
 
 			//	attribute not exist yet, create new buffer
 			buffer = gl.createBuffer();
@@ -204,15 +203,15 @@ class Mesh {
 			}
 		}
 
-		//	flatten buffer data		
+		//	flatten buffer data
 		for(i = 0; i < mData.length; i++) {
 			for(let j = 0; j < mData[i].length; j++) {
 				bufferData.push(mData[i][j]);
 			}
 		}
 
-		
-		if(index === -1) {	
+
+		if(index === -1) {
 
 			//	attribute not exist yet, create new buffer
 			buffer = gl.createBuffer();
@@ -376,7 +375,7 @@ class Mesh {
 
 	get hasTangents() {
 		if(this._tangents.length === 0) {	return false; }
-		return true;	
+		return true;
 	}
 
 	get faces() {	return this._faces;	}

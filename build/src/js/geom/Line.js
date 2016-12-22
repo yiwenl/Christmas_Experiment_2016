@@ -2,14 +2,17 @@ import alfrid, { GL } from 'alfrid';
 
 let gl, pivotX, pivotY, axis;
 
+let tempArray1 = [];
+let tempArray2 = [];
+let tempArray3 = [];
 class Line extends alfrid.Mesh {
-  constructor(vertices, drawMode = GL.TRIANGLES){
+  constructor(vertices, c, drawMode = GL.TRIANGLES){
 
     gl = GL;
       super(drawMode)
+    this.widthCallback = c;
 
     // indices = [];
-    this.counters = [];
     let vert = [
       [0, 0, 0],
       [100/800, 250/800, 0],
@@ -20,36 +23,70 @@ class Line extends alfrid.Mesh {
     ];
 
 
+    this.positions = [];
+    this.directions = [];
+    this.indicesArray = [];
+    this.counters = [];
+    this.width = [];
+    this.uvs = [];
+    this.previous = [];
+  	this.next = [];
+
+
     this.vert = vertices || vert;
 
 
-    this.line();
+    this.line(true);
 
   }
 
-  line(){
-    var positions = [];
-    var indices = [];
+  line(needsUpdate = true){
+
+    let v = this.vert;
+
+    this.positions.length = v.length * 2;
+    this.counters.length = v.length * 2;
 
     var index = 0;
+    var indexC = 0;
+    var indexP = 0;
+    var indexN = 0;
 
-    var offset = 0;
-    let v = this.vert.slice();
-    this.positions = [];
+
+
+    this.previous.length = this.positions.length;
+    this.next.length = this.positions.length;
+
+
+
+
 
     for (var i = 0; i < v.length; i++) {
 
 
-    			this.positions.push( v[i][0], v[i][1], v[i][2]);
-    			this.positions.push( v[i][0], v[i][1], v[i][2]);
+      if(needsUpdate){
+        var c = i/v.length;
+        this.counters[indexC++] = [c];
+        this.counters[indexC++] = [c];
+      }
 
-          var c = i/v.length;
-			    this.counters.push([c]);
-			    this.counters.push([c]);
+      // console.log(this.positions.length);
+      this.positions[index++] = v[i][0];
+      this.positions[index++] = v[i][1];
+      this.positions[index++] = v[i][2];
+
+      this.positions[index++] = v[i][0];
+      this.positions[index++] = v[i][1];
+      this.positions[index++] = v[i][2];
+
+
 
     }
 
-    this.process();
+
+
+
+    this.process(needsUpdate);
   }
 
   compareV3 = function( a, b ) {
@@ -59,162 +96,187 @@ class Line extends alfrid.Mesh {
   	return ( this.positions[ aa ] === this.positions[ ab ] ) && ( this.positions[ aa + 1 ] === this.positions[ ab + 1 ] ) && ( this.positions[ aa + 2 ] === this.positions[ ab + 2 ] );
   }
 
-  copyV3 = function( a ) {
+  copyV3 = function( a, out ) {
+
+    if(!out) out = tempArray1;
+
 	  var aa = a * 6;
     // console.log(this.positions[ aa ], this.positions[ aa + 1 ], this.positions[ aa + 2 ]);
-    return [ this.positions[ aa ], this.positions[ aa + 1 ], this.positions[ aa + 2 ] ];
+    out[0] = this.positions[ aa ];
+    out[1] = this.positions[ aa + 1 ];
+    out[2] = this.positions[ aa + 2 ];
+
   }
 
-  process(avoid){
+  process(needsUpdate){
 
+    // console.log("here");
     var l = this.positions.length / 6;
 
-    var indices = [];
-  	this.previous = [];
-  	this.next = [];
-  	// this.width = [];
-  	// this.side = [];
-  	this.uvs = [];
+    var v, index = 0, indexN = 0;
+
+    // this.next = [];
+
+    if( this.compareV3( 0, l - 1 ) ){
+      this.copyV3( l - 2 );
+    } else {
+      this.copyV3( 0 );
+    }
+
+    this.previous[index++] = tempArray1[0];
+    this.previous[index++] = tempArray1[1];
+    this.previous[index++] = tempArray1[2];
+
+    this.previous[index++] = tempArray1[0];
+    this.previous[index++] = tempArray1[1];
+    this.previous[index++] = tempArray1[2];
+
+    for (var i = 0; i < l; i++) {
+      // caluclate pos and next
+      this.copyV3( i, tempArray1 );
+
+      if(i > 0) {
+        // we can fill the nexts
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.next[indexN++] = tempArray1[0];
+        this.next[indexN++] = tempArray1[1];
+        this.next[indexN++] = tempArray1[2];
+
+        this.previous[index++] = tempArray2[0];
+        this.previous[index++] = tempArray2[1];
+        this.previous[index++] = tempArray2[2];
+
+        this.previous[index++] = tempArray2[0];
+        this.previous[index++] = tempArray2[1];
+        this.previous[index++] = tempArray2[2];
+      }
+
+      tempArray2[0] = tempArray1[0];
+      tempArray2[1] = tempArray1[1];
+      tempArray2[2] = tempArray1[2];
+    }
+
+    if( this.compareV3( l - 1, 0 ) ){
+      this.copyV3( 1, tempArray1 );
+    } else {
+      this.copyV3( l - 1, tempArray1 );
+    }
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
+
+    this.next[indexN++] = tempArray1[0];
+    this.next[indexN++] = tempArray1[1];
+    this.next[indexN++] = tempArray1[2];
 
 
-    // for( var j = 0; j < l; j++ ) {
-  	// 	this.side.push( [1] );
-  	// 	this.side.push( [-1] );
-  	// }
 
-    // var w;
-  	// for( var j = 0; j < l; j++ ) {
-  	// 	w = 1.0;
-  	// 	this.width.push( [w] );
-  	// 	this.width.push( [w] );
-  	// }
+    index = 0;
 
-    for( var j = 0; j < l; j++ ) {
-  		this.uvs.push([ j / ( l - 1 ), 0 ]);
-  		this.uvs.push([ j / ( l - 1 ), 1 ]);
-  	}
+    // for( var j = 1; j < l; j++ ) {
+    //   this.copyV3( j );
+    //
+    //   this.next[index++] = tempArray1[0];
+    //   this.next[index++] = tempArray1[1];
+    //   this.next[index++] = tempArray1[2];
+    //
+    //   this.next[index++] = tempArray1[0];
+    //   this.next[index++] = tempArray1[1];
+    //   this.next[index++] = tempArray1[2];
+    // }
 
-	  var v;
 
-  	if( this.compareV3( 0, l - 1 ) ){
-  		v = this.copyV3( l - 2 );
-  	} else {
-  		v = this.copyV3( 0 );
-  	}
-
-    this.previous.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-	  this.previous.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-
-    for( var j = 0; j < l - 1; j++ ) {
-  		v = this.copyV3( j );
-  		this.previous.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-  		this.previous.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-  	}
-
-  	for( var j = 1; j < l; j++ ) {
-  		v = this.copyV3( j );
-  		this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-  		this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-  	}
-
-  	if( this.compareV3( l - 1, 0 ) ){
-  		v = this.copyV3( 1 );
-  	} else {
-  		v = this.copyV3( l - 1 );
-  	}
-
-    this.next.push( this.positions[ this.positions.length-3 ], this.positions[ this.positions.length-2 ], this.positions[ this.positions.length-1 ] );
-    this.next.push( this.positions[ this.positions.length-3 ], this.positions[ this.positions.length-2 ], this.positions[ this.positions.length-1 ] );
-
+    // var pos = []
+    // var next = []
+    // var prev = []
+    // for (var i = 0; i < this.positions.length; i+=3) {
+    //   pos.push([this.positions[i], this.positions[i+1], this.positions[i+2]]);
+    //   next.push([this.next[i], this.next[i+1], this.next[i+2]]);
+    //   prev.push([this.previous[i], this.previous[i+1], this.previous[i+2]]);
+    // }
     // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
-	  // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
+    // this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
 
+    // console.log("position", this.positions.length);
+    // console.log("next", this.next.length);
+    // console.log("previous", this.previous.length);
 
-    for( var j = 0; j < l - 1; j++ ) {
-  		var n = j * 2;
+    this.bufferVertex(this.positions, false, true);
+    this.bufferData(this.next, 'aNext', 3, false, true);
+    this.bufferData(this.previous, 'aPrevious', 3, false, true);
 
-      // console.log(n, n+1, n+2, n + 2, n + 1, n + 3);
-  		indices.push( n, n + 1, n + 2 );
-  		indices.push( n + 2, n + 1, n + 3 );
-  	}
+    if(needsUpdate){
+      index = 0;
+      this.uvs = [];
+      let w;
+      for( var j = 0; j < l; j++ ) {
 
-  	// this.next.push([ v[ 0 ], v[ 1 ], v[ 2 ] ]);
-  	// this.next.push([ v[ 0 ], v[ 1 ], v[ 2 ] ]);
+        if( this.widthCallback ){
+          w = this.widthCallback( j / ( l -1 ) )
+        }
+        else {
+          w = .1;
+        }
 
+        this.width[index++] = w;
+        this.width[index++] = w;
+        // this.uvs[index++] = j / ( l - 1 );
+        // this.uvs[index++] = 0;
+        //
+        // this.uvs[index++] = j / ( l - 1 );
+        // this.uvs[index++] = 1;
 
-
-    var pos = [];
-    var offsets = [];
-    var directions = [];
-    for (var i = 0; i < this.positions.length; i+=3) {
-      var p = this.positions;
-      pos.push([p[i], p[i+1], p[i+2]]);
-
-      if(i % 2 === 0){
-        directions.push([1])
-        offsets.push([0,0,0]);
+        this.uvs.push([j/(l-1), 0]);
+        this.uvs.push([j/(l-1), 1]);
       }
-      else {
-        directions.push([-1])
-        offsets.push([Math.random()*50,Math.random()*50,Math.random()*50]);
+
+      index = 0;
+      this.indicesArray = [];
+      for( var j = 0; j < l - 1; j++ ) {
+        var n = j * 2;
+
+        this.indicesArray[index++] = n;
+        this.indicesArray[index++] = n+1;
+        this.indicesArray[index++] = n+2;
+
+        this.indicesArray[index++] = n+2;
+        this.indicesArray[index++] = n+1;
+        this.indicesArray[index++] = n+3;
       }
+
+      index = 0;
+      this.directions = [];
+      for (var i = 0; i < this.positions.length; i++) {
+        if(i % 2 === 0){
+          this.directions[index++] = [1];
+        }
+        else {
+          this.directions[index++] = [-1];
+        }
+      }
+      // console.log("indicesArray", this.indicesArray.length);
+      // console.log("directions", this.directions.length);
+      // console.log("uvs", this.uvs.length);
+      // console.log("counters", this.counters.length);
+
+      this.bufferIndex(this.indicesArray, false);
+      this.bufferData(this.width, 'width', 1, false, true);
+      this.bufferData(this.directions, 'direction', 1, false);
+      this.bufferTexCoord(this.uvs, false);
+      this.bufferData(this.counters, 'aCounters', 1, false);
     }
-    // console.log(pos);
-    this.bufferData(directions, 'direction', 1, false);
-
-    // this.bufferVertex(offsets, false, "a_offsets");
-
-    // console.log(this.width);
-
-    // console.log(this.previous[20]);
-    // console.log(this.next[20]);
-    // console.log(this.positions[20]);
-
-    var nextPos = [];
-    for (var i = 0; i < this.next.length; i+=3) {
-      var p = this.next;
-      nextPos.push([p[i], p[i+1], p[i+2]]);
-    }
-
-
-    var prevPos = [];
-    for (var i = 0; i < this.previous.length; i+=3) {
-      var p = this.previous;
-      prevPos.push([p[i], p[i+1], p[i+2]]);
-    }
-
-    console.log(pos.length);
-    console.log(this.uvs.length);
-    console.log(indices.length);
-    console.log(nextPos.length);
-    console.log(prevPos.length);
-
-    this.bufferVertex(pos, true);
-    this.bufferTexCoord(this.uvs);
-    this.bufferIndex(indices, false);
-    this.bufferData(nextPos, 'aNext', 3, true);
-    this.bufferData(prevPos, 'aPrevious', 3, true);
-    this.bufferData(this.counters, 'aCounters', 1, true);
 
   }
 
-  render(points){
-    // this.vert[0] += 1;
-    // console.log(points);
-    // this.vert = points;
-    // this.vert = [
-    //   [0, 0, 0],
-    //   [100, 250, 0],
-    //   [50, 200 ,0],
-    //   [0, 200 ,0],
-    //   [-100, 220 ,0],
-    //   [-70, 300 ,0]
-    // ];
+  render(points, needsUpdate = false){
 
-    this.vert = points;
-    // GL._bindBuffers(this);
-    this.line();
-    // console.log("here");
+    this.vert = points || this.vert;
+
+    this.line(needsUpdate);
   }
 }
 

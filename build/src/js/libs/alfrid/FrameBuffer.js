@@ -97,7 +97,6 @@ class FrameBuffer {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, texelType, null);	
 		}
 
-		
 
 		if(webglDepthTexture) {
 			gl.bindTexture(gl.TEXTURE_2D, this.depthTexture);

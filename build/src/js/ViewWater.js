@@ -15,19 +15,18 @@ class ViewWater extends alfrid.View {
 	_init() {
 		const size = Params.terrainSize;
 		this.mesh = alfrid.Geom.plane(size, size, 120, 'xz');
+
+		this.shader.bind();
+		this.shader.uniform("textureReflection", "uniform1i", 0);
+		this.shader.uniform("uSeaLevel", "float", Params.seaLevel);
+		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
+		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
 	}
 
 
 	render(textureReflection) {
 		this.shader.bind();
-
-		this.shader.uniform("textureReflection", "uniform1i", 0);
 		textureReflection.bind(0);
-
-		this.shader.uniform('uFogDensity', 'float', Params.fogDensity);
-		this.shader.uniform('uFogColor', 'vec3', Params.fogColor);
-
-		this.shader.uniform("uSeaLevel", "float", Params.seaLevel);
 		GL.draw(this.mesh);
 	}
 

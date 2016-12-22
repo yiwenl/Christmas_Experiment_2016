@@ -8,7 +8,7 @@ class Spline {
 
     this.point = 0;
     this.intPoint = 0;
-    this.wieght = 0;
+    this.weight = 0;
     this.pa = 0;
     this.pb = 0;
     this.pc = 0;
@@ -22,8 +22,8 @@ class Spline {
 
   }
 
-  getPoint(k) {
-
+  getPoint(k, out) {
+    // console.log(out);
 		this.point = ( this.points.length - 1 ) * k;
 		this.intPoint = Math.floor( this.point );
 		this.weight = this.point - this.intPoint;
@@ -50,7 +50,14 @@ class Spline {
 		this.v3[2] = this.interpolate( this.pa[2], this.pb[2], this.pc[2], this.pd[2], this.weight, this.w2, this.w3 );
 
     // console.log(this.v3);
-		return [this.v3[0], this.v3[1], this.v3[2]];
+    if(out){
+
+      let length = out.length;
+      out[out.length] = [this.v3[0], this.v3[1], this.v3[2]];
+    }
+    else {
+      return [this.v3[0], this.v3[1], this.v3[2]]
+    }
 
 	};
 
@@ -59,33 +66,6 @@ class Spline {
 			  v1 = ( p3 - p1 ) * 0.5;
 
 		return ( 2 * ( p1 - p2 ) + v0 + v1 ) * t3 + ( - 3 * ( p1 - p2 ) - 2 * v0 - v1 ) * t2 + v0 * t + p1;
-
-
-    // var v0 = Matrices.multiplyVectorsScalar(0.5, Matrices.subtractVectors( p2, p0 )),
-		// 	  v1 = Matrices.multiplyVectorsScalar(0.5, Matrices.subtractVectors( p3, p1 ));
-    //
-    //
-    // let p1minusp2 = Matrices.subtractVectors( p1, p2 ); //( p1 - p2 )
-    //
-    // // ( 2 * ( p1 - p2 ) + v0 + v1 ) * t3
-    // let aExpr = Matrices.multiplyVectorsScalar(2, p1minusp2);
-    // let bExpr = Matrices.addVectors(aExpr, Matrices.addVectors(v0, v1));
-    // let firstExpr = Matrices.multiplyVectorsScalar(t3, bExpr);
-    //
-    // console.log("here");
-    // // ( - 3 * ( p1 - p2 ) - 2 * v0 - v1 ) * t2
-    // let cExpr = Matrices.multiplyVectorsScalar(-3, p1minusp2);
-    // let dExpr = Matrices.multiplyVectorsScalar(-2, v0);
-    // let eExpr = Matrices.addVectors(cExpr, dExpr);
-    // let fExpr = Matrices.subtractVectors(eExpr, v1);
-    // let secondExpr = Matrices.multiplyVectorsScalar(t2, fExpr);
-    //
-    // // v0 * t + p1
-    // let thirdExpr = Matrices.addVectors(Matrices.multiplyVectorsScalar(t, v0), p1);
-    //
-    // let finalPoint = Matrices.addVectors(Matrices.addVectors(firstExpr, secondExpr), thirdExpr);
-    //
-    // return finalPoint;
   }
 }
 

@@ -33,9 +33,9 @@ class CubeFrameBuffer {
 		gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, this.wrapT);
 
 		const targets = [
-			gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 
-			gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 
-			gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z 
+			gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+			gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+			gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 		];
 
 		for(let i = 0; i < targets.length; i++) {
@@ -52,7 +52,7 @@ class CubeFrameBuffer {
 
 			const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 			if (status !== gl.FRAMEBUFFER_COMPLETE) {
-				console.log(`'gl.checkFramebufferStatus() returned '${status}`);
+				// console.log(`'gl.checkFramebufferStatus() returned '${status}`);
 			}
 
 			this._frameBuffers.push(frameBuffer);

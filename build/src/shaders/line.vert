@@ -5,12 +5,16 @@ attribute vec2 aTextureCoord;
 attribute float direction;
 attribute vec3 aPrevious;
 attribute vec3 aNext;
+attribute float width;
 // attribute vec4 a_offsets;
 attribute float aCounters;
 attribute vec3 aNormal;
-// uniform mat4 uModelMatrix;
+
+uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
+uniform float uTime;
+uniform float thickness;
 
 
 uniform float aspect;
@@ -22,14 +26,19 @@ varying float vCounters;
 
 void main() {
 
-  float thickness = .1;
+  // float thickness = 1. * width;
   int miter = 0;
 
   vec2 aspectVec = vec2(aspect, 1.0);
-  // mat4 projViewModel = uProjectionMatrix;//projection * view * model;
-  vec4 previousProjected = uProjectionMatrix * uViewMatrix * vec4(aPrevious.x, -aPrevious.y, aPrevious.z, 1.0);
-  vec4 currentProjected = uProjectionMatrix * uViewMatrix * vec4(aVertexPosition.x, -aVertexPosition.y, aVertexPosition.z, 1.0);
-  vec4 nextProjected = uProjectionMatrix * uViewMatrix * vec4(aNext.x, -aNext.y, aNext.z, 1.0);
+  mat4 projViewModel = uProjectionMatrix * uViewMatrix * uModelMatrix;//projection * view * model;
+
+  vec4 previousProjected = projViewModel * vec4(aPrevious.x, -aPrevious.y, -aPrevious.z, 1.0);
+  vec4 currentProjected = projViewModel * vec4(aVertexPosition.x, -aVertexPosition.y, -aVertexPosition.z, 1.0);
+  vec4 nextProjected = projViewModel * vec4(aNext.x, -aNext.y, -aNext.z, 1.0);
+
+  // vec4 previousProjected = projViewModel * vec4(aPrevious, 1.0);
+  // vec4 currentProjected = projViewModel * vec4(aVertexPosition, 1.0);
+  // vec4 nextProjected = projViewModel * vec4(aNext, 1.0);
 
   vNormal = aNormal;
   vUV = aTextureCoord;
@@ -40,7 +49,10 @@ void main() {
 
   vCounters = aCounters;
 
-  float len = thickness;
+  float len = thickness *width ;
+  // len *= smoothstep(vUV.x*2.,vUV.y*2.+2.,-uTime*2000.);;
+  // len *= smoothstep(vUV.x * 2., vUV.y * 2.+ 1., -uTime*2000.);
+
   float orientation = direction;
 
   //starting point uses (next - current)
@@ -75,16 +87,18 @@ void main() {
   }
   vec2 normal = vec2(-dir.y, dir.x);
   vColor = vec3(normal, 1.0);
-  normal *= len/2.0;
   normal.x /= aspect;
+  normal *= len/2.0;
 
-  vec4 offset =  vec4(normal * orientation, 0.0, 1.0);
+  vec4 offset =  vec4(normal * orientation, 0.0, 0.0);
   // vColor = vec3(orientation);
 
 
 
 
 
+
+
   gl_Position = currentProjected + offset;
-  // gl_PointSize = 2.0;
+  gl_PointSize = 1.0;
 }

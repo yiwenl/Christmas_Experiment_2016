@@ -9,7 +9,7 @@ const GL = alfrid.GL;
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 class ViewSave extends alfrid.View {
-	
+
 	constructor() {
 		super(vsSave, fsSave);
 	}
@@ -18,13 +18,13 @@ class ViewSave extends alfrid.View {
 	_init() {
 		let positions = [];
 		let coords = [];
-		let indices = []; 
+		let indices = [];
 		let extras = [];
 		let count = 0;
 
 		let numParticles = Params.numParticles;
 		let totalParticles = numParticles * numParticles;
-		console.debug('Total Particles : ', totalParticles);
+		// console.debug('Total Particles : ', totalParticles);
 		let ux, uy;
 		let range = Params.maxRadius;
 
@@ -60,9 +60,9 @@ class ViewSave extends alfrid.View {
 	render(state = 0) {
 		this.shader.bind();
 		// if(state === 0) {
-		// 	GL.draw(this.mesh);	
+		// 	GL.draw(this.mesh);
 		// } else if(state === 1) {
-		// 	GL.draw(this.meshExtra);	
+		// 	GL.draw(this.meshExtra);
 		// }
 		GL.draw(this.mesh);
 	}

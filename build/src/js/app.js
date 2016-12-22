@@ -8,15 +8,29 @@ import Params from './Params';
 import SoundCloudBadge from './SoundCloudBadge';
 import VIVEUtils from './VIVEUtils';
 
+let TARGET_SERVER_IP = 'localhost';
+// let socket = require('./libs/socket.io-client')(TARGET_SERVER_IP + ':9876');
+// window.socket = socket;
+
 let scene;
 const assets = [
+	{ id:'objTrunk', url:'assets/obj/trunk.obj', type:'text' },
+	{ id:'ao', url:'assets/img/ao-trunk.jpg' },
 	{ id:'height', url:'assets/img/height.jpg' },
+	{ id:'nothing', url:'assets/img/nothing.png' },
 	{ id:'normal', url:'assets/img/normal.jpg' },
 	{ id:'noise', url:'assets/img/noise.png' },
+	{ id:'title', url:'assets/img/title.png' },
 	{ id:'fg', url:'assets/img/fg.png' },
+	{ id:'fgMobile', url:'assets/img/fgMobile.png' },
 	{ id:'gradient', url:'assets/img/gradient.jpg' },
+	{ id:'gradientMap', url:'assets/img/gradientMap.jpg' },
 	{ id:'tree', url:'assets/img/tree.jpg' },
 	{ id:'starsmap', url:'assets/img/starsmap.jpg' },
+	{ id:'starsmapMobile', url:'assets/img/starsmapMobile.jpg' },
+	{ id:'vignette', url:'assets/img/vignette.png' },
+	{ id:'presshold', url:'assets/img/presshold.png' },
+	{ id:'stroke', url:'assets/img/stroke3.png' },
 	{ id:'radiance', url:'assets/img/studio_radiance.dds', type: 'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
 	{ id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary' },
@@ -32,7 +46,7 @@ window.getAsset = function(id) {	return window.assets.find( (a) => a.id === id).
 if(document.body) {
 	_init();
 } else {
-	window.addEventListener('DOMContentLoaded', _init);	
+	window.addEventListener('DOMContentLoaded', _init);
 }
 
 
@@ -47,11 +61,10 @@ function _init() {
 		}).on('error', function (error) {
 			console.error(error);
 		}).on('progress', function (p) {
-			// console.log('Progress : ', p);
 			let loader = document.body.querySelector('.Loading-Bar');
 			if(loader) loader.style.width = (p * 100).toFixed(2) + '%';
 		}).on('complete', _onImageLoaded)
-		.start();	
+		.start();
 	} else {
 		_init3D();
 	}
@@ -61,7 +74,6 @@ function _init() {
 
 function _onImageLoaded(o) {
 	//	ASSETS
-	console.log('Image Loaded : ', o);
 	window.assets = o;
 	const loader = document.body.querySelector('.Loading-Bar');
 	loader.style.width = '100%';
@@ -75,13 +87,14 @@ function _onImageLoaded(o) {
 
 
 window.hasVR = false;
+window.vrPresenting = false;
 
 function _initVR() {
 	VIVEUtils.init( (vrDisplay) => _onVR(vrDisplay));
 }
 
 function _onVR(vrDisplay) {
-	console.debug('on VR :', vrDisplay);
+	// console.debug('on VR :', vrDisplay);
 
 	if(vrDisplay != null) {
 		hasVR = true;
@@ -89,8 +102,10 @@ function _onVR(vrDisplay) {
 		let btnVR = document.body.querySelector('#enterVr');
 		btnVR.addEventListener('click', ()=> {
 			VIVEUtils.present(GL.canvas, ()=> {
-				console.log('Scene :', scene);
+				window.vrPresenting = true;
+				document.body.classList.add('present-vr')
 				scene.resize();
+				// scene.setVR();
 			});
 		});
 	} else {
@@ -100,8 +115,10 @@ function _onVR(vrDisplay) {
 	Params.numParticles = hasVR ? 256 : 128;
 	Params.postEffect = hasVR;
 
+	// document.body.classList.add('hasVR');
 	// hasVR = true;
-	console.debug('Has VR ? ', hasVR, Params);
+	// console.debug('Has VR ? ', hasVR, Params);
+
 	_init3D();
 	_initSound();
 
@@ -116,31 +133,84 @@ function _init3D() {
 	//	INIT 3D TOOL
 	GL.init(canvas);
 
+	if(GL.isMobile) {
+		document.body.classList.add('is-mobile');
+	}
+
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
+	// window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();
 
 	//	STATS
-	if(!GL.isMobile) {
+	if(!GL.isMobile && 0) {
 		const stats = new Stats();
 		document.body.appendChild(stats.domElement);
-		alfrid.Scheduler.addEF(()=>stats.update());	
+		alfrid.Scheduler.addEF(()=>stats.update());
 	}
-	
-	
-	gui.add(Params, 'gamma', 1, 5);
-	gui.add(Params, 'exposure', 1, 25);
-	gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
-		console.log(Params);
-	});
-	gui.add(Params, 'postEffect');
 
-	const fFog = gui.addFolder('Fog');
-	fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
-	fFog.open();
+
+	// gui.add(Params, 'gamma', 1, 5);
+	// gui.add(Params, 'exposure', 1, 25);
+	// gui.add(Params, 'seaLevel', 0, 2).step(0.01).onChange(()=> {
+	// });
+	// gui.add(Params, 'postEffect');
+
+	// const fFog = gui.addFolder('Fog');
+	// fFog.add(Params, 'fogDensity', 0.01, 0.1).step(0.01);
+	// fFog.open();
+
+	_initControls();
 }
+
+let indexPress;
+
+function _initControls() {
+	const btnStart = document.body.querySelector('.button-start');
+	btnStart.addEventListener('click', ()=> {
+		scene.nextStop();
+	});
+
+	const btnContinue = document.body.querySelector('.button-continue');
+	btnContinue.addEventListener('click', ()=> {
+		scene.nextStop();
+	});
+
+	const btnRestart = document.body.querySelector('.button-restart');
+	btnRestart.addEventListener('click', ()=> {
+		scene.restart();
+	});
+
+	const btnPress = document.body.querySelector('.button-press');
+	btnPress.addEventListener('mousedown', onPressDown);
+	btnPress.addEventListener('mouseup', onPressUp);
+	window.addEventListener('touchstart', onPressDown);
+	window.addEventListener('touchend', onPressUp);
+}
+
+
+function onPressDown() {
+	indexPress = alfrid.Scheduler.addEF(onPressing);
+}
+
+
+function onPressing() {
+	scene._spacePressed = true;
+	if(scene._hasFormFinalShape) {
+		onPressUp();
+	}
+}
+
+
+function onPressUp() {
+	// console.debug('press up');
+	alfrid.Scheduler.removeEF(indexPress);
+	scene._spacePressed = false;
+	indexPress = -1;
+}
+
+
 
 function _initSound() {
 	const songs = [
@@ -148,7 +218,6 @@ function _initSound() {
 	]
 
 	let song = songs[Math.floor(Math.random() * songs.length)];
-	console.log('Song :', song); 
 
 	SoundCloudBadge({
 		client_id: 'e8b7a335a5321247b38da4ccc07b07a2',
@@ -156,11 +225,23 @@ function _initSound() {
 	}, _onSound);
 }
 
+
+let soundOn = true;
+
 function _onSound(err, src, json) {
-	console.log('on Sound : ', src, json);
 	const audio = new Audio();
 	audio.src = src;
 	audio.play();
 	audio.loop = true;
-	audio.volume = 0.0;
+	audio.volume = 0.5;
+
+	const btnSound = document.body.querySelector('.button-sound');
+	btnSound.addEventListener('click', ()=> {
+		soundOn = !soundOn;
+		if(!soundOn) {
+			btnSound.classList.add('sound-off');
+		} else {
+			btnSound.classList.remove('sound-off');
+		}
+	});
 }
